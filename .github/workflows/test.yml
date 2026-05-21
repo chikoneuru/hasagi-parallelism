@@ -1,10 +1,14 @@
 name: tests
 
+# Auto-triggers disabled while resolving GitHub billing block (see issue).
+# To re-enable: uncomment the push/pull_request blocks below.
+# Manual run: GitHub UI → Actions tab → "tests" → "Run workflow".
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+  workflow_dispatch:
+  # push:
+  #   branches: [main]
+  # pull_request:
+  #   branches: [main]
 
 jobs:
   test:
