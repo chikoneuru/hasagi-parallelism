@@ -11,7 +11,9 @@ Literature foundation:
 Objective (HISE contribution C2):
     Primary: minimize pipeline bottleneck (max stage time) → maximise steady-state throughput.
     Secondary: sigma_exec (std-dev of stage times) retained for ablation comparison.
-    Phase 2 adds energy-per-iteration once NVML/RAPL telemetry is wired in.
+    Phase 2 D1.1 adds energy-per-iteration via per-stage power_draw_w telemetry.
+    Phase 2 D1.2 adds hard feasibility constraints (memory + power-cap) that prune
+    infeasible (stage, segment) assignments in both the DP and incremental paths.
 """
 from __future__ import annotations
 
@@ -120,6 +122,42 @@ def _exec_time(comp: float, comm_out: float, comm_in: float) -> float:
     return 0.5 * (fwd_t + bwd_t)
 
 
+def _segment_activation_bytes(layers: Sequence[LayerProfile], start: int, end: int) -> int:
+    """Activation footprint proxy for layers [start..end] on a single stage.
+
+    Sum of per-layer activation_bytes — captures the memory needed to retain
+    activations for the backward pass. Parameters are not modelled separately;
+    extend LayerProfile when a tighter bound is needed.
+    """
+    return sum(layers[i].activation_bytes for i in range(start, end + 1))
+
+
+def _segment_feasible(
+    layers: Sequence[LayerProfile],
+    stage: StageSpec,
+    start: int,
+    end: int,
+) -> tuple[bool, str]:
+    """D1.2 feasibility check: does assigning layers[start..end] to ``stage`` fit?
+
+    Memory constraint: segment activation footprint ≤ stage.memory_bytes.
+    Power-cap constraint: stage.power_draw_w ≤ stage.power_cap_w (stage-only,
+    segment-independent — an over-cap stage can hold no layers).
+
+    Returns ``(True, "")`` when feasible; otherwise ``(False, reason)`` with a
+    short diagnostic suitable for RuntimeError messages.
+    """
+    mem = _segment_activation_bytes(layers, start, end)
+    if mem > stage.memory_bytes:
+        return False, f"stage {stage.stage_id} mem {mem}B > cap {stage.memory_bytes}B"
+    if stage.power_draw_w > stage.power_cap_w:
+        return False, (
+            f"stage {stage.stage_id} power {stage.power_draw_w}W "
+            f"> cap {stage.power_cap_w}W"
+        )
+    return True, ""
+
+
 # ---------------------------------------------------------------------------
 # PipeDream DP partitioner — O(n² K)
 # ---------------------------------------------------------------------------
@@ -173,9 +211,11 @@ def partition_pipeline(
 
     prefix_fwd = [0.0] * (n + 1)
     prefix_bwd = [0.0] * (n + 1)
+    prefix_mem = [0] * (n + 1)
     for i in range(n):
         prefix_fwd[i + 1] = prefix_fwd[i] + layers[i].fwd_flops
         prefix_bwd[i + 1] = prefix_bwd[i] + layers[i].bwd_flops
+        prefix_mem[i + 1] = prefix_mem[i] + layers[i].activation_bytes
 
     def seg_exec(stage_id: int, start: int, end: int) -> float:
         fwd = prefix_fwd[end + 1] - prefix_fwd[start]
@@ -192,9 +232,22 @@ def partition_pipeline(
 
         return _exec_time(comp, comm_out, comm_in)
 
+    def seg_feasible(stage_id: int, start: int, end: int) -> bool:
+        """D1.2 feasibility check using O(1) prefix-sum memory lookup."""
+        mem = prefix_mem[end + 1] - prefix_mem[start]
+        if mem > stages[stage_id].memory_bytes:
+            return False
+        if stages[stage_id].power_draw_w > stages[stage_id].power_cap_w:
+            return False
+        return True
+
     def seg_score(stage_id: int, start: int, end: int, prev_score: float) -> float:
         """Combine prev cumulative score with stage (stage_id) covering layers
-        [start..end] under the active objective."""
+        [start..end] under the active objective. Returns INF when the assignment
+        violates a D1.2 feasibility constraint — INF propagates through both
+        max (bottleneck) and add (energy), pruning the transition in the DP."""
+        if not seg_feasible(stage_id, start, end):
+            return math.inf
         t = seg_exec(stage_id, start, end)
         if objective == "bottleneck":
             return max(prev_score, t)
@@ -203,6 +256,9 @@ def partition_pipeline(
 
     # K=1: no pipeline
     if K == 1:
+        ok, reason = _segment_feasible(layers, stages[0], 0, n - 1)
+        if not ok:
+            raise RuntimeError(f"K=1 partition infeasible: {reason}")
         t = seg_exec(0, 0, n - 1)
         return Partition(
             cuts=(),
@@ -352,6 +408,9 @@ def _build_partition(
         end = boundaries[s + 1]
         if start > end:
             raise RuntimeError("empty segment")
+        ok, reason = _segment_feasible(layers, stages[s], start, end)
+        if not ok:
+            raise RuntimeError(f"infeasible: {reason}")
         stage_layers[s] = tuple(range(start, end + 1))
 
         fwd_f, bwd_f = _segment_flops(layers, range(start, end + 1))

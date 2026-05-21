@@ -291,3 +291,130 @@ def test_energy_objective_with_zero_powers_is_degenerate() -> None:
     # All layers must still be covered.
     total = sum(len(p.stage_layers[s]) for s in range(3))
     assert total == 12
+
+
+# --- Feasibility constraints (Phase 2 D1.2) ---
+
+def _heavy_layers(n: int, activation_bytes: int) -> list[LayerProfile]:
+    return [
+        LayerProfile(index=i, fwd_flops=1e8, bwd_flops=2e8, activation_bytes=activation_bytes)
+        for i in range(n)
+    ]
+
+
+def test_memory_cap_prunes_oversized_segment_dp() -> None:
+    """DP must refuse to assign a segment whose activation footprint exceeds the
+    stage memory budget. Setup: K=3, stage 1 has only 4MB memory — at most 3
+    layers (1MB each) can land there. With 12 layers across 3 stages, the DP
+    must split such that stage 1 gets ≤4 layers."""
+    layers = _heavy_layers(12, activation_bytes=1_000_000)  # 1MB each
+    stages = [
+        StageSpec(stage_id=0, throughput_flops=1e12, memory_bytes=16_000_000),
+        StageSpec(stage_id=1, throughput_flops=1e12, memory_bytes=4_000_000),  # 4 layers max
+        StageSpec(stage_id=2, throughput_flops=1e12, memory_bytes=16_000_000),
+    ]
+    p = partition_pipeline(layers, stages, _links_k3())
+    assert len(p.stage_layers[1]) <= 4
+
+
+def test_memory_cap_makes_dp_infeasible() -> None:
+    """When every distribution of layers across stages violates a memory cap,
+    partition_pipeline must raise RuntimeError rather than silently emit a bad
+    partition. Setup: 12 × 1MB layers, all stages capped at 2MB (≤2 layers each,
+    total capacity 6 < 12 layers)."""
+    layers = _heavy_layers(12, activation_bytes=1_000_000)
+    stages = [
+        StageSpec(stage_id=s, throughput_flops=1e12, memory_bytes=2_000_000)
+        for s in range(3)
+    ]
+    with pytest.raises(RuntimeError, match="No feasible partition"):
+        partition_pipeline(layers, stages, _links_k3())
+
+
+def test_power_cap_blocks_overcapped_stage() -> None:
+    """A stage whose current power draw exceeds its NVML cap cannot accept any
+    layers — but every stage must receive ≥1 layer, so the partition is
+    infeasible globally."""
+    layers = _toy_model(12)
+    stages = [
+        StageSpec(stage_id=0, throughput_flops=1e12, memory_bytes=8 << 30,
+                  power_draw_w=200.0, power_cap_w=300.0),
+        StageSpec(stage_id=1, throughput_flops=1e12, memory_bytes=8 << 30,
+                  power_draw_w=500.0, power_cap_w=400.0),  # over cap → infeasible
+        StageSpec(stage_id=2, throughput_flops=1e12, memory_bytes=8 << 30,
+                  power_draw_w=200.0, power_cap_w=300.0),
+    ]
+    with pytest.raises(RuntimeError, match="No feasible partition"):
+        partition_pipeline(layers, stages, _links_k3())
+
+
+def test_power_cap_at_boundary_is_feasible() -> None:
+    """Power draw exactly equal to power_cap is permitted (≤, not <)."""
+    layers = _toy_model(12)
+    stages = [
+        StageSpec(stage_id=s, throughput_flops=1e12, memory_bytes=8 << 30,
+                  power_draw_w=300.0, power_cap_w=300.0)
+        for s in range(3)
+    ]
+    p = partition_pipeline(layers, stages, _links_k3())
+    assert sum(len(p.stage_layers[s]) for s in range(3)) == 12
+
+
+def test_k1_rejects_memory_infeasible() -> None:
+    """Single-stage path must also enforce memory cap."""
+    layers = _heavy_layers(10, activation_bytes=1_000_000)  # 10MB total
+    stages = [StageSpec(stage_id=0, throughput_flops=1e12, memory_bytes=5_000_000)]
+    with pytest.raises(RuntimeError, match="K=1 partition infeasible"):
+        partition_pipeline(layers, stages, [])
+
+
+def test_k1_rejects_power_overcap() -> None:
+    layers = _toy_model(8)
+    stages = [StageSpec(stage_id=0, throughput_flops=1e12, memory_bytes=8 << 30,
+                        power_draw_w=500.0, power_cap_w=400.0)]
+    with pytest.raises(RuntimeError, match="K=1 partition infeasible"):
+        partition_pipeline(layers, stages, [])
+
+
+def test_incremental_skips_infeasible_candidates() -> None:
+    """Incremental sweep must skip candidate cuts whose segments exceed memory
+    caps and return the best *feasible* candidate within the window. Setup:
+    seed with a feasible partition, then sweep with a window large enough to
+    include infeasible cuts — final result must still be feasible."""
+    layers = _heavy_layers(15, activation_bytes=1_000_000)  # 1MB each
+    stages = [
+        StageSpec(stage_id=0, throughput_flops=1e12, memory_bytes=8_000_000),
+        StageSpec(stage_id=1, throughput_flops=1e12, memory_bytes=6_000_000),  # ≤6 layers
+        StageSpec(stage_id=2, throughput_flops=1e12, memory_bytes=8_000_000),
+    ]
+    full = partition_pipeline(layers, stages, _links_k3())
+    incr = incremental_partition(full, layers, stages, _links_k3(), boundary_window=5)
+    # All stages must remain within their memory budgets.
+    for s in range(3):
+        seg_mem = sum(layers[i].activation_bytes for i in incr.stage_layers[s])
+        assert seg_mem <= stages[s].memory_bytes, (
+            f"stage {s} mem {seg_mem} exceeds cap {stages[s].memory_bytes}"
+        )
+
+
+def test_feasibility_helper_returns_diagnostic_strings() -> None:
+    """_segment_feasible reports a non-empty reason on rejection so RuntimeError
+    messages stay informative."""
+    from hise.parallel.partitioner import _segment_feasible
+    layers = _heavy_layers(4, activation_bytes=1_000_000)
+    stage_mem_bad = StageSpec(stage_id=0, throughput_flops=1e12, memory_bytes=1_000_000)
+    ok, reason = _segment_feasible(layers, stage_mem_bad, 0, 3)
+    assert not ok
+    assert "mem" in reason
+
+    stage_pwr_bad = StageSpec(stage_id=1, throughput_flops=1e12, memory_bytes=8 << 30,
+                              power_draw_w=500.0, power_cap_w=400.0)
+    ok, reason = _segment_feasible(layers, stage_pwr_bad, 0, 3)
+    assert not ok
+    assert "power" in reason
+
+    stage_ok = StageSpec(stage_id=2, throughput_flops=1e12, memory_bytes=8 << 30,
+                         power_draw_w=200.0, power_cap_w=400.0)
+    ok, reason = _segment_feasible(layers, stage_ok, 0, 3)
+    assert ok
+    assert reason == ""
