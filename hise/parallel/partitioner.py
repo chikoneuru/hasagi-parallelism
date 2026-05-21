@@ -37,11 +37,18 @@ class LayerProfile:
 
 @dataclass(frozen=True)
 class StageSpec:
-    """One pipeline stage in the serverless container pool."""
+    """One pipeline stage in the serverless container pool.
+
+    ``power_cap_w`` is the aggregate per-stage power ceiling — Σ NVML power limits
+    across the workers assigned to this stage. Used by Phase 2 D1.2 feasibility
+    constraints; default math.inf preserves Phase 1 behaviour for callers that
+    don't set it.
+    """
 
     stage_id: int
     throughput_flops: float  # aggregate FLOPS of all workers assigned to this stage
     memory_bytes: int
+    power_cap_w: float = math.inf
 
 
 @dataclass(frozen=True)
