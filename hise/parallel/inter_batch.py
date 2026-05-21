@@ -19,8 +19,10 @@ The energy-aware variant ``w_j ~ throughput_j / P_j`` is the Phase 2 deliverable
 from __future__ import annotations
 
 from collections import deque
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
+
+from hise.energy.telemetry import WorkerTelemetry
 
 
 @dataclass
@@ -33,9 +35,56 @@ class Node:
 
 
 def weights_for_stage(nodes: Sequence[Node]) -> dict[str, float]:
-    """FLOPS-proportional weights ``w_j = mu_j / sum(mu_k)``."""
+    """FLOPS-proportional weights ``w_j = mu_j / sum(mu_k)``.
+
+    Phase 1 baseline (kept for ablation as HISE-flops-wrr variant in Phase 4).
+    """
     total = sum(n.capacity_flops for n in nodes) or 1.0
     return {n.node_id: n.capacity_flops / total for n in nodes}
+
+
+def energy_weights_for_stage(
+    nodes: Sequence[Node],
+    telemetry: Mapping[str, WorkerTelemetry],
+) -> dict[str, float]:
+    """Iter-per-joule weights from live NVML telemetry (Phase 2 D4.1, contribution C4).
+
+    Weight for node ``j`` is ``throughput_j / P_j`` (iters / joule) normalised so all
+    weights sum to 1. Nodes without telemetry — or with zero/negative power_draw_w —
+    fall back to ``capacity_flops`` so dispatch keeps working during telemetry warm-up
+    and partial-coverage situations.
+
+    Rationale (research-note.md §4.5 C4): WRR weight shifted from FLOPS-proportional
+    (which optimises for throughput) to iter-per-joule (which optimises for energy
+    efficiency) routes more micro-batches to workers that are *currently* most
+    energy-efficient — e.g., an A100 power-capped low vs. a T4 at full draw.
+
+    The two weights coincide only when all workers in the stage are homogeneous and
+    drawing identical power; on heterogeneous serverless pools (mixed A100 / V100 /
+    T4 / power-capped) they diverge meaningfully.
+
+    Args:
+        nodes: nodes within a single pipeline stage.
+        telemetry: ``worker_id`` → ``WorkerTelemetry`` snapshot (typically the
+            orchestrator's most recent scrape from the telemetry sidecar).
+
+    Returns:
+        Normalised weight per ``node_id``; sums to 1 (or 0 if all nodes have neither
+        usable telemetry nor positive capacity).
+    """
+    raw: dict[str, float] = {}
+    for node in nodes:
+        t = telemetry.get(node.node_id)
+        if t is not None and t.power_draw_w > 0 and t.throughput_iters_per_s > 0:
+            raw[node.node_id] = t.throughput_iters_per_s / t.power_draw_w
+        else:
+            # Fallback: FLOPS capacity. Keeps dispatch working when NVML is warming
+            # up, missing, or throughput counter has not advanced yet.
+            raw[node.node_id] = max(node.capacity_flops, 0.0)
+    total = sum(raw.values())
+    if total <= 0:
+        return {nid: 0.0 for nid in raw}
+    return {nid: v / total for nid, v in raw.items()}
 
 
 @dataclass

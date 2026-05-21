@@ -1,5 +1,10 @@
 """Hybrid Parallel Controller — PipeDream k-way pipeline + Hydrozoa hybrid strategy."""
-from hise.parallel.inter_batch import InterBatchScheduler
+from hise.parallel.inter_batch import (
+    InterBatchScheduler,
+    Node,
+    energy_weights_for_stage,
+    weights_for_stage,
+)
 from hise.parallel.partitioner import (
     LayerProfile,
     LinkSpec,
@@ -14,8 +19,11 @@ __all__ = [
     "InterBatchScheduler",
     "LayerProfile",
     "LinkSpec",
+    "Node",
     "Partition",
     "StageSpec",
+    "energy_weights_for_stage",
     "partition_pipeline",
     "select_hybrid_strategy",
+    "weights_for_stage",
 ]
