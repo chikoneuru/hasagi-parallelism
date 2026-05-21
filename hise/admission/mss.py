@@ -23,6 +23,8 @@ import math
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 
+from hise.admission.energy_profile import EnergyProfile
+
 
 @dataclass(frozen=True)
 class ScalingCurve:
@@ -93,10 +95,14 @@ class EnergyBudgetMSS:
 
     Args:
         curve: scaling curve (iter/s per GPU count).
-        power_per_gpu_w: average GPU power draw at full utilisation (W). In practice this
-            comes from a per-model Zeus-style profiling pass.
-        energy_budget_kwh: total allowed energy for the remainder of this job (kWh). This
-            is the binding constraint.
+        power_per_gpu_w: average GPU power draw at full utilisation (W). Used when
+            ``energy_profile`` is not provided (linear fallback).
+        energy_profile: *optional* Zeus-style convex profile (Phase 2 D2.1). When
+            provided, energy projection uses ``E_per_iter(x) × iters`` from the profile
+            instead of the constant-power linear model. Convexity in GPU count is the
+            assumption underlying the EB-MSS optimality theorem (D2.3 Week 4).
+        energy_budget_kwh: total allowed energy for the remainder of this job (kWh).
+            Binding constraint.
         carbon_intensity_forecast: *optional* callable returning gCO2/kWh at time t. If
             supplied alongside ``carbon_budget_g``, the class adds it as a secondary
             constraint. Otherwise it is only used for reporting.
@@ -106,25 +112,37 @@ class EnergyBudgetMSS:
     curve: ScalingCurve
     power_per_gpu_w: float
     energy_budget_kwh: float
+    energy_profile: EnergyProfile | None = None
     carbon_intensity_forecast: Callable[[float], float] | None = None
     carbon_budget_g: float | None = None
 
     def project_energy_kwh(self, gpus: int, duration_s: float) -> float:
-        """Direct energy projection: power × duration. Equivalent to integrating constant
-        power; real workload variation handled by Zeus-style multi-power-state model."""
+        """Energy projection over a wall-clock window.
+
+        If ``energy_profile`` is set, uses ``E_per_iter(gpus) × iters`` where
+        ``iters = throughput(gpus) × duration``. Otherwise falls back to the linear
+        ``power_per_gpu_w × gpus × duration`` model.
+        """
         if gpus <= 0 or duration_s <= 0:
             return 0.0
+        if self.energy_profile is not None:
+            iters = self.curve.throughput(gpus) * duration_s
+            return self.energy_profile.total_energy_kwh(gpus, int(iters))
         return (self.power_per_gpu_w * gpus * duration_s) / 3_600_000.0
 
     def project_emissions_g(self, gpus: int, duration_s: float, dt_s: float = 300.0) -> float:
-        """Derived carbon proxy: ``∫ power(t) × c_grid(t) dt``. Returns 0 if no forecast."""
+        """Derived carbon proxy: ``∫ power(t) × c_grid(t) dt``. Returns 0 if no forecast.
+
+        Uses the same energy projection logic as ``project_energy_kwh`` per step, so
+        carbon estimate is consistent with the convex profile when present.
+        """
         if self.carbon_intensity_forecast is None or gpus <= 0 or duration_s <= 0:
             return 0.0
         total = 0.0
         t = 0.0
         while t < duration_s:
             step = min(dt_s, duration_s - t)
-            kwh = (self.power_per_gpu_w * gpus * step) / 3_600_000.0
+            kwh = self.project_energy_kwh(gpus, step)
             intensity = self.carbon_intensity_forecast(t)
             total += kwh * intensity
             t += step
