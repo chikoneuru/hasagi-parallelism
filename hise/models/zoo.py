@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING
 from hise.parallel.partitioner import LayerProfile
 
 if TYPE_CHECKING:  # pragma: no cover
-    import torch.nn as nn
+    pass
 
 
 def build_model(name: str):

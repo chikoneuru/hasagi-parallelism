@@ -14,8 +14,8 @@ from __future__ import annotations
 
 import logging
 import time
+from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import Callable
 
 from hise.admission.mss import ScalingCurve, minimum_satisfactory_share
 from hise.energy.policy import EnergyDecision, RuleBasedPolicy

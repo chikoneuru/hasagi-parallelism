@@ -15,8 +15,8 @@ A future ``RLPolicy`` (PPO via Stable-Baselines3) is sketched in ``rl_policy.py`
 """
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Callable
 
 
 @dataclass(frozen=True)
@@ -78,7 +78,7 @@ class MPCPolicy:
 
             # Integrate emissions.
             emissions = 0.0
-            for t_off, intensity in intensity_forecast[: self.horizon_steps]:
+            for _t_off, intensity in intensity_forecast[: self.horizon_steps]:
                 kwh = (self.power_per_gpu_w * gpus * self.step_seconds) / 3_600_000.0
                 emissions += kwh * intensity
             cost = self.carbon_weight * emissions + self.lag_weight * lag

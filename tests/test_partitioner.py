@@ -8,7 +8,6 @@ import pytest
 from hise.parallel.partitioner import (
     LayerProfile,
     LinkSpec,
-    Partition,
     StageSpec,
     incremental_partition,
     partition_pipeline,

@@ -19,8 +19,8 @@ The energy-aware variant ``w_j ~ throughput_j / P_j`` is the Phase 2 deliverable
 from __future__ import annotations
 
 from collections import deque
+from collections.abc import Sequence
 from dataclasses import dataclass, field
-from typing import Sequence
 
 
 @dataclass

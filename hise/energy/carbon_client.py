@@ -21,7 +21,7 @@ class ElectricityMapsClient:
     base_url: str = "https://api.electricitymap.org/v3"
 
     @classmethod
-    def from_env(cls, zone: str | None = None) -> "ElectricityMapsClient":
+    def from_env(cls, zone: str | None = None) -> ElectricityMapsClient:
         key = os.environ.get("ELECTRICITYMAPS_API_KEY")
         if not key:
             raise RuntimeError("Set ELECTRICITYMAPS_API_KEY in the environment.")

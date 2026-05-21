@@ -1,21 +1,29 @@
 # HISE testbed convenience targets
+#
+# All targets auto-use .venv if it exists. Bootstrap with `make venv`.
 
-PY ?= python
-PIP ?= pip
+VENV ?= .venv
+PY   ?= $(VENV)/bin/python
+PIP  ?= $(VENV)/bin/pip
 
-.PHONY: install dev test lint smoke up down logs exp01 exp02 exp03 clean
+.PHONY: venv install dev test lint smoke up down logs exp01 exp02 exp03 clean
+
+venv:
+	python3 -m venv $(VENV)
+	$(PIP) install --upgrade pip
+	$(PIP) install --extra-index-url https://download.pytorch.org/whl/cpu -e .[dev]
 
 install:
 	$(PIP) install -e .
 
 dev:
-	$(PIP) install -e .[dev,rl,energy-api,docker]
+	$(PIP) install --extra-index-url https://download.pytorch.org/whl/cpu -e .[dev,rl,energy-api,docker]
 
 test:
-	pytest -ra
+	$(PY) -m pytest -ra
 
 lint:
-	ruff check hise tests experiments
+	$(PY) -m ruff check hise tests experiments
 
 smoke:
 	$(PY) experiments/exp01_smoke_test.py

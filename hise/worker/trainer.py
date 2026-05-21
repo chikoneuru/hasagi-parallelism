@@ -30,8 +30,9 @@ def train_loop(
     """
     try:
         import torch  # noqa: F401
-        from hise.models.zoo import build_model
+
         from hise.data.datasets import build_loader
+        from hise.models.zoo import build_model
     except ImportError as exc:  # pragma: no cover
         raise RuntimeError("PyTorch not installed — `pip install hise[dev]`") from exc
 

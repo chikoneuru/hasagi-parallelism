@@ -33,13 +33,21 @@ The core algorithms are pure Python and can be exercised by unit tests + a simul
 
 ```bash
 cd src
-python -m venv .venv && source .venv/bin/activate
-pip install -e .[dev]
-pytest tests/                              # exercises partitioner, MSS, carbon policy
-python experiments/exp01_smoke_test.py     # 1-job control-loop simulation
+make venv                  # creates .venv + installs dev deps (CPU torch)
+make test                  # 30 unit tests across partitioner, MSS, carbon policy, control loop
+make lint                  # ruff check
+make smoke                 # exp01: 1-job control-loop simulation
 ```
 
-Expected: tests pass, smoke-test prints a 24h schedule trace with allocation changes at carbon-peak hours.
+Or manually:
+
+```bash
+python3 -m venv .venv && source .venv/bin/activate
+pip install --extra-index-url https://download.pytorch.org/whl/cpu -e .[dev]
+pytest -ra
+```
+
+Expected: 30 tests pass, smoke-test prints a 24h schedule trace with allocation changes at carbon-peak hours.
 
 ### 2. Local stack (Docker)
 
@@ -78,10 +86,13 @@ hise-cli submit --model resnet18 --dataset cifar10 \
 ## Development
 
 ```bash
-ruff check .            # lint
-mypy hise/              # type check
-pytest -x               # fast fail
+make lint               # ruff check hise tests experiments
+make test               # pytest -ra
+.venv/bin/pytest -x     # fast-fail mode
+.venv/bin/mypy hise/    # type check (informational)
 ```
+
+CI runs the same lint + test + smoke-experiment sequence on every push to `main` and on every PR (see [`.github/workflows/test.yml`](.github/workflows/test.yml)).
 
 ## Status
 
@@ -89,8 +100,8 @@ This is the initial scaffold (M1–M2 deliverable per research-note.md §7). Wha
 
 | Module | State |
 |---|---|
-| `parallel/partitioner.py` — 3-tier sequential partitioner (PipeDream-style cost model) | ✅ enumeration baseline; energy-aware + incremental variant land in M5 (C2) |
-| `parallel/inter_batch.py` — 1F1B + deficit-WRR scheduler (Katevenis-Sidiropoulos JSAC'91 + PipeDream) | ✅ FLOPS-weighted baseline; energy-aware WRR + power-slack guard land in M5 (C4) |
+| `parallel/partitioner.py` — PipeDream k-way pipeline partitioner (O(n²·K) DP + incremental sliding-window) | ✅ bottleneck-min objective + k-1 cut incremental variant; energy-per-iter objective lands in Phase 2 (C2) |
+| `parallel/inter_batch.py` — 1F1B + deficit-WRR scheduler (Katevenis-Sidiropoulos JSAC'91 + PipeDream) | ✅ FLOPS-weighted baseline + R1/R2/R3 rules + stage_id-keyed; energy-aware WRR + power-slack guard land in Phase 2 (C4) |
 | `parallel/planner.py` (Hydrozoa hybrid strategy) | ✅ implemented |
 | `admission/mss.py` (ElasticFlow MSS + **EnergyBudgetMSS**) | ✅ implemented (energy as primary budget, carbon proxy optional) |
 | `energy/carbon_trace.py` (proxy-only trace replay) | ✅ implemented |

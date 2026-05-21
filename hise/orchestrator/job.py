@@ -37,7 +37,7 @@ class Job:
     last_decision_reason: str = ""
 
     @classmethod
-    def new(cls, **kwargs) -> "Job":
+    def new(cls, **kwargs) -> Job:
         return cls(job_id=str(uuid.uuid4()), **kwargs)
 
 

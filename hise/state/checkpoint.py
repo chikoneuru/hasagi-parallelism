@@ -7,9 +7,9 @@ HISE incremental-partition design (research-note §4.5 C2).
 from __future__ import annotations
 
 import json
+from collections.abc import Iterable
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Iterable
 
 
 @dataclass

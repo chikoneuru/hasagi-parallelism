@@ -20,8 +20,8 @@ HISE extends MSS along the **energy axis** (research-note §3.5 Gap-3, §4.5 C3)
 from __future__ import annotations
 
 import math
+from collections.abc import Callable, Sequence
 from dataclasses import dataclass
-from typing import Callable, Sequence
 
 
 @dataclass(frozen=True)
