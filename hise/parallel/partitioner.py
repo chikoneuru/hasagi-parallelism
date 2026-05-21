@@ -43,12 +43,20 @@ class StageSpec:
     across the workers assigned to this stage. Used by Phase 2 D1.2 feasibility
     constraints; default math.inf preserves Phase 1 behaviour for callers that
     don't set it.
+
+    ``power_draw_w`` is the **current** aggregate power draw across all workers
+    in the stage (Σ WorkerTelemetry.power_draw_w). Used by D1.1 ``objective="energy"``
+    partitioning to compute ``E_per_iter = Σ_s P_s · T_s``. Default 0.0 means "no
+    telemetry"; with the energy objective and all-zero powers, every partition
+    scores 0 (degenerate, falls through to ties — caller should use the bottleneck
+    objective until telemetry is wired).
     """
 
     stage_id: int
     throughput_flops: float  # aggregate FLOPS of all workers assigned to this stage
     memory_bytes: int
     power_cap_w: float = math.inf
+    power_draw_w: float = 0.0
 
 
 @dataclass(frozen=True)
@@ -63,13 +71,20 @@ class LinkSpec:
 
 @dataclass(frozen=True)
 class Partition:
-    """A k-way pipeline partition of layers across stages."""
+    """A k-way pipeline partition of layers across stages.
+
+    Both ``pipeline_time`` (bottleneck-driven) and ``energy_per_iter`` (telemetry-
+    driven) are computed for every partition regardless of the optimisation
+    objective; reporting both lets downstream code ablate objectives without
+    re-running the DP.
+    """
 
     cuts: tuple[int, ...] = ()
     stage_layers: dict[int, tuple[int, ...]] = field(default_factory=dict)
     stage_exec_time: dict[int, float] = field(default_factory=dict)
     sigma_exec: float = math.inf
     pipeline_time: float = math.inf
+    energy_per_iter: float = math.inf
     num_stages: int = 0
 
     def is_feasible(self) -> bool:
@@ -114,17 +129,33 @@ def partition_pipeline(
     stages: Sequence[StageSpec],
     links: Sequence[LinkSpec],
     num_microbatches: int = 1,
+    objective: str = "bottleneck",
 ) -> Partition:
-    """PipeDream-style DP: find cut points minimising the bottleneck stage time.
+    """PipeDream-style DP partitioner with selectable objective.
 
     Args:
         layers: n LayerProfile objects, indexed 0..n-1.
         stages: K StageSpec objects, ordered by stage_id 0..K-1.
         links: K-1 LinkSpec objects for consecutive stage pairs.
         num_microbatches: M, the number of microbatches per minibatch.
+        objective: ``"bottleneck"`` (default, throughput-optimal, PipeDream SOSP'19) or
+            ``"energy"`` (Phase 2 D1.1, contribution C2). Energy objective minimises
+            ``E_per_iter = Σ_s P_s · T_s`` where ``P_s = stages[s].power_draw_w`` and
+            ``T_s`` is the stage execution time; requires non-zero per-stage power on
+            at least one stage to produce non-degenerate decisions.
+
+    DP recurrences:
+        bottleneck: ``dp[j][s] = min_i max(dp[i][s-1], T_s(i+1..j))``
+        energy:     ``dp[j][s] = min_i (dp[i][s-1] + P_s · T_s(i+1..j))``
+
+    The two objectives commute with ``min`` selection so backtracking is identical;
+    only the scoring function changes.
 
     Complexity: O(n² · K) time, O(n · K) space.
     """
+    if objective not in ("bottleneck", "energy"):
+        raise ValueError(f"objective must be 'bottleneck' or 'energy', got {objective!r}")
+
     n = len(layers)
     K = len(stages)
 
@@ -161,6 +192,15 @@ def partition_pipeline(
 
         return _exec_time(comp, comm_out, comm_in)
 
+    def seg_score(stage_id: int, start: int, end: int, prev_score: float) -> float:
+        """Combine prev cumulative score with stage (stage_id) covering layers
+        [start..end] under the active objective."""
+        t = seg_exec(stage_id, start, end)
+        if objective == "bottleneck":
+            return max(prev_score, t)
+        # energy: add P_s · T_s
+        return prev_score + stages[stage_id].power_draw_w * t
+
     # K=1: no pipeline
     if K == 1:
         t = seg_exec(0, 0, n - 1)
@@ -170,15 +210,18 @@ def partition_pipeline(
             stage_exec_time={0: t},
             sigma_exec=0.0,
             pipeline_time=t * num_microbatches,
+            energy_per_iter=stages[0].power_draw_w * t,
             num_stages=1,
         )
 
-    # DP: dp[j][s] = (min_bottleneck, backpointer)
+    # DP: dp[j][s] = (min_score, backpointer). Score interpretation depends on objective.
     INF = float("inf")
     dp = [[(INF, -1) for _ in range(K)] for _ in range(n)]
 
+    # Base case: stage 0 covers layers 0..j. Initial "prev_score" is 0 for both
+    # objectives (max with 0 = identity for non-negative times; sum with 0 = identity).
     for j in range(n):
-        dp[j][0] = (seg_exec(0, 0, j), -1)
+        dp[j][0] = (seg_score(0, 0, j, 0.0), -1)
 
     for s in range(1, K):
         for j in range(s, n):
@@ -187,10 +230,9 @@ def partition_pipeline(
                 prev = dp[i][s - 1][0]
                 if prev >= INF:
                     continue
-                cur = seg_exec(s, i + 1, j)
-                bottleneck = max(prev, cur)
-                if bottleneck < best_val:
-                    best_val = bottleneck
+                score = seg_score(s, i + 1, j, prev)
+                if score < best_val:
+                    best_val = score
                     best_i = i
             dp[j][s] = (best_val, best_i)
 
@@ -220,11 +262,24 @@ def incremental_partition(
     links: Sequence[LinkSpec],
     boundary_window: int = 3,
     num_microbatches: int = 1,
+    objective: str = "bottleneck",
 ) -> Partition:
     """Re-partition by sliding all k-1 cuts within ±boundary_window of the previous solution.
 
     Cost: O(window^(k-1)) — tractable for k≤5, window≤5.
+
+    ``objective`` selects which Partition field drives candidate comparison
+    (``"bottleneck"`` → minimise max stage_exec_time, ``"energy"`` → minimise
+    energy_per_iter). Same parameter as ``partition_pipeline``.
     """
+    if objective not in ("bottleneck", "energy"):
+        raise ValueError(f"objective must be 'bottleneck' or 'energy', got {objective!r}")
+
+    def _score(p: Partition) -> float:
+        if objective == "bottleneck":
+            return max(p.stage_exec_time.values()) if p.stage_exec_time else math.inf
+        return p.energy_per_iter
+
     n = len(layers)
     K = len(stages)
     prev_cuts = list(previous.cuts)
@@ -234,10 +289,11 @@ def incremental_partition(
 
     link_map: dict[int, LinkSpec] = {lk.src_stage: lk for lk in links}
 
-    # Rebuild `previous` against the CURRENT layers + stages before using its bottleneck
-    # as a baseline. Its stored stage_exec_time may be stale if the layer set or stages
-    # changed since `previous` was computed; comparing against stale values would let the
-    # function return `previous` unchanged with mismatched stage_layers for current n.
+    # Rebuild `previous` against the CURRENT layers + stages before using its score
+    # as a baseline. Its stored stage_exec_time / energy_per_iter may be stale if the
+    # layer set or stages changed since `previous` was computed; comparing against
+    # stale values would let the function return `previous` unchanged with mismatched
+    # stage_layers for current n.
     prev_valid = (
         all(0 <= c < n - 1 for c in prev_cuts)
         and all(prev_cuts[i] < prev_cuts[i + 1] for i in range(len(prev_cuts) - 1))
@@ -245,11 +301,11 @@ def incremental_partition(
     if prev_valid:
         try:
             best = _build_partition(layers, stages, link_map, tuple(prev_cuts), K, num_microbatches)
-            best_bottleneck = max(best.stage_exec_time.values())
+            best_score = _score(best)
         except RuntimeError:
-            best, best_bottleneck = previous, math.inf
+            best, best_score = previous, math.inf
     else:
-        best, best_bottleneck = previous, math.inf
+        best, best_score = previous, math.inf
 
     ranges: list[range] = []
     for c_idx, c_val in enumerate(prev_cuts):
@@ -266,9 +322,9 @@ def incremental_partition(
             p = _build_partition(layers, stages, link_map, candidate_cuts, K, num_microbatches)
         except RuntimeError:
             continue
-        bottleneck = max(p.stage_exec_time.values())
-        if bottleneck < best_bottleneck:
-            best_bottleneck = bottleneck
+        score = _score(p)
+        if score < best_score:
+            best_score = score
             best = p
 
     return best
@@ -314,6 +370,7 @@ def _build_partition(
     sigma = math.sqrt(sum((t - mean_t) ** 2 for t in stage_exec.values()) / K)
     bottleneck = max(stage_exec.values())
     pipeline_time = sum(stage_exec.values()) + (num_microbatches - 1) * bottleneck
+    energy_per_iter = sum(stages[s].power_draw_w * stage_exec[s] for s in range(K))
 
     return Partition(
         cuts=tuple(cuts),
@@ -321,5 +378,6 @@ def _build_partition(
         stage_exec_time=stage_exec,
         sigma_exec=sigma,
         pipeline_time=pipeline_time,
+        energy_per_iter=energy_per_iter,
         num_stages=K,
     )

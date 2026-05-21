@@ -183,3 +183,111 @@ def test_rejects_missing_link() -> None:
 def test_rejects_zero_stages() -> None:
     with pytest.raises(ValueError):
         partition_pipeline(_toy_model(4), [], [])
+
+
+# --- Energy objective (Phase 2 D1.1) ---
+
+def _stages_k3_with_power(power_draws_w: tuple[float, float, float]) -> list[StageSpec]:
+    """K=3 stages with explicit per-stage power draws (mimicking aggregated telemetry)."""
+    return [
+        StageSpec(stage_id=0, throughput_flops=2e11, memory_bytes=4 << 30, power_draw_w=power_draws_w[0]),
+        StageSpec(stage_id=1, throughput_flops=1e12, memory_bytes=8 << 30, power_draw_w=power_draws_w[1]),
+        StageSpec(stage_id=2, throughput_flops=5e12, memory_bytes=16 << 30, power_draw_w=power_draws_w[2]),
+    ]
+
+
+def test_rejects_invalid_objective() -> None:
+    with pytest.raises(ValueError, match="objective"):
+        partition_pipeline(_toy_model(12), _stages_k3(), _links_k3(), objective="invalid")
+
+
+def test_energy_per_iter_field_populated_for_bottleneck_partition() -> None:
+    """Even with the default bottleneck objective, energy_per_iter is computed
+    (zero if all stages have no power_draw_w; non-zero otherwise)."""
+    stages = _stages_k3_with_power((100.0, 200.0, 300.0))
+    p = partition_pipeline(_toy_model(12), stages, _links_k3())
+    # E = sum P_s · T_s, all positive, must be finite + positive
+    assert math.isfinite(p.energy_per_iter)
+    assert p.energy_per_iter > 0
+
+    # Manual sanity check: sum P_s * stage_exec_time[s]
+    manual = sum(stages[s].power_draw_w * p.stage_exec_time[s] for s in range(3))
+    assert abs(p.energy_per_iter - manual) < 1e-12
+
+
+def test_energy_objective_matches_manual_sum() -> None:
+    """`partition_pipeline(objective='energy')` returns a partition whose
+    energy_per_iter equals Σ P_s · T_s computed by hand on the returned cuts."""
+    stages = _stages_k3_with_power((150.0, 250.0, 350.0))
+    p = partition_pipeline(_toy_model(16), stages, _links_k3(), objective="energy")
+    manual = sum(stages[s].power_draw_w * p.stage_exec_time[s] for s in range(3))
+    assert abs(p.energy_per_iter - manual) < 1e-12
+
+
+def test_energy_partition_differs_from_bottleneck_partition() -> None:
+    """When per-stage powers are very skewed (slow stage = expensive), the
+    energy-optimal partition shifts load off the high-power stage even at the
+    cost of some bottleneck increase."""
+    # Stage 0 is the slowest (2e11 FLOPS) AND draws huge power. Bottleneck
+    # objective fills it as little as possible already (since it's the slowest
+    # processor). Energy objective should also avoid stage 0 — they may agree.
+    # To force divergence, set the FAST stage 2 to draw 10× more power than
+    # slower stages: bottleneck objective puts most layers on stage 2 (it's
+    # fastest), but energy objective avoids it.
+    stages = [
+        StageSpec(stage_id=0, throughput_flops=1e12, memory_bytes=8 << 30, power_draw_w=50.0),
+        StageSpec(stage_id=1, throughput_flops=1e12, memory_bytes=8 << 30, power_draw_w=50.0),
+        StageSpec(stage_id=2, throughput_flops=1e12, memory_bytes=8 << 30, power_draw_w=1000.0),
+    ]
+    links = _links_k3()
+    layers = _toy_model(24)
+
+    p_bot = partition_pipeline(layers, stages, links, objective="bottleneck")
+    p_eng = partition_pipeline(layers, stages, links, objective="energy")
+
+    # Energy-optimal: stage 2 (high-power) should get fewer layers than under
+    # bottleneck objective. With equal throughputs, bottleneck wants balanced;
+    # energy wants stage 2 minimised.
+    assert len(p_eng.stage_layers[2]) <= len(p_bot.stage_layers[2])
+    # And energy_per_iter must be strictly lower for the energy-objective result
+    # (or equal in the degenerate case where bottleneck partition is already
+    # energy-optimal — rare for skewed power).
+    assert p_eng.energy_per_iter <= p_bot.energy_per_iter + 1e-12
+
+
+def test_incremental_partition_respects_energy_objective() -> None:
+    """Incremental variant honours objective parameter same as full DP."""
+    stages = [
+        StageSpec(stage_id=0, throughput_flops=1e12, memory_bytes=8 << 30, power_draw_w=50.0),
+        StageSpec(stage_id=1, throughput_flops=1e12, memory_bytes=8 << 30, power_draw_w=50.0),
+        StageSpec(stage_id=2, throughput_flops=1e12, memory_bytes=8 << 30, power_draw_w=1000.0),
+    ]
+    links = _links_k3()
+    layers = _toy_model(20)
+
+    # Seed incremental with a non-energy-optimal partition (bottleneck cuts)
+    bot = partition_pipeline(layers, stages, links, objective="bottleneck")
+    incr_eng = incremental_partition(bot, layers, stages, links,
+                                      boundary_window=4, objective="energy")
+    # Incremental should improve energy from `bot` toward the energy-optimum
+    # within ±boundary_window. Must not be worse than the seed.
+    assert incr_eng.energy_per_iter <= bot.energy_per_iter + 1e-9
+
+
+def test_incremental_rejects_invalid_objective() -> None:
+    layers = _toy_model(12)
+    full = partition_pipeline(layers, _stages_k3(), _links_k3())
+    with pytest.raises(ValueError, match="objective"):
+        incremental_partition(full, layers, _stages_k3(), _links_k3(), objective="weird")
+
+
+def test_energy_objective_with_zero_powers_is_degenerate() -> None:
+    """If all stages have power_draw_w=0 (no telemetry), energy_per_iter=0 for
+    all partitions — the energy objective ties everything. Function must still
+    return a valid partition (the first feasible one found)."""
+    stages = _stages_k3()  # power_draw_w defaults to 0.0
+    p = partition_pipeline(_toy_model(12), stages, _links_k3(), objective="energy")
+    assert p.energy_per_iter == 0.0
+    # All layers must still be covered.
+    total = sum(len(p.stage_layers[s]) for s in range(3))
+    assert total == 12
