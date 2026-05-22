@@ -1,8 +1,8 @@
 """Disk-backed checkpoint store with partition-aware metadata.
 
-When a job is sharded across N workers and later resumes on N' workers, the resume code
-needs to know which layer ranges each checkpoint file holds — see Hydrozoa §3.5 and the
-HISE incremental-partition design (research-note §4.5 C2).
+When a job is sharded across N workers and later resumes on N' workers, the resume
+code needs to know which layer ranges each checkpoint file holds — see Hydrozoa
+MLSys'22 §3.5 for the original heterogeneous-resharding pattern HISE inherits.
 """
 from __future__ import annotations
 
