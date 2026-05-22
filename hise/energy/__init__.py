@@ -7,14 +7,18 @@ from hise.energy.policy import (
     RuleBasedPolicy,
 )
 from hise.energy.telemetry import (
+    AggregateTelemetrySource,
     FakeTelemetrySource,
     FakeWorker,
     NvmlTelemetrySource,
+    PrometheusPusher,
+    RaplTelemetrySource,
     TelemetrySource,
     WorkerTelemetry,
 )
 
 __all__ = [
+    "AggregateTelemetrySource",
     "CarbonTrace",
     "EnergyDecision",
     "FakeTelemetrySource",
@@ -22,6 +26,8 @@ __all__ = [
     "MPCPolicy",
     "NvmlTelemetrySource",
     "PowerAwareRulePolicy",
+    "PrometheusPusher",
+    "RaplTelemetrySource",
     "RuleBasedPolicy",
     "TelemetrySource",
     "WorkerTelemetry",

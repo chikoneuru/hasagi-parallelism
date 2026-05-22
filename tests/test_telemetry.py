@@ -133,11 +133,14 @@ def test_fake_source_stream_yields_n_ticks() -> None:
     assert len(snaps) == 4
 
 
-# --- NvmlTelemetrySource ---
+# --- NvmlTelemetrySource (skeleton; production tests in test_telemetry_sources.py) ---
 
-def test_nvml_source_raises_when_not_implemented_or_no_pynvml() -> None:
-    # If pynvml is installed, current skeleton raises NotImplementedError.
-    # If pynvml is missing, it raises ImportError. Either is acceptable for the
-    # Week 0 deliverable — full impl lands Week 3.
-    with pytest.raises((ImportError, NotImplementedError)):
-        NvmlTelemetrySource(device_indices=[0])
+def test_nvml_source_accepts_injected_module() -> None:
+    """Construction with a fake nvml_module works without pynvml on the host."""
+    fake = object()   # never invoked because __init__ defers to start()
+    src = NvmlTelemetrySource(
+        device_assignments=[(0, "w0", 0, "RTX3080Ti")],
+        poll_interval_ms=10, nvml_module=fake,
+    )
+    # Construction succeeds; full lifecycle tested in test_telemetry_sources.py.
+    assert src._poll_interval_s == 0.01
