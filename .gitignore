@@ -12,5 +12,6 @@ htmlcov/
 *.log
 data_cache/
 checkpoints/
+artifacts/
 .DS_Store
 .env
