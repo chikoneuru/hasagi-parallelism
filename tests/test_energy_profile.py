@@ -137,6 +137,51 @@ def test_single_point_profile_trivially_convex() -> None:
     assert p.validate_convexity() is True
 
 
+# --- Power-convexity (assumption A3 of the greedy-optimality proof) ---
+
+
+def test_validate_power_convexity_holds_for_quadratic_power() -> None:
+    # p(g) = g + g² (convex quadratic) — split arbitrarily into e × t.
+    # Choose t(g) = g (concave-monotone trivially), so e(g) = 1 + g.
+    e = (2.0, 3.0, 4.0, 5.0, 6.0)            # 1 + g for g = 1..5
+    t = (1.0, 2.0, 3.0, 4.0, 5.0)
+    p = EnergyProfile(energy_per_iter_kwh=e, throughput_iters_per_s=t)
+    assert p.validate_power_convexity() is True
+
+
+def test_validate_power_convexity_fails_when_product_is_concave() -> None:
+    # Both e and t convex but their product is concave on the interior.
+    # Construct: e = (1, 1, 1, 1) constant → power = t which is concave-monotone:
+    # t = (1, 3, 4.5, 5) has second-diff at i=2: 5 - 9 + 3 = -1 < 0 → fails.
+    p = EnergyProfile(
+        energy_per_iter_kwh=(1.0, 1.0, 1.0, 1.0),
+        throughput_iters_per_s=(1.0, 3.0, 4.5, 5.0),
+    )
+    assert p.validate_power_convexity() is False
+
+
+def test_validate_power_convexity_two_point_trivially_holds() -> None:
+    p = EnergyProfile(
+        energy_per_iter_kwh=(1.0, 2.0),
+        throughput_iters_per_s=(10.0, 20.0),
+    )
+    assert p.validate_power_convexity() is True
+
+
+def test_validate_power_convexity_linear_profile_holds() -> None:
+    # linear_profile builds p(g) = P_gpu (g + α g²) / 3.6e6, quadratic-convex.
+    from hise.admission.energy_profile import linear_profile
+
+    profile = linear_profile(
+        power_per_gpu_w=300.0,
+        base_throughput_iters_per_s=10.0,
+        max_gpus=8,
+        scaling_efficiency=0.85,
+        allreduce_coefficient=0.05,
+    )
+    assert profile.validate_power_convexity() is True
+
+
 # --- Optimal GPU count ---
 
 def test_optimal_gpu_at_u_shape_minimum() -> None:

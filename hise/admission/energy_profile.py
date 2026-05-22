@@ -105,6 +105,28 @@ class EnergyProfile:
                 return False
         return True
 
+    def validate_power_convexity(self, tolerance: float = 1e-12) -> bool:
+        """Check that instantaneous power ``p(g) = e(g) · t(g)`` is convex in g.
+
+        This is the assumption ``greedy_marginal_energy_allocation`` relies on
+        for global optimality. Convexity of ``e(g)`` alone (``validate_convexity``)
+        is necessary but not sufficient: the product of a convex and a concave
+        function is not convex in general, so empirical profiles must call this
+        stronger check before being fed to the allocator.
+
+        Returns True for profiles with fewer than 3 points (trivially convex).
+        """
+        p = tuple(
+            self.energy_per_iter_kwh[i] * self.throughput_iters_per_s[i]
+            for i in range(self.max_gpus)
+        )
+        if len(p) < 3:
+            return True
+        for i in range(1, len(p) - 1):
+            if p[i + 1] - 2.0 * p[i] + p[i - 1] < -tolerance:
+                return False
+        return True
+
     def optimal_gpu_count(self) -> int:
         """Return the GPU count minimising energy-per-iter (the U-shape minimum).
 
