@@ -10,6 +10,8 @@ from hise.parallel.partitioner import (
     LinkSpec,
     Partition,
     StageSpec,
+    StagnationTracker,
+    incremental_partition,
     partition_pipeline,
 )
 from hise.parallel.planner import HybridStrategy, select_hybrid_strategy
@@ -22,7 +24,9 @@ __all__ = [
     "Node",
     "Partition",
     "StageSpec",
+    "StagnationTracker",
     "energy_weights_for_stage",
+    "incremental_partition",
     "partition_pipeline",
     "select_hybrid_strategy",
     "weights_for_stage",

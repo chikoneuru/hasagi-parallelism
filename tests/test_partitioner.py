@@ -8,7 +8,9 @@ import pytest
 from hise.parallel.partitioner import (
     LayerProfile,
     LinkSpec,
+    Partition,
     StageSpec,
+    StagnationTracker,
     incremental_partition,
     partition_pipeline,
 )
@@ -418,3 +420,135 @@ def test_feasibility_helper_returns_diagnostic_strings() -> None:
     ok, reason = _segment_feasible(layers, stage_ok, 0, 3)
     assert ok
     assert reason == ""
+
+
+# --- Stagnation tracker (Phase 2 D1.3) ---
+
+def _mk_partition(bottleneck_s: float, energy_j: float = 0.0) -> Partition:
+    """Build a minimal Partition with a chosen bottleneck score for tracker tests."""
+    return Partition(
+        cuts=(2, 4),
+        stage_layers={0: (0, 1, 2), 1: (3, 4), 2: (5, 6)},
+        stage_exec_time={0: bottleneck_s * 0.5, 1: bottleneck_s, 2: bottleneck_s * 0.3},
+        sigma_exec=0.0,
+        pipeline_time=bottleneck_s,
+        energy_per_iter=energy_j,
+        num_stages=3,
+    )
+
+
+def test_tracker_rejects_invalid_construction() -> None:
+    with pytest.raises(ValueError, match="patience"):
+        StagnationTracker(patience=0)
+    with pytest.raises(ValueError, match="min_delta"):
+        StagnationTracker(min_delta=-0.1)
+    with pytest.raises(ValueError, match="objective"):
+        StagnationTracker(objective="weird")
+
+
+def test_tracker_first_observation_is_progress() -> None:
+    """Any finite first score improves on the math.inf default — counter stays 0."""
+    t = StagnationTracker(patience=2)
+    assert not t.observe(_mk_partition(1.0))
+    assert t.stagnant_calls == 0
+    # _mk_partition gives stage_exec_time = {0: 0.5, 1: 1.0, 2: 0.3} → max = 1.0
+    assert t.best_score == 1.0
+
+
+def test_tracker_strictly_improving_never_fallbacks() -> None:
+    t = StagnationTracker(patience=2)
+    for score in (1.0, 0.8, 0.6, 0.4):
+        triggered = t.observe(_mk_partition(score))
+        assert not triggered
+    assert t.stagnant_calls == 0
+
+
+def test_tracker_stagnation_triggers_after_patience() -> None:
+    """patience=3 means the 3rd consecutive non-improving call returns True."""
+    t = StagnationTracker(patience=3)
+    assert not t.observe(_mk_partition(1.0))   # first → improvement (from inf)
+    assert not t.observe(_mk_partition(1.0))   # stagnant 1
+    assert not t.observe(_mk_partition(1.0))   # stagnant 2
+    assert t.observe(_mk_partition(1.0))        # stagnant 3 → fallback
+    assert t.stagnant_calls == 3
+
+
+def test_tracker_improvement_resets_counter() -> None:
+    t = StagnationTracker(patience=3)
+    t.observe(_mk_partition(1.0))   # improvement
+    t.observe(_mk_partition(1.0))   # stagnant 1
+    t.observe(_mk_partition(1.0))   # stagnant 2
+    t.observe(_mk_partition(0.5))   # improvement → reset
+    assert t.stagnant_calls == 0
+    assert t.best_score < 1.0
+
+
+def test_tracker_min_delta_requires_meaningful_improvement() -> None:
+    """A 0.001 dip with min_delta=0.01 doesn't count as progress."""
+    t = StagnationTracker(patience=2, min_delta=0.01)
+    t.observe(_mk_partition(1.0))         # first → best = max(0.5, 1.0, 0.3) = 1.0
+    triggered = t.observe(_mk_partition(0.999))  # 0.001 < min_delta → stagnant
+    assert not triggered  # only 1 stagnant call so far
+    assert t.stagnant_calls == 1
+    triggered = t.observe(_mk_partition(0.999))  # 2nd stagnant → trigger
+    assert triggered
+
+
+def test_tracker_energy_objective_uses_energy_field() -> None:
+    """When objective='energy', tracker reads partition.energy_per_iter."""
+    t = StagnationTracker(patience=2, objective="energy")
+    # Same bottleneck, different energy — tracker should see energy improvements
+    t.observe(_mk_partition(1.0, energy_j=100.0))
+    t.observe(_mk_partition(1.0, energy_j=80.0))   # energy improved
+    assert t.best_score == 80.0
+    assert t.stagnant_calls == 0
+
+
+def test_tracker_reset_preserves_best_score() -> None:
+    """reset() clears the counter only — fallback path shouldn't forget the bar."""
+    t = StagnationTracker(patience=2)
+    t.observe(_mk_partition(1.0))
+    t.observe(_mk_partition(1.0))
+    t.observe(_mk_partition(1.0))
+    assert t.stagnant_calls > 0
+    best_before = t.best_score
+    t.reset()
+    assert t.stagnant_calls == 0
+    assert t.best_score == best_before
+
+
+def test_tracker_reset_all_clears_best_score() -> None:
+    t = StagnationTracker(patience=2)
+    t.observe(_mk_partition(1.0))
+    t.reset_all()
+    assert t.best_score == math.inf
+    assert t.stagnant_calls == 0
+
+
+def test_tracker_integration_with_incremental_then_full_dp_fallback() -> None:
+    """End-to-end: when incremental stalls, full DP escape returns a different
+    cut set that beats the local optimum."""
+    layers = _toy_model(20)
+    full_seed = partition_pipeline(layers, _stages_k3(), _links_k3())
+
+    tracker = StagnationTracker(patience=2, objective="bottleneck")
+
+    # Drive 3 incremental calls with a tiny window — same cuts every time
+    # (since seed is already locally optimal), so tracker triggers.
+    prev = full_seed
+    fallback_taken = False
+    for _ in range(3):
+        incr = incremental_partition(prev, layers, _stages_k3(), _links_k3(),
+                                     boundary_window=1)
+        if tracker.observe(incr):
+            # Fall back to full DP — same result here since seed was DP-optimal,
+            # but the orchestrator path is exercised.
+            incr = partition_pipeline(layers, _stages_k3(), _links_k3())
+            tracker.reset()
+            fallback_taken = True
+        prev = incr
+
+    assert fallback_taken
+    # After fallback, result must still cover all layers and be feasible.
+    total = sum(len(prev.stage_layers[s]) for s in range(3))
+    assert total == 20

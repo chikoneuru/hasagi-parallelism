@@ -440,3 +440,100 @@ def _build_partition(
         energy_per_iter=energy_per_iter,
         num_stages=K,
     )
+
+
+# ---------------------------------------------------------------------------
+# Stagnation tracker (Phase 2 D1.3) — escape local windows via full DP fallback
+# ---------------------------------------------------------------------------
+
+def _partition_score(partition: Partition, objective: str) -> float:
+    """Extract the comparison score for a partition under the given objective."""
+    if objective == "bottleneck":
+        return max(partition.stage_exec_time.values()) if partition.stage_exec_time else math.inf
+    if objective == "energy":
+        return partition.energy_per_iter
+    raise ValueError(f"objective must be 'bottleneck' or 'energy', got {objective!r}")
+
+
+@dataclass
+class StagnationTracker:
+    """Detect when successive `incremental_partition` calls stop making progress.
+
+    The orchestrator runs incremental repartition between training steps to keep
+    cuts well-placed cheaply (O(window^(k-1))) instead of paying the full O(n² K)
+    DP every time. But incremental can only see ±boundary_window around the
+    previous cuts — if the true optimum drifts outside that window (e.g., after
+    a large workload shift or a power-cap change from D1.2), incremental gets
+    stuck at a local minimum. This tracker counts consecutive non-improving calls
+    and signals when to fall back to ``partition_pipeline`` (full DP).
+
+    Typical usage::
+
+        tracker = StagnationTracker(patience=3, objective="energy")
+        for step in steps:
+            incr = incremental_partition(prev, layers, stages, links, objective="energy")
+            if tracker.observe(incr):
+                # Window failed to improve `patience` times in a row — escape.
+                incr = partition_pipeline(layers, stages, links, objective="energy")
+                tracker.reset()
+            prev = incr
+
+    Attributes:
+        patience: Consecutive non-improving observations that trigger fallback.
+        min_delta: Absolute improvement required to count as "progress" (default 0
+            means any score reduction resets the counter). Units match the
+            objective (seconds for bottleneck, joules-per-iter for energy).
+        objective: Which Partition field to compare on each call.
+    """
+
+    patience: int = 3
+    min_delta: float = 0.0
+    objective: str = "bottleneck"
+    _best_score: float = field(default=math.inf, init=False, repr=False)
+    _stagnant_calls: int = field(default=0, init=False, repr=False)
+
+    def __post_init__(self) -> None:
+        if self.patience < 1:
+            raise ValueError(f"patience must be >= 1, got {self.patience}")
+        if self.min_delta < 0:
+            raise ValueError(f"min_delta must be >= 0, got {self.min_delta}")
+        if self.objective not in ("bottleneck", "energy"):
+            raise ValueError(
+                f"objective must be 'bottleneck' or 'energy', got {self.objective!r}"
+            )
+
+    def observe(self, partition: Partition) -> bool:
+        """Record a partition's score and update stagnation state.
+
+        Returns True when the consecutive non-improving call count has reached
+        ``patience`` (i.e., the caller should fall back to full DP and reset
+        this tracker). Does NOT auto-reset on True — the caller chooses whether
+        to escape, so repeated calls without reset keep returning True.
+        """
+        score = _partition_score(partition, self.objective)
+        if score < self._best_score - self.min_delta:
+            self._best_score = score
+            self._stagnant_calls = 0
+        else:
+            self._stagnant_calls += 1
+        return self._stagnant_calls >= self.patience
+
+    def reset(self) -> None:
+        """Clear stagnation state after a fallback. The best score is preserved
+        across resets — fallback shouldn't make the tracker forget that a better
+        score was already achieved."""
+        self._stagnant_calls = 0
+
+    def reset_all(self) -> None:
+        """Clear both stagnation counter AND best score. Use when the workload
+        or stage set has changed enough that prior scores aren't comparable."""
+        self._best_score = math.inf
+        self._stagnant_calls = 0
+
+    @property
+    def best_score(self) -> float:
+        return self._best_score
+
+    @property
+    def stagnant_calls(self) -> int:
+        return self._stagnant_calls
