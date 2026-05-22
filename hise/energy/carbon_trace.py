@@ -2,7 +2,7 @@
 
 **Status**: carbon is a *derived* metric in HISE, not a measured one. Use these traces to
 report carbon proxy alongside the primary kWh measurement; never as the sole control signal.
-See research-note.md §2.3 for the measurement methodology and uncertainty bounds.
+See ``hise.energy.carbon_sources`` for the live multi-source proxy and its uncertainty band.
 
 Two ways to build a ``CarbonTrace``:
 

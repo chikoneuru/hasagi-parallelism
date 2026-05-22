@@ -14,9 +14,9 @@ Real telemetry sources:
     AggregateTelemetrySource — merge multiple sources into one snapshot.
     FakeTelemetrySource  — deterministic, no hardware (CI + unit tests).
 
-Methodology (research-note.md §2.3): energy is the *primary measured* signal here.
-Carbon proxy is layered on top by ``hise.energy.carbon_trace``, never derived from
-this module.
+Methodology: energy is the *primary measured* signal here. Carbon proxy is
+layered on top by ``hise.energy.carbon_trace`` / ``carbon_sources``, never
+derived from this module.
 """
 from __future__ import annotations
 
@@ -202,7 +202,7 @@ class NvmlTelemetrySource:
     Args:
         device_assignments: list of ``(device_index, worker_id, stage_id, gpu_type)``
             tuples. Each NVML device emits one ``WorkerTelemetry`` per poll.
-        poll_interval_ms: poll period; default 100ms (matches research-note §5.3).
+        poll_interval_ms: poll period; default 100ms.
         nvml_module: optional dependency injection for testing. When ``None``,
             imports the real ``pynvml`` package; tests pass a fake module that
             implements the subset of NVML used here.

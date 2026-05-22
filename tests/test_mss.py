@@ -98,7 +98,7 @@ def test_greedy_marginal_allocation_distributes_remaining() -> None:
     assert alloc["job-a"] + alloc["job-b"] == 10
 
 
-# --- EnergyProfile integration (Phase 2 D2.1) ---
+# --- EnergyProfile integration ---
 
 def test_ebmss_uses_energy_profile_when_provided() -> None:
     """When energy_profile is set, projection uses profile not linear power × duration."""
@@ -155,7 +155,7 @@ def test_ebmss_admits_with_synthetic_linear_profile() -> None:
     assert decision.gpus >= 1
 
 
-# --- Marginal-energy-return allocator (Phase 2 D2.2) ---
+# --- Marginal-energy-return allocator ---
 
 def _eff_profile(max_gpus: int, alpha: float) -> EnergyProfile:
     """Synthetic convex profile: lower ``alpha`` → flatter marginal cost

@@ -74,7 +74,7 @@ def test_iea_static_custom_table_supported() -> None:
 
 
 def test_iea_static_extreme_regions_cover_h5c_span() -> None:
-    """H5-C claim spans 40× intensity (IS to US-WV); ensure both endpoints exist."""
+    """Carbon-claim spans 40× intensity (IS to US-WV); ensure both endpoints exist."""
     low = IEAStaticSource(region="IS").read().intensity_g_per_kwh
     high = IEAStaticSource(region="US-WV").read().intensity_g_per_kwh
     assert high / low > 40   # 850 / 12 ≈ 70

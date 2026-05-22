@@ -13,8 +13,8 @@ Literature foundation:
     - 1F1B pipeline: PipeDream [Narayanan et al., SOSP'19].
     - Heterogeneous-worker resharding: Greyhound [Wu et al., USENIX ATC'25].
 
-HISE contribution C4: default weight is throughput-share ``w_j ~ mu_j`` (FLOPS).
-The energy-aware variant ``w_j ~ throughput_j / P_j`` is the Phase 2 deliverable A4.
+Default WRR weight is throughput-share ``w_j ~ mu_j`` (FLOPS).
+The energy-aware variant is ``w_j ~ throughput_j / P_j`` (iter-per-joule).
 """
 from __future__ import annotations
 
@@ -37,7 +37,7 @@ class Node:
 def weights_for_stage(nodes: Sequence[Node]) -> dict[str, float]:
     """FLOPS-proportional weights ``w_j = mu_j / sum(mu_k)``.
 
-    Phase 1 baseline (kept for ablation as HISE-flops-wrr variant in Phase 4).
+    Throughput-share baseline (kept for ablation against the iter-per-joule variant).
     """
     total = sum(n.capacity_flops for n in nodes) or 1.0
     return {n.node_id: n.capacity_flops / total for n in nodes}
@@ -47,17 +47,17 @@ def energy_weights_for_stage(
     nodes: Sequence[Node],
     telemetry: Mapping[str, WorkerTelemetry],
 ) -> dict[str, float]:
-    """Iter-per-joule weights from live NVML telemetry (Phase 2 D4.1, contribution C4).
+    """Iter-per-joule weights from live NVML telemetry.
 
     Weight for node ``j`` is ``throughput_j / P_j`` (iters / joule) normalised so all
     weights sum to 1. Nodes without telemetry — or with zero/negative power_draw_w —
     fall back to ``capacity_flops`` so dispatch keeps working during telemetry warm-up
     and partial-coverage situations.
 
-    Rationale (research-note.md §4.5 C4): WRR weight shifted from FLOPS-proportional
-    (which optimises for throughput) to iter-per-joule (which optimises for energy
-    efficiency) routes more micro-batches to workers that are *currently* most
-    energy-efficient — e.g., an A100 power-capped low vs. a T4 at full draw.
+    Rationale: shifting WRR weight from FLOPS-proportional (which optimises for
+    throughput) to iter-per-joule (which optimises for energy efficiency) routes
+    more micro-batches to workers that are *currently* most energy-efficient —
+    e.g., an A100 power-capped low vs. a T4 at full draw.
 
     The two weights coincide only when all workers in the stage are homogeneous and
     drawing identical power; on heterogeneous serverless pools (mixed A100 / V100 /
@@ -184,9 +184,9 @@ class EnergyAwareWRR:
     """Deficit-WRR that refreshes weights from live NVML telemetry on each pick.
 
     Sibling of ``WRRScheduler``: same deficit-Weighted Round Robin mechanics, but
-    weights come from ``energy_weights_for_stage`` (iter-per-joule, contribution C4)
-    instead of static FLOPS. Optionally chains through a ``PowerSlackGuard`` to
-    derate near-cap workers.
+    weights come from ``energy_weights_for_stage`` (iter-per-joule) instead of
+    static FLOPS. Optionally chains through a ``PowerSlackGuard`` to derate
+    near-cap workers.
 
     Refresh strategy: weights recompute every ``refresh_period`` picks. Set to 1
     for max responsiveness (every pick) or higher to amortise the energy-weight

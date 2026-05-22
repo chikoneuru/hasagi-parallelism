@@ -120,7 +120,7 @@ def submit_job(req: SubmitJobRequest) -> SubmitJobResponse:
         iterations_target=req.iterations_target,
         carbon_budget_g=req.carbon_budget_g,
     )
-    # Toy scaling curve — concave, capped at 16 GPUs. Phase 3 should profile per-model.
+    # Toy scaling curve — concave, capped at 16 GPUs. Production should profile per-model.
     curve = ScalingCurve(throughput_per_gpu_count=[(x ** 0.85) / 1.0 for x in range(1, 17)])
     if admit_or_drop(job, curve):
         job.state = JobState.RUNNING

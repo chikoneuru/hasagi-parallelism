@@ -133,7 +133,7 @@ def main() -> None:
     console.print(
         "\n[dim]Note: energy is the primary, defensible metric (in a real run this is "
         "measured via NVML). Carbon column is derived via grid intensity proxy and varies "
-        "with the trace; see research-note.md §2.3.[/dim]"
+        "with the trace.[/dim]"
     )
 
 

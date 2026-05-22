@@ -8,12 +8,12 @@ Literature foundation:
     - GPipe [Huang et al., NeurIPS'19]: equal-FLOPs heuristic.
     - Hydrozoa [Guo et al., MLSys'22]: hybrid-parallel planner on serverless containers.
 
-Objective (HISE contribution C2):
+Objectives:
     Primary: minimize pipeline bottleneck (max stage time) → maximise steady-state throughput.
     Secondary: sigma_exec (std-dev of stage times) retained for ablation comparison.
-    Phase 2 D1.1 adds energy-per-iteration via per-stage power_draw_w telemetry.
-    Phase 2 D1.2 adds hard feasibility constraints (memory + power-cap) that prune
-    infeasible (stage, segment) assignments in both the DP and incremental paths.
+    Energy: minimise per-iteration kWh via per-stage power_draw_w telemetry.
+    Feasibility: hard memory + power-cap constraints prune infeasible (stage, segment)
+    assignments in both the DP and incremental paths.
 """
 from __future__ import annotations
 
@@ -42,12 +42,12 @@ class StageSpec:
     """One pipeline stage in the serverless container pool.
 
     ``power_cap_w`` is the aggregate per-stage power ceiling — Σ NVML power limits
-    across the workers assigned to this stage. Used by Phase 2 D1.2 feasibility
-    constraints; default math.inf preserves Phase 1 behaviour for callers that
-    don't set it.
+    across the workers assigned to this stage. Used by the feasibility check;
+    default math.inf preserves throughput-only behaviour for callers that don't
+    set it.
 
     ``power_draw_w`` is the **current** aggregate power draw across all workers
-    in the stage (Σ WorkerTelemetry.power_draw_w). Used by D1.1 ``objective="energy"``
+    in the stage (Σ WorkerTelemetry.power_draw_w). Used by ``objective="energy"``
     partitioning to compute ``E_per_iter = Σ_s P_s · T_s``. Default 0.0 means "no
     telemetry"; with the energy objective and all-zero powers, every partition
     scores 0 (degenerate, falls through to ties — caller should use the bottleneck
@@ -138,7 +138,7 @@ def _segment_feasible(
     start: int,
     end: int,
 ) -> tuple[bool, str]:
-    """D1.2 feasibility check: does assigning layers[start..end] to ``stage`` fit?
+    """Feasibility check: does assigning layers[start..end] to ``stage`` fit?
 
     Memory constraint: segment activation footprint ≤ stage.memory_bytes.
     Power-cap constraint: stage.power_draw_w ≤ stage.power_cap_w (stage-only,
@@ -177,10 +177,10 @@ def partition_pipeline(
         links: K-1 LinkSpec objects for consecutive stage pairs.
         num_microbatches: M, the number of microbatches per minibatch.
         objective: ``"bottleneck"`` (default, throughput-optimal, PipeDream SOSP'19) or
-            ``"energy"`` (Phase 2 D1.1, contribution C2). Energy objective minimises
-            ``E_per_iter = Σ_s P_s · T_s`` where ``P_s = stages[s].power_draw_w`` and
-            ``T_s`` is the stage execution time; requires non-zero per-stage power on
-            at least one stage to produce non-degenerate decisions.
+            ``"energy"``. Energy objective minimises ``E_per_iter = Σ_s P_s · T_s``
+            where ``P_s = stages[s].power_draw_w`` and ``T_s`` is the stage
+            execution time; requires non-zero per-stage power on at least one
+            stage to produce non-degenerate decisions.
 
     DP recurrences:
         bottleneck: ``dp[j][s] = min_i max(dp[i][s-1], T_s(i+1..j))``
@@ -233,7 +233,7 @@ def partition_pipeline(
         return _exec_time(comp, comm_out, comm_in)
 
     def seg_feasible(stage_id: int, start: int, end: int) -> bool:
-        """D1.2 feasibility check using O(1) prefix-sum memory lookup."""
+        """Feasibility check using O(1) prefix-sum memory lookup."""
         mem = prefix_mem[end + 1] - prefix_mem[start]
         if mem > stages[stage_id].memory_bytes:
             return False
@@ -244,8 +244,8 @@ def partition_pipeline(
     def seg_score(stage_id: int, start: int, end: int, prev_score: float) -> float:
         """Combine prev cumulative score with stage (stage_id) covering layers
         [start..end] under the active objective. Returns INF when the assignment
-        violates a D1.2 feasibility constraint — INF propagates through both
-        max (bottleneck) and add (energy), pruning the transition in the DP."""
+        violates a feasibility constraint — INF propagates through both max
+        (bottleneck) and add (energy), pruning the transition in the DP."""
         if not seg_feasible(stage_id, start, end):
             return math.inf
         t = seg_exec(stage_id, start, end)
@@ -443,7 +443,7 @@ def _build_partition(
 
 
 # ---------------------------------------------------------------------------
-# Stagnation tracker (Phase 2 D1.3) — escape local windows via full DP fallback
+# Stagnation tracker — escape local windows via full DP fallback
 # ---------------------------------------------------------------------------
 
 def _partition_score(partition: Partition, objective: str) -> float:
@@ -463,9 +463,9 @@ class StagnationTracker:
     cuts well-placed cheaply (O(window^(k-1))) instead of paying the full O(n² K)
     DP every time. But incremental can only see ±boundary_window around the
     previous cuts — if the true optimum drifts outside that window (e.g., after
-    a large workload shift or a power-cap change from D1.2), incremental gets
-    stuck at a local minimum. This tracker counts consecutive non-improving calls
-    and signals when to fall back to ``partition_pipeline`` (full DP).
+    a large workload shift or a power-cap change), incremental gets stuck at a
+    local minimum. This tracker counts consecutive non-improving calls and
+    signals when to fall back to ``partition_pipeline`` (full DP).
 
     Typical usage::
 

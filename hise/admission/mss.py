@@ -4,9 +4,9 @@ ElasticFlow defines MSS as the smallest GPU count ``x*`` such that the job's sca
 ``T(x)`` is sufficient to finish before the deadline. Under a concave scaling curve we can
 find ``x*`` by binary search.
 
-HISE extends MSS along the **energy axis** (research-note §3.5 Gap-3, §4.5 C3):
+HISE extends MSS along the **energy axis**:
 
-* **EnergyBudgetMSS** — primary contribution. Objective: smallest ``x`` whose projected
+* **EnergyBudgetMSS** — objective: smallest ``x`` whose projected
   energy ``∫ P(x, t) dt`` over the job's remaining duration fits the user's energy budget
   while still meeting the deadline. Energy is *measured directly* via NVML / RAPL during
   execution; the projection at admission time uses Zeus-style profiling (power-per-GPU as
@@ -80,7 +80,7 @@ def minimum_satisfactory_share(
 
 
 # ---------------------------------------------------------------------------
-# Energy-Budgeted MSS — HISE contribution C3
+# Energy-Budgeted MSS
 # ---------------------------------------------------------------------------
 
 @dataclass
@@ -97,10 +97,10 @@ class EnergyBudgetMSS:
         curve: scaling curve (iter/s per GPU count).
         power_per_gpu_w: average GPU power draw at full utilisation (W). Used when
             ``energy_profile`` is not provided (linear fallback).
-        energy_profile: *optional* Zeus-style convex profile (Phase 2 D2.1). When
-            provided, energy projection uses ``E_per_iter(x) × iters`` from the profile
-            instead of the constant-power linear model. Convexity in GPU count is the
-            assumption underlying the EB-MSS optimality theorem (D2.3 Week 4).
+        energy_profile: *optional* Zeus-style convex profile. When provided, energy
+            projection uses ``E_per_iter(x) × iters`` from the profile instead of
+            the constant-power linear model. Convexity in GPU count is the assumption
+            underlying the EB-MSS optimality theorem (proof pending).
         energy_budget_kwh: total allowed energy for the remainder of this job (kWh).
             Binding constraint.
         carbon_intensity_forecast: *optional* callable returning gCO2/kWh at time t. If
@@ -248,8 +248,7 @@ def greedy_marginal_energy_allocation(
     Jobs with ``ΔT ≤ 0`` (saturated curve) are skipped. The ratio is invariant to
     unit scaling, so callers comparing rankings get the same answer in J/iter.
 
-    See: research-note.md §3.5 Gap-3 (energy-aware admission) and the EB-MSS
-    optimality argument that requires convex per-iter energy in GPU count.
+    Optimality (proof pending) relies on convex per-iter energy in GPU count.
     """
     alloc = {jid: cur for jid, _profile, cur in admitted}
     profiles = {jid: profile for jid, profile, _ in admitted}

@@ -1,7 +1,7 @@
-"""Energy-first closed-loop orchestrator wiring Phase 2 Tuần 1-2 algorithms.
+"""Energy-first closed-loop orchestrator that wires policy, partitioner, and admission.
 
 This is the **HISE primary control path**. The original `ControlLoop` keeps the
-Phase 1 carbon-driven `RuleBasedPolicy` for ablation; this class swaps in the
+carbon-driven `RuleBasedPolicy` as a baseline; this class swaps in the
 energy-first stack:
 
 * **A3 policy**: `PowerAwareRulePolicy` (J/iter threshold + hysteresis) OR
@@ -266,7 +266,7 @@ class EnergyAwareControlLoop:
 
 
 def energy_admit_or_drop(job: Job, ebmss: EnergyBudgetMSS) -> bool:
-    """Energy-budget admission helper — paralleling Phase 1 ``admit_or_drop``.
+    """Energy-budget admission helper — paralleling the baseline ``admit_or_drop``.
 
     Uses ``EnergyBudgetMSS.find()`` which respects both deadline AND energy
     budget (and optionally carbon proxy if the EB-MSS was configured with a
@@ -276,9 +276,7 @@ def energy_admit_or_drop(job: Job, ebmss: EnergyBudgetMSS) -> bool:
     Returns ``True`` on admission, ``False`` on drop. Mutates ``job.state``
     and ``job.last_decision_reason`` in place.
 
-    This is the **energy-first admission path** for HISE (contribution C3
-    reframed — see [docs/powerflow-comparison.md](../../docs/powerflow-comparison.md)).
-    Wire-in pattern in tests / experiments::
+    Wire-in pattern::
 
         ebmss = EnergyBudgetMSS(curve=..., power_per_gpu_w=300.0,
                                 energy_budget_kwh=1.0, energy_profile=profile)

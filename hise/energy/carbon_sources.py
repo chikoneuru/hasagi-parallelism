@@ -1,16 +1,14 @@
 """Multi-source carbon intensity proxy with uncertainty propagation.
 
-HISE reports carbon proxy from **three independent sources in parallel**
-([research-note.md §3.5, §5.4](research-note.md)). Disagreement >20% between
-sources is flagged explicitly rather than cherry-picked:
+Carbon proxy is reported from **three independent sources in parallel**;
+disagreement >20% between sources is flagged explicitly rather than cherry-picked:
 
 * **ElectricityMaps** — 1h granularity, ±10-15% accuracy, average emissions.
-* **WattTime** — 5-min granularity, ±20% accuracy, marginal emissions
-  (added per Q4-ADD decision 2026-05-22).
+* **WattTime** — 5-min granularity, ±20% accuracy, marginal emissions.
 * **IEA static** — yearly average per region, no API needed.
 
 The aggregator returns a ``CarbonReading`` with mean + bounds; downstream
-(H5-C evaluation, MPC weighting) uses the band, not a single number.
+(carbon claim evaluation, MPC weighting) uses the band, not a single number.
 
 API clients are dependency-injectable so tests run without real HTTP:
 each client accepts a ``http_client`` parameter that defaults to ``httpx``
@@ -80,7 +78,7 @@ _IEA_STATIC_2022: dict[str, float] = {
 class IEAStaticSource:
     """Constant-intensity source from IEA 2022 yearly averages.
 
-    Used as the third source for H5-C cross-validation and as a no-network
+    Used as the third source for carbon-claim cross-validation and as a no-network
     fallback when the live APIs are unavailable. Always returns the same
     intensity per ``read()``; uncertainty is fixed at 25% per IEA aggregation
     methodology (yearly average hides intraday swings).
@@ -239,8 +237,7 @@ class AggregateCarbonReading:
     ``intensity_g_per_kwh`` is the mean of all source readings; ``min_g_per_kwh``
     / ``max_g_per_kwh`` bound the band. ``disagreement_fraction`` = ``(max-min)/mean``
     is HISE's flag for "report range, do not cherry-pick" — values above
-    ``flag_threshold`` (default 0.20) trigger a logged warning, per
-    [research-note.md §4.3 H5-C](research-note.md).
+    ``flag_threshold`` (default 0.20) trigger a logged warning.
 
     Methodologies present in the inputs are listed in ``methodologies`` so
     downstream knows whether the average mixed marginal + average sources.

@@ -3,17 +3,16 @@
 Three implementations, all consume *energy telemetry* (power.draw, throughput) as
 primary signal and optionally *grid intensity proxy* as a secondary weighting:
 
-* ``RuleBasedPolicy`` — Phase 1 baseline. Threshold-based on *carbon intensity scalar*.
-  Kept as the HISE-no-energy-policy ablation baseline for Phase 4 — do NOT delete.
-* ``PowerAwareRulePolicy`` — Phase 2 D3.1, contribution C1. Threshold-based on
-  *power-per-throughput* (J/iter) computed from live WorkerTelemetry, with
-  hysteresis to prevent oscillation. Carbon intensity is optional spatial-shift
-  signal, not the primary driver.
+* ``RuleBasedPolicy`` — carbon-only baseline. Threshold-based on *carbon intensity
+  scalar*. Kept as the HISE-no-energy-policy ablation baseline — do NOT delete.
+* ``PowerAwareRulePolicy`` — threshold on *power-per-throughput* (J/iter) computed
+  from live WorkerTelemetry, with hysteresis to prevent oscillation. Carbon
+  intensity is an optional spatial-shift signal, not the primary driver.
 * ``MPCPolicy`` — Model-Predictive Control over a short horizon; picks the GPU count
   that minimises ``α · energy + γ · carbon_proxy + β · deadline_lag``. When
   ``carbon_weight = 0`` the policy is purely energy-aware.
 
-A future ``RLPolicy`` (PPO via Stable-Baselines3) lands Tuần 3-4 per docs/phase2-plan.md.
+A future ``RLPolicy`` (PPO via Stable-Baselines3) is scaffolded in ``rl_policy``.
 """
 from __future__ import annotations
 
@@ -54,9 +53,6 @@ class RuleBasedPolicy:
 class PowerAwareRulePolicy:
     """Threshold policy on power-per-throughput (J/iter) with hysteresis.
 
-    Phase 2 D3.1 deliverable per docs/phase2-plan.md §3, contribution C1
-    (research-note.md §4.5).
-
     Decision logic per tick:
         1. Aggregate ``j_per_iter = avg(power_draw_w) / avg(throughput_iters_per_s)``
            across all workers with valid telemetry. This is the energy cost of a
@@ -77,11 +73,10 @@ class PowerAwareRulePolicy:
     proactively scale down regardless of energy efficiency. Default ``None``
     disables this branch — pure energy-driven decisions.
 
-    Rationale (research-note §4.5 C1): the existing RuleBasedPolicy keys on
-    carbon intensity, treating energy efficiency as derived. PowerAwareRule
-    flips that: energy is the primary signal (defensible via direct NVML
-    measurement), carbon is secondary. Both kept side-by-side so Phase 4 can
-    ablate the difference.
+    Rationale: the carbon-only RuleBasedPolicy keys on intensity and treats
+    energy efficiency as derived. PowerAwareRule flips that: energy is the
+    primary signal (defensible via direct NVML measurement), carbon is secondary.
+    Both kept side-by-side for ablation.
     """
 
     min_gpus: int
@@ -184,8 +179,8 @@ class PowerAwareRulePolicy:
 class MPCPolicy:
     """Receding-horizon planner: try GPU counts ``[min, max]``, pick best multi-step value.
 
-    Reconfig penalty (research-note.md §4.5 C1): the planner accounts for the one-shot
-    cost of switching GPU counts mid-job. Each candidate ``gpus ≠ current_gpus`` pays
+    Reconfig penalty: the planner accounts for the one-shot cost of switching
+    GPU counts mid-job. Each candidate ``gpus ≠ current_gpus`` pays
     ``reconfig_latency_s`` of training-pause lag and ``reconfig_energy_kwh`` of
     state-migration energy (evaluated at the current grid intensity). This biases the
     planner toward holding the current allocation unless the multi-step gain clears

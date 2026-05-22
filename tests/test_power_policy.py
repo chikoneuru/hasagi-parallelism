@@ -1,4 +1,4 @@
-"""Unit tests for PowerAwareRulePolicy (Phase 2 D3.1 deliverable, contribution C1)."""
+"""Unit tests for PowerAwareRulePolicy."""
 from __future__ import annotations
 
 import pytest

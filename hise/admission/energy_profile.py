@@ -1,23 +1,20 @@
 """Zeus-style empirical energy profile — energy-per-iteration as a function of GPU count.
 
-Phase 2 D2.1 deliverable per docs/phase2-plan.md §2.
-
-Motivation (research-note.md §3.5 Gap-3): the existing ``EnergyBudgetMSS`` projects
-energy via ``power_per_gpu_w × gpus × duration_s`` (constant per-GPU power model).
-Zeus NSDI'23 §4.2 demonstrates empirically that **energy-per-iter is convex in GPU
-count**: adding more GPUs reduces wall-clock time but each GPU still draws power
-(plus allreduce overhead), producing a U-shape or monotone-increasing curve past
-the minimum.
+Motivation: the linear projection ``power_per_gpu_w × gpus × duration_s`` ignores
+allreduce overhead. Zeus NSDI'23 §4.2 demonstrates empirically that energy-per-iter
+is **convex in GPU count**: adding more GPUs reduces wall-clock time but each GPU
+still draws power (plus allreduce overhead), producing a U-shape or monotone-
+increasing curve past the minimum.
 
 This module ships ``EnergyProfile``: a tuple-indexed lookup of (energy_per_iter_kwh,
 throughput_iters_per_s) by GPU count, with ``validate_convexity()`` checking that
-second differences of the energy curve are non-negative. EB-MSS will optionally
-consume an ``EnergyProfile`` instead of ``power_per_gpu_w`` for accurate projection;
-the linear model remains as a fallback so existing call sites do not break.
+second differences of the energy curve are non-negative. ``EnergyBudgetMSS`` will
+optionally consume an ``EnergyProfile`` instead of ``power_per_gpu_w`` for accurate
+projection; the linear model remains as a fallback so existing call sites do not break.
 
-The convexity assumption underlies the optimality theorem for EB-MSS that lands
-in Week 4 (D2.3) — if it fails empirically on the target workload, we fall back to
-piecewise-linear approximation (research-note §5.2 risk register).
+The convexity assumption underlies the EB-MSS optimality theorem (proof pending).
+If it fails empirically on a target workload, fall back to piecewise-linear
+approximation.
 """
 from __future__ import annotations
 

@@ -1,7 +1,8 @@
 """Thin client for ElectricityMaps and WattTime carbon-intensity APIs.
 
-Only used in real-deployment mode (Phase 3+); offline experiments should plug in
-``CarbonTrace`` replay instead.
+Superseded by ``hise.energy.carbon_sources`` which adds multi-source aggregation
+and uncertainty propagation. This module is kept for direct single-endpoint
+queries; offline experiments should plug in ``CarbonTrace`` replay instead.
 """
 from __future__ import annotations
 

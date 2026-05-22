@@ -1,4 +1,4 @@
-"""Knative pool backend — sketch for Phase 3 deployment on Kubernetes.
+"""Knative pool backend — sketch for Kubernetes deployment.
 
 Talks to the Kubernetes API to set the ``serving.knative.dev/v1`` Service's
 ``autoscaling.knative.dev/minScale`` / ``maxScale`` annotations, then waits for
@@ -18,5 +18,5 @@ class KnativePool:
 
     def scale(self, job_id: str, target: int) -> None:  # pragma: no cover
         raise NotImplementedError(
-            "KnativePool.scale is a Phase 3 deliverable; use LocalDockerPool or SimulatedPool."
+            "KnativePool.scale not yet implemented; use LocalDockerPool or SimulatedPool."
         )

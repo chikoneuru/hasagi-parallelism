@@ -1,8 +1,7 @@
 """Tests for the PPO scaling policy scaffold.
 
 Scaffolding-only: verifies observation construction, reward function, action
-spec, and decide() error path. Full PPO training is Tuần 4 (per Q2 KEEP
-default + empirical decide-point), not exercised here.
+spec, and decide() error path. Full PPO training is not exercised here.
 """
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-"""End-to-end tests for the energy-first orchestrator wiring Tuần 1-2 algorithms.
+"""End-to-end tests for the energy-first orchestrator integration.
 
 Verifies:
 - Power-saturated telemetry triggers `PowerAwareRulePolicy` scale-down → repartition
@@ -357,7 +357,7 @@ def test_energy_admit_or_drop_rejects_when_energy_too_low() -> None:
 
 
 def test_energy_admit_or_drop_with_convex_profile() -> None:
-    """EB-MSS using a Zeus-style EnergyProfile (Tuần 1 D2.1) → admission still
+    """EB-MSS using a Zeus-style EnergyProfile → admission still
     works and stores the EB-MSS-recommended gpu count."""
     curve = ScalingCurve(throughput_per_gpu_count=[x ** 0.85 for x in range(1, 9)])
     profile = linear_profile(

@@ -81,7 +81,7 @@ def test_proportional_dispatch() -> None:
     assert abs(n2 - 3 * n1) < 6
 
 
-# --- Energy-aware weights (Phase 2 D4.1) ---
+# --- Energy-aware weights ---
 
 def test_energy_weights_sum_to_one() -> None:
     nodes = [

@@ -1,4 +1,4 @@
-"""Unit tests for WorkerTelemetry + FakeTelemetrySource (Phase 2 §0.1 deliverable)."""
+"""Unit tests for WorkerTelemetry + FakeTelemetrySource."""
 from __future__ import annotations
 
 import pytest

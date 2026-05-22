@@ -1,4 +1,4 @@
-"""Unit tests for EnergyProfile (Phase 2 D2.1 deliverable)."""
+"""Unit tests for EnergyProfile."""
 from __future__ import annotations
 
 import pytest

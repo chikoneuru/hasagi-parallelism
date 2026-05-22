@@ -1,26 +1,23 @@
 """PPO-based scaling policy scaffold for the energy-aware control loop.
 
-**Status**: scaffolding only (Tuần 3 deliverable D3.3a). Full training lands
-Tuần 4 D3.3b with the empirical decide-point (per [Q2-KEEP default decision](docs/phase2-plan.md §10)).
-If 1000-episode synthetic-trace training fails to converge → drop PPO, reframe
-C1 as MPC-based per [novelty-feasibility-review.md §2.1 R3](docs/novelty-feasibility-review.md).
+Scaffolding only — training lives in `experiments/exp02_carbon_replay.py`.
+If 1000-episode synthetic-trace training fails to converge, drop PPO and
+reframe the co-design narrative as MPC-based.
 
 This module ships:
 
 * ``PPOObservation`` — 8-dim normalized state vector consumed by Stable-Baselines3.
-* ``PPOAction`` — discrete GPU count choice; ``MultiDiscrete`` variant left as TODO.
+* ``PPOAction`` — discrete GPU count choice; ``MultiDiscrete`` variant is a TODO.
 * ``compute_reward`` — energy-aware reward function:
   ``r = -ΔkWh - λ·max(0, deadline_overshoot) - μ·reconfig_indicator``.
 * ``PPOScalingPolicy`` — wraps a Stable-Baselines3 PPO model with the same
   ``.decide()`` interface as PowerAwareRulePolicy / MPCPolicy so the orchestrator
   can swap policies via the existing dispatch in ``EnergyAwareControlLoop``.
-* ``HISEEnv`` — minimal ``gymnasium.Env`` wiring observation + action + reward
-  for training in ``experiments/exp02_carbon_replay.py``.
 
 The Gym environment + actual training loop are NOT in this file (heavy SB3 +
-gymnasium imports). They live in ``experiments/`` per the testbed layout.
-This file is the lightweight construction interface so the orchestrator can
-import ``PPOScalingPolicy`` without dragging SB3 into core hise dependencies.
+gymnasium imports). They live in ``experiments/``. This file is the lightweight
+construction interface so the orchestrator can import ``PPOScalingPolicy``
+without dragging SB3 into core hise dependencies.
 """
 from __future__ import annotations
 
@@ -39,7 +36,7 @@ class PPOObservation:
     magnitudes across workloads. The orchestrator computes each component
     from job + telemetry state at decide-time.
 
-    Layout matches [docs/phase2-plan.md §D3.3](docs/phase2-plan.md):
+    Layout:
 
     | Index | Field | Source |
     |---|---|---|
@@ -93,7 +90,7 @@ class PPOObservation:
 @dataclass(frozen=True)
 class PPOAction:
     """Discrete GPU-count choice. ``MultiDiscrete`` variant (GPUs × power_cap)
-    is a TODO for Tuần 4 if D3.3 keeps PPO (per Q2 decide-point)."""
+    is a TODO once basic PPO training converges."""
 
     gpu_count: int
 
@@ -111,8 +108,6 @@ def compute_reward(
     mu_reconfig: float = 0.05,
 ) -> float:
     """PPO reward per tick.
-
-    Per [docs/phase2-plan.md §D3.3](docs/phase2-plan.md):
 
         r_t = -ΔkWh - λ · max(0, deadline_overshoot) - μ · reconfig_indicator
 
@@ -148,10 +143,9 @@ class PPOScalingPolicy:
     """Wraps a trained Stable-Baselines3 PPO model with the standard ``decide()``
     interface so the orchestrator can swap it in for PowerAwareRule / MPC.
 
-    **Scaffolding state**: this class does NOT train the model — training lives
-    in ``experiments/exp02_carbon_replay.py`` per docs/phase2-plan.md §D3.3.
-    Tuần 4 decide-point: if 1000-episode synthetic-trace training shows no
-    monotone reward improvement, drop PPO entirely (per Q2 empirical decide).
+    Scaffolding state: this class does NOT train the model — training lives in
+    ``experiments/exp02_carbon_replay.py``. Drop the policy entirely if the
+    1000-episode synthetic-trace training shows no monotone reward improvement.
 
     Args:
         model: a loaded Stable-Baselines3 PPO instance (``stable_baselines3.PPO``).
@@ -161,7 +155,7 @@ class PPOScalingPolicy:
         max_gpus: upper bound on GPU count.
         max_power_per_worker_w: normalization constant for obs.power_fraction.
 
-    Usage (production, after Tuần 4 training)::
+    Usage (after training)::
 
         from stable_baselines3 import PPO
         model = PPO.load("ppo_hise_energy.zip")
@@ -196,9 +190,8 @@ class PPOScalingPolicy:
         """
         if self.model is None:
             raise RuntimeError(
-                "PPOScalingPolicy.model is None — PPO not yet trained "
-                "(Tuần 4 D3.3b deliverable). Use PowerAwareRulePolicy or "
-                "MPCPolicy until PPO training converges."
+                "PPOScalingPolicy.model is None — PPO not yet trained. "
+                "Use PowerAwareRulePolicy or MPCPolicy until PPO training converges."
             )
         obs_vec = observation.to_vector()
         action, _ = self.model.predict(obs_vec, deterministic=True)
@@ -262,7 +255,6 @@ def build_observation(
     )
 
 
-# Export-friendly action space size for SB3 wiring (Tuần 4).
 def discrete_action_space_size(min_gpus: int, max_gpus: int) -> int:
     """Number of discrete actions = (max_gpus - min_gpus + 1).
 
@@ -274,7 +266,6 @@ def discrete_action_space_size(min_gpus: int, max_gpus: int) -> int:
     return max_gpus - min_gpus + 1
 
 
-# Used in Tuần 4 training; kept as a top-level constant so tests can verify
-# the spec without instantiating SB3.
+# Top-level constants so tests can verify the spec without instantiating SB3.
 OBSERVATION_DIM: int = 8
 LOG2_NORMALIZER: float = math.log2(8)   # placeholder for future log-scale obs

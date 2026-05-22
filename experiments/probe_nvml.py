@@ -2,8 +2,8 @@
 
 Reads ``WorkerTelemetry``-shaped samples from real NVML at 100 ms cadence for 10 seconds:
 5 s idle baseline + 5 s under a synthetic CUDA load (matmul). Compares the resulting power
-trace against ``FakeTelemetrySource`` output to confirm the schema is faithful before we
-wire ``NvmlTelemetrySource`` into the orchestrator (Phase 2 Week 3).
+trace against ``FakeTelemetrySource`` output to confirm the schema is faithful before
+wiring ``NvmlTelemetrySource`` into the orchestrator.
 
 Usage:
     python experiments/probe_nvml.py
@@ -93,7 +93,7 @@ def main() -> None:
                 stress_gpu(args.stress_seconds)
             stress_done.set()
 
-        # Phase 1: idle baseline
+        # Collect idle baseline before launching the synthetic load
         idle_samples: list[WorkerTelemetry] = []
         t0 = time.monotonic()
         energy = 0.0
@@ -106,7 +106,7 @@ def main() -> None:
             idle_samples.append(sample)
             time.sleep(args.sample_ms / 1000.0)
 
-        # Phase 2: under stress
+        # Collect samples under synthetic CUDA load
         stress_samples: list[WorkerTelemetry] = []
         stress_thread = threading.Thread(target=_stress, daemon=True)
         stress_thread.start()

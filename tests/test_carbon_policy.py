@@ -94,7 +94,7 @@ def test_mpc_rejects_negative_reconfig_costs() -> None:
 
 
 def test_mpc_zero_reconfig_cost_matches_pre_penalty_behaviour() -> None:
-    """With both reconfig costs at 0, decision must equal the pre-D3.2 behaviour."""
+    """With both reconfig costs at 0, decision must equal the pre-penalty behaviour."""
     mpc = _mpc(reconfig_latency_s=0.0, reconfig_energy_kwh=0.0)
     forecast = [(i * 300.0, 800.0) for i in range(8)]
     d = mpc.decide(current_gpus=8, intensity_forecast=forecast)

@@ -187,7 +187,7 @@ def test_rejects_zero_stages() -> None:
         partition_pipeline(_toy_model(4), [], [])
 
 
-# --- Energy objective (Phase 2 D1.1) ---
+# --- Energy objective ---
 
 def _stages_k3_with_power(power_draws_w: tuple[float, float, float]) -> list[StageSpec]:
     """K=3 stages with explicit per-stage power draws (mimicking aggregated telemetry)."""
@@ -295,7 +295,7 @@ def test_energy_objective_with_zero_powers_is_degenerate() -> None:
     assert total == 12
 
 
-# --- Feasibility constraints (Phase 2 D1.2) ---
+# --- Feasibility constraints ---
 
 def _heavy_layers(n: int, activation_bytes: int) -> list[LayerProfile]:
     return [
@@ -422,7 +422,7 @@ def test_feasibility_helper_returns_diagnostic_strings() -> None:
     assert reason == ""
 
 
-# --- Stagnation tracker (Phase 2 D1.3) ---
+# --- Stagnation tracker ---
 
 def _mk_partition(bottleneck_s: float, energy_j: float = 0.0) -> Partition:
     """Build a minimal Partition with a chosen bottleneck score for tracker tests."""
