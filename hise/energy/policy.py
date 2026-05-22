@@ -182,7 +182,17 @@ class PowerAwareRulePolicy:
 
 @dataclass
 class MPCPolicy:
-    """Receding-horizon planner: try GPU counts ``[min, max]``, pick best multi-step value."""
+    """Receding-horizon planner: try GPU counts ``[min, max]``, pick best multi-step value.
+
+    Reconfig penalty (research-note.md §4.5 C1): the planner accounts for the one-shot
+    cost of switching GPU counts mid-job. Each candidate ``gpus ≠ current_gpus`` pays
+    ``reconfig_latency_s`` of training-pause lag and ``reconfig_energy_kwh`` of
+    state-migration energy (evaluated at the current grid intensity). This biases the
+    planner toward holding the current allocation unless the multi-step gain clears
+    the switching cost — prevents flapping under noisy intensity forecasts.
+
+    Set both reconfig fields to 0.0 to recover the pre-penalty behaviour.
+    """
 
     min_gpus: int
     max_gpus: int
@@ -194,6 +204,18 @@ class MPCPolicy:
     deadline_seconds_remaining: float
     carbon_weight: float = 1.0       # α
     lag_weight: float = 0.01         # β — small so we avoid trivial "always max"
+    reconfig_latency_s: float = 0.0      # paused training time per switch
+    reconfig_energy_kwh: float = 0.0     # state-migration energy per switch
+
+    def __post_init__(self) -> None:
+        if self.reconfig_latency_s < 0:
+            raise ValueError(
+                f"reconfig_latency_s must be >= 0, got {self.reconfig_latency_s}"
+            )
+        if self.reconfig_energy_kwh < 0:
+            raise ValueError(
+                f"reconfig_energy_kwh must be >= 0, got {self.reconfig_energy_kwh}"
+            )
 
     def decide(self, current_gpus: int, intensity_forecast: list[tuple[float, float]]) -> EnergyDecision:
         """``intensity_forecast`` is a list of ``(t_offset, gCO2/kWh)`` points covering the
@@ -201,6 +223,7 @@ class MPCPolicy:
         would optimise over time-varying plans, but constant per-tick keeps the action space
         tractable for the testbed.
         """
+        intensity_now = intensity_forecast[0][1] if intensity_forecast else 0.0
         best = current_gpus
         best_cost = float("inf")
         # Stepwise integration of (energy × intensity) plus lag penalty.
@@ -215,9 +238,20 @@ class MPCPolicy:
             for _t_off, intensity in intensity_forecast[: self.horizon_steps]:
                 kwh = (self.power_per_gpu_w * gpus * self.step_seconds) / 3_600_000.0
                 emissions += kwh * intensity
+
+            # One-shot reconfig penalty when switching off current_gpus.
+            if gpus != current_gpus:
+                emissions += self.reconfig_energy_kwh * intensity_now
+                lag += self.reconfig_latency_s
+
             cost = self.carbon_weight * emissions + self.lag_weight * lag
             if cost < best_cost:
                 best_cost = cost
                 best = gpus
-        reason = f"MPC choose {best} (cost={best_cost:.3f}, intensity_now={intensity_forecast[0][1]:.0f})"
+        switched = best != current_gpus
+        has_penalty = self.reconfig_latency_s > 0 or self.reconfig_energy_kwh > 0
+        reason = (
+            f"MPC choose {best} (cost={best_cost:.3f}, intensity_now={intensity_now:.0f}"
+            f"{', reconfig penalty applied' if switched and has_penalty else ''})"
+        )
         return EnergyDecision(best, reason=reason)
