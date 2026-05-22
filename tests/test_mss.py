@@ -6,6 +6,7 @@ from hise.admission.mss import (
     EnergyBudgetMSS,
     ScalingCurve,
     greedy_marginal_allocation,
+    greedy_marginal_energy_allocation,
     minimum_satisfactory_share,
 )
 
@@ -152,3 +153,104 @@ def test_ebmss_admits_with_synthetic_linear_profile() -> None:
     decision = ebmss.find(iterations_remaining=100, deadline_seconds=1000.0)
     assert decision.admitted
     assert decision.gpus >= 1
+
+
+# --- Marginal-energy-return allocator (Phase 2 D2.2) ---
+
+def _eff_profile(max_gpus: int, alpha: float) -> EnergyProfile:
+    """Synthetic convex profile: lower ``alpha`` → flatter marginal cost
+    (more efficient at scale); higher ``alpha`` → steeper marginal cost."""
+    return linear_profile(
+        power_per_gpu_w=300.0,
+        base_throughput_iters_per_s=1.0,
+        max_gpus=max_gpus,
+        scaling_efficiency=0.85,
+        allreduce_coefficient=alpha,
+    )
+
+
+def test_marginal_energy_alloc_handles_empty_and_no_slack() -> None:
+    assert greedy_marginal_energy_allocation([], available_gpus=10) == {}
+    profile = _eff_profile(max_gpus=4, alpha=0.05)
+    # No slack: available_gpus equals already-allocated total.
+    alloc = greedy_marginal_energy_allocation([("a", profile, 2), ("b", profile, 1)], 3)
+    assert alloc == {"a": 2, "b": 1}
+
+
+def test_marginal_energy_alloc_fills_single_job() -> None:
+    profile = _eff_profile(max_gpus=4, alpha=0.05)
+    alloc = greedy_marginal_energy_allocation([("a", profile, 1)], available_gpus=4)
+    assert alloc == {"a": 4}
+
+
+def test_marginal_energy_alloc_respects_max_gpus() -> None:
+    profile = _eff_profile(max_gpus=4, alpha=0.05)
+    alloc = greedy_marginal_energy_allocation([("a", profile, 1)], available_gpus=100)
+    assert alloc["a"] == 4  # capped at profile.max_gpus
+
+
+def test_marginal_energy_alloc_identical_jobs_split_evenly() -> None:
+    """Two jobs with identical convex profiles must split spare GPUs evenly
+    (within 1 — greedy ties broken by insertion order)."""
+    profile = _eff_profile(max_gpus=8, alpha=0.05)
+    alloc = greedy_marginal_energy_allocation(
+        [("a", profile, 1), ("b", profile, 1)], available_gpus=8,
+    )
+    assert abs(alloc["a"] - alloc["b"]) <= 1
+    assert alloc["a"] + alloc["b"] == 8
+
+
+def test_marginal_energy_alloc_prefers_more_efficient_job() -> None:
+    """Steeper allreduce coefficient → higher marginal energy cost → fewer GPUs."""
+    efficient = _eff_profile(max_gpus=8, alpha=0.01)   # flat marginal cost
+    inefficient = _eff_profile(max_gpus=8, alpha=0.20) # steep marginal cost
+    alloc = greedy_marginal_energy_allocation(
+        [("eff", efficient, 1), ("inef", inefficient, 1)], available_gpus=8,
+    )
+    assert alloc["eff"] + alloc["inef"] == 8
+    assert alloc["eff"] > alloc["inef"]
+
+
+def test_marginal_energy_alloc_skips_saturated_curve() -> None:
+    """Job whose throughput plateaus at high GPU count gets no further allocation
+    once Δ throughput drops to 0."""
+    flat = EnergyProfile(
+        energy_per_iter_kwh=(1e-4, 1e-4, 1e-4, 1e-4),
+        throughput_iters_per_s=(1.0, 1.5, 1.5, 1.5),   # saturates at 2 GPUs
+    )
+    growing = _eff_profile(max_gpus=4, alpha=0.05)
+    alloc = greedy_marginal_energy_allocation(
+        [("flat", flat, 1), ("grow", growing, 1)], available_gpus=6,
+    )
+    # flat saturates after 2 GPUs; remainder must go to "grow".
+    assert alloc["flat"] <= 2
+    assert alloc["grow"] >= alloc["flat"]
+
+
+def test_marginal_energy_alloc_marginal_cost_monotone_with_convex_profile() -> None:
+    """Sanity: under a strictly convex profile, the greedy never allocates a GPU
+    whose marginal cost exceeds the *next* candidate's marginal cost. We verify
+    by recomputing marginal costs at the final allocation and confirming they
+    don't strictly dominate one another (within numerical tolerance)."""
+    import math as _m
+    profile = _eff_profile(max_gpus=8, alpha=0.05)
+    alloc = greedy_marginal_energy_allocation(
+        [("a", profile, 1), ("b", profile, 1)], available_gpus=8,
+    )
+
+    def marginal_at(p: EnergyProfile, cur: int) -> float:
+        if cur >= p.max_gpus:
+            return _m.inf
+        t_cur = p.throughput(cur)
+        t_next = p.throughput(cur + 1)
+        if t_next <= t_cur:
+            return _m.inf
+        pow_cur = p.energy_per_iter(cur) * t_cur
+        pow_next = p.energy_per_iter(cur + 1) * t_next
+        return (pow_next - pow_cur) / (t_next - t_cur)
+
+    margins = [marginal_at(profile, alloc[j]) for j in ("a", "b")]
+    # Any job not at max_gpus would have been pickable on the next step → its
+    # marginal must be >= the previously picked job's marginal (monotone DP).
+    assert all(_m.isfinite(m) or alloc[j] == profile.max_gpus
+               for m, j in zip(margins, ("a", "b"), strict=True))

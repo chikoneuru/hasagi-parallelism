@@ -221,3 +221,62 @@ def greedy_marginal_allocation(
         alloc[best_jid] += 1
         remaining -= 1
     return alloc
+
+
+def greedy_marginal_energy_allocation(
+    admitted: Sequence[tuple[str, EnergyProfile, int]],
+    available_gpus: int,
+) -> dict[str, int]:
+    """Allocate GPUs by minimum marginal energy cost per additional iteration.
+
+    HISE's energy-aware analog of ``greedy_marginal_allocation``: instead of picking
+    the job with the highest marginal throughput gain, pick the job whose next GPU
+    delivers iterations at the lowest *kWh per additional iter*. Under a Zeus-style
+    convex energy curve this naturally balances allocations across jobs — marginal
+    cost is monotone non-decreasing in GPU count, so an over-allocated job sees its
+    marginal cost climb until another job becomes cheaper.
+
+    Each ``admitted`` entry is ``(job_id, energy_profile, current_gpus)``. Returns
+    the new allocation count per job (>= current_gpus).
+
+    Marginal cost (kWh / iter) at step ``g → g+1`` per job::
+
+        ΔT = profile.throughput(g+1) − profile.throughput(g)              [iters/s]
+        ΔP = E_per_iter(g+1)·throughput(g+1) − E_per_iter(g)·throughput(g) [kWh/s]
+        marginal_kwh_per_iter = ΔP / ΔT
+
+    Jobs with ``ΔT ≤ 0`` (saturated curve) are skipped. The ratio is invariant to
+    unit scaling, so callers comparing rankings get the same answer in J/iter.
+
+    See: research-note.md §3.5 Gap-3 (energy-aware admission) and the EB-MSS
+    optimality argument that requires convex per-iter energy in GPU count.
+    """
+    alloc = {jid: cur for jid, _profile, cur in admitted}
+    profiles = {jid: profile for jid, profile, _ in admitted}
+    remaining = available_gpus - sum(alloc.values())
+
+    while remaining > 0 and any(alloc[j] < profiles[j].max_gpus for j in alloc):
+        best_jid = None
+        best_marginal = math.inf
+        for jid in alloc:
+            profile = profiles[jid]
+            cur = alloc[jid]
+            if cur >= profile.max_gpus:
+                continue
+            t_cur = profile.throughput(cur)
+            t_next = profile.throughput(cur + 1)
+            delta_t = t_next - t_cur
+            if delta_t <= 0:
+                continue  # saturated — no extra iterations from this GPU
+            power_cur = profile.energy_per_iter(cur) * t_cur  # kW (= kWh/s)
+            power_next = profile.energy_per_iter(cur + 1) * t_next
+            delta_p = power_next - power_cur
+            marginal = delta_p / delta_t  # kWh per added iteration
+            if marginal < best_marginal:
+                best_marginal = marginal
+                best_jid = jid
+        if best_jid is None:
+            break
+        alloc[best_jid] += 1
+        remaining -= 1
+    return alloc

@@ -5,6 +5,8 @@ from hise.admission.mss import (
     EnergyAdjustedMSS,  # backwards-compat alias
     EnergyBudgetMSS,
     ScalingCurve,
+    greedy_marginal_allocation,
+    greedy_marginal_energy_allocation,
     minimum_satisfactory_share,
 )
 
@@ -14,6 +16,8 @@ __all__ = [
     "EnergyBudgetMSS",
     "EnergyProfile",
     "ScalingCurve",
+    "greedy_marginal_allocation",
+    "greedy_marginal_energy_allocation",
     "linear_profile",
     "minimum_satisfactory_share",
 ]
