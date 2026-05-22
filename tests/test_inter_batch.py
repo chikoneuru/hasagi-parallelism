@@ -7,6 +7,7 @@ import pytest
 
 from hise.energy.telemetry import WorkerTelemetry
 from hise.parallel.inter_batch import (
+    EnergyAwareWRR,
     InterBatchScheduler,
     Node,
     PowerSlackGuard,
@@ -310,3 +311,182 @@ def test_power_slack_guard_chains_with_energy_weights() -> None:
     # Guard zeroes the hot worker → cool absorbs all dispatch.
     assert guarded["hot"] == 0.0
     assert abs(guarded["cool"] - 1.0) < 1e-9
+
+
+# --- EnergyAwareWRR ---
+
+def test_energy_aware_wrr_rejects_invalid_construction() -> None:
+    nodes = [Node(node_id="w1", stage_id=0, capacity_flops=1.0)]
+
+    def empty_source():
+        return {}
+
+    with pytest.raises(ValueError, match="at least one node"):
+        EnergyAwareWRR(nodes=[], direction="fwd", telemetry_source=empty_source)
+    with pytest.raises(ValueError, match="direction"):
+        EnergyAwareWRR(nodes=nodes, direction="invalid", telemetry_source=empty_source)
+    with pytest.raises(ValueError, match="refresh_period"):
+        EnergyAwareWRR(
+            nodes=nodes, direction="fwd", telemetry_source=empty_source, refresh_period=0,
+        )
+    bad_nodes = [
+        Node(node_id="w1", stage_id=0, capacity_flops=1.0),
+        Node(node_id="w2", stage_id=1, capacity_flops=1.0),
+    ]
+    with pytest.raises(ValueError, match="same stage_id"):
+        EnergyAwareWRR(nodes=bad_nodes, direction="fwd", telemetry_source=empty_source)
+
+
+def _drain_picks(sched, target: int) -> dict[str, int]:
+    """Loop pick() until ``target`` successful dispatches; return per-node counts.
+    Skips None returns (deficit < 1.0)."""
+    counts: dict[str, int] = {}
+    while sum(counts.values()) < target:
+        n = sched.pick()
+        if n is not None:
+            counts[n.node_id] = counts.get(n.node_id, 0) + 1
+    return counts
+
+
+def test_energy_aware_wrr_dispatches_proportionally_to_iter_per_joule() -> None:
+    """Over many picks, dispatch counts should track iter-per-joule weights."""
+    nodes = [
+        Node(node_id="eff",  stage_id=0, capacity_flops=10.0),
+        Node(node_id="inef", stage_id=0, capacity_flops=10.0),
+    ]
+    tel = {
+        # eff: 200 iter/s × 100W → 2.0 iter/J
+        "eff":  _telem_with_cap("eff",  power_w=100.0, cap_w=400.0, throughput=200.0),
+        # inef: 100 iter/s × 200W → 0.5 iter/J
+        "inef": _telem_with_cap("inef", power_w=200.0, cap_w=400.0, throughput=100.0),
+    }
+    sched = EnergyAwareWRR(nodes=nodes, direction="fwd",
+                           telemetry_source=lambda: tel, refresh_period=1)
+    counts = _drain_picks(sched, target=40)
+    # Expect ~4:1 ratio (2.0 vs 0.5). Allow a small drift due to deficit rounding.
+    assert counts.get("eff", 0) >= 3 * counts.get("inef", 0)
+
+
+def test_energy_aware_wrr_refreshes_weights_when_telemetry_changes() -> None:
+    """Mutate telemetry between picks; subsequent picks must reflect the new
+    iter-per-joule ratio (refresh_period=1 → refresh every pick)."""
+    nodes = [
+        Node(node_id="a", stage_id=0, capacity_flops=10.0),
+        Node(node_id="b", stage_id=0, capacity_flops=10.0),
+    ]
+    state = {
+        "a": _telem_with_cap("a", power_w=100.0, cap_w=400.0, throughput=200.0),  # eff
+        "b": _telem_with_cap("b", power_w=200.0, cap_w=400.0, throughput=100.0),  # inef
+    }
+    sched = EnergyAwareWRR(nodes=nodes, direction="fwd",
+                           telemetry_source=lambda: state, refresh_period=1)
+    first_half = {"a": 0, "b": 0}
+    for _ in range(20):
+        n = sched.pick()
+        if n is not None:
+            first_half[n.node_id] += 1
+    assert first_half["a"] > first_half["b"]
+
+    # Flip the efficiency story: b is now 4× more efficient than a.
+    state["a"] = _telem_with_cap("a", power_w=200.0, cap_w=400.0, throughput=100.0)
+    state["b"] = _telem_with_cap("b", power_w=100.0, cap_w=400.0, throughput=200.0)
+    second_half = {"a": 0, "b": 0}
+    for _ in range(20):
+        n = sched.pick()
+        if n is not None:
+            second_half[n.node_id] += 1
+    # After flip, b should outpace a in the new picks.
+    assert second_half["b"] > second_half["a"]
+
+
+def test_energy_aware_wrr_refresh_period_amortises_recompute() -> None:
+    """With refresh_period > 1, weights are fixed between refreshes — changes in
+    telemetry mid-period don't take effect until the next refresh boundary."""
+    nodes = [
+        Node(node_id="a", stage_id=0, capacity_flops=10.0),
+        Node(node_id="b", stage_id=0, capacity_flops=10.0),
+    ]
+    refresh_count = {"n": 0}
+    state = {
+        "a": _telem_with_cap("a", power_w=100.0, cap_w=400.0, throughput=200.0),
+        "b": _telem_with_cap("b", power_w=200.0, cap_w=400.0, throughput=100.0),
+    }
+
+    def source():
+        refresh_count["n"] += 1
+        return state
+
+    sched = EnergyAwareWRR(nodes=nodes, direction="fwd",
+                           telemetry_source=source, refresh_period=5)
+    # __post_init__ triggers one refresh.
+    assert refresh_count["n"] == 1
+    for _ in range(5):
+        sched.pick()
+    # After 5 picks, exactly one additional refresh should have fired.
+    assert refresh_count["n"] == 2
+    for _ in range(5):
+        sched.pick()
+    assert refresh_count["n"] == 3
+
+
+def test_energy_aware_wrr_falls_back_to_flops_when_all_zero() -> None:
+    """If energy weights + guard collapse to all zeros (every worker over cap
+    with derate=0), the scheduler must fall back to FLOPS weights so dispatch
+    keeps making progress."""
+    nodes = [
+        Node(node_id="a", stage_id=0, capacity_flops=1.0),
+        Node(node_id="b", stage_id=0, capacity_flops=3.0),
+    ]
+    tel = {
+        "a": _telem_with_cap("a", power_w=390.0, cap_w=400.0, throughput=10.0),
+        "b": _telem_with_cap("b", power_w=395.0, cap_w=400.0, throughput=10.0),
+    }
+    sched = EnergyAwareWRR(
+        nodes=nodes, direction="fwd",
+        telemetry_source=lambda: tel,
+        guard=PowerSlackGuard(slack_threshold=0.85, derate_factor=0.0),
+        refresh_period=1,
+    )
+    counts = _drain_picks(sched, target=40)
+    # Fallback to FLOPS (1:3) — b should get ~3× dispatch.
+    assert counts.get("b", 0) > counts.get("a", 0)
+
+
+def test_energy_aware_wrr_guard_excludes_saturated_node_from_dispatch() -> None:
+    """Saturated efficient worker gets zero dispatch when guard derate_factor=0."""
+    nodes = [
+        Node(node_id="hot",  stage_id=0, capacity_flops=10.0),
+        Node(node_id="cool", stage_id=0, capacity_flops=10.0),
+    ]
+    tel = {
+        # hot: super efficient but pinned at cap
+        "hot":  _telem_with_cap("hot",  power_w=380.0, cap_w=400.0, throughput=500.0),
+        "cool": _telem_with_cap("cool", power_w=150.0, cap_w=400.0, throughput=100.0),
+    }
+    sched = EnergyAwareWRR(
+        nodes=nodes, direction="fwd",
+        telemetry_source=lambda: tel,
+        guard=PowerSlackGuard(slack_threshold=0.85, derate_factor=0.0),
+        refresh_period=1,
+    )
+    counts = _drain_picks(sched, target=30)
+    # All dispatch flows to cool worker.
+    assert counts.get("hot", 0) == 0
+    assert counts.get("cool", 0) == 30
+
+
+def test_energy_aware_wrr_empty_telemetry_uses_flops_fallback() -> None:
+    """No telemetry → energy_weights_for_stage falls back to FLOPS itself; the
+    scheduler then dispatches proportionally to capacity_flops."""
+    nodes = [
+        Node(node_id="a", stage_id=0, capacity_flops=1.0),
+        Node(node_id="b", stage_id=0, capacity_flops=3.0),
+    ]
+    sched = EnergyAwareWRR(
+        nodes=nodes, direction="fwd",
+        telemetry_source=lambda: {},
+        refresh_period=1,
+    )
+    counts = _drain_picks(sched, target=40)
+    # 1:3 FLOPS ratio.
+    assert counts.get("b", 0) > 2 * counts.get("a", 0)

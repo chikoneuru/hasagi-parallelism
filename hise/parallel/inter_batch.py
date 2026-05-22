@@ -19,7 +19,7 @@ The energy-aware variant ``w_j ~ throughput_j / P_j`` is the Phase 2 deliverable
 from __future__ import annotations
 
 from collections import deque
-from collections.abc import Mapping, Sequence
+from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass, field
 
 from hise.energy.telemetry import WorkerTelemetry
@@ -172,6 +172,81 @@ class WRRScheduler:
     def pick(self) -> Node | None:
         for n in self.nodes:
             self.deficit[n.node_id] += self._weights[n.node_id]
+        chosen = max(self.nodes, key=lambda n: self.deficit[n.node_id])
+        if self.deficit[chosen.node_id] < 1.0:
+            return None
+        self.deficit[chosen.node_id] -= 1.0
+        return chosen
+
+
+@dataclass
+class EnergyAwareWRR:
+    """Deficit-WRR that refreshes weights from live NVML telemetry on each pick.
+
+    Sibling of ``WRRScheduler``: same deficit-Weighted Round Robin mechanics, but
+    weights come from ``energy_weights_for_stage`` (iter-per-joule, contribution C4)
+    instead of static FLOPS. Optionally chains through a ``PowerSlackGuard`` to
+    derate near-cap workers.
+
+    Refresh strategy: weights recompute every ``refresh_period`` picks. Set to 1
+    for max responsiveness (every pick) or higher to amortise the energy-weight
+    calculation across many dispatch decisions when the cluster is large.
+
+    Fallback chain: if energy weights + guard collapse to all-zero (e.g., every
+    worker saturated and ``derate_factor=0``), the scheduler falls back to FLOPS
+    weights so dispatch keeps making progress instead of stalling indefinitely.
+
+    Args:
+        nodes: workers in one pipeline stage (all sharing the same stage_id).
+        direction: "fwd" or "bwd" — kept separate to honour 1F1B priority.
+        telemetry_source: zero-arg callable returning the current telemetry map.
+            Called at every weight refresh; the orchestrator typically wires this
+            to its sidecar's latest scrape.
+        guard: optional ``PowerSlackGuard``; ``None`` skips the derating step.
+        refresh_period: number of ``pick()`` calls between weight refreshes
+            (>= 1). Default 1 = refresh every pick.
+    """
+
+    nodes: list[Node]
+    direction: str
+    telemetry_source: Callable[[], Mapping[str, WorkerTelemetry]]
+    guard: PowerSlackGuard | None = None
+    refresh_period: int = 1
+    deficit: dict[str, float] = field(default_factory=dict)
+    _weights: dict[str, float] = field(default_factory=dict, init=False, repr=False)
+    _ticks_since_refresh: int = field(default=0, init=False, repr=False)
+
+    def __post_init__(self) -> None:
+        if not self.nodes:
+            raise ValueError("Need at least one node.")
+        if self.direction not in ("fwd", "bwd"):
+            raise ValueError(f"direction must be 'fwd' or 'bwd', got {self.direction!r}")
+        if self.refresh_period < 1:
+            raise ValueError(f"refresh_period must be >= 1, got {self.refresh_period}")
+        stage = self.nodes[0].stage_id
+        if not all(n.stage_id == stage for n in self.nodes):
+            raise ValueError("All nodes must share the same stage_id.")
+        self.deficit = {n.node_id: 0.0 for n in self.nodes}
+        self._refresh_weights()
+
+    def _refresh_weights(self) -> None:
+        tel = self.telemetry_source()
+        w = energy_weights_for_stage(self.nodes, tel)
+        if self.guard is not None:
+            w = self.guard.apply(w, tel)
+        if sum(w.values()) <= 0:
+            # Energy + guard collapsed to zeros (e.g., every worker over cap).
+            # Fall back to FLOPS weights so dispatch keeps moving.
+            w = weights_for_stage(self.nodes)
+        self._weights = w
+        self._ticks_since_refresh = 0
+
+    def pick(self) -> Node | None:
+        self._ticks_since_refresh += 1
+        if self._ticks_since_refresh >= self.refresh_period:
+            self._refresh_weights()
+        for n in self.nodes:
+            self.deficit[n.node_id] += self._weights.get(n.node_id, 0.0)
         chosen = max(self.nodes, key=lambda n: self.deficit[n.node_id])
         if self.deficit[chosen.node_id] < 1.0:
             return None
