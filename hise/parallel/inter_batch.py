@@ -88,6 +88,75 @@ def energy_weights_for_stage(
 
 
 @dataclass
+class PowerSlackGuard:
+    """Derate WRR weights for nodes whose power draw is approaching the NVML cap.
+
+    When a worker is power-saturated, dispatching more micro-batches to it backfires:
+    NVML clamps the clock to stay within the cap, throughput drops, and the work
+    completes worse than if it had been routed to a node with power slack. The guard
+    detects "near-cap" workers (utilisation ≥ ``slack_threshold``) and multiplies
+    their weight by ``derate_factor``; the freed weight redistributes to nodes with
+    headroom via renormalisation.
+
+    Wires after ``energy_weights_for_stage``::
+
+        w = energy_weights_for_stage(nodes, telemetry)
+        w = PowerSlackGuard(slack_threshold=0.85).apply(w, telemetry)
+
+    Args:
+        slack_threshold: fraction of ``power_cap_w`` at which a node is considered
+            saturated. Default 0.85 leaves a 15% headroom buffer below the cap.
+        derate_factor: weight multiplier applied to over-threshold nodes. 0.0 fully
+            excludes them; 0.5 halves their share; 1.0 disables the guard.
+
+    Telemetry handling:
+        - Missing telemetry: node weight passes through unchanged (no derating).
+        - ``power_cap_w <= 0``: treated as no-cap / unknown → no derating.
+        - ``power_cap_w = math.inf`` (default StageSpec): utilisation = 0 → never
+          triggers, so guard is a no-op until real caps are populated.
+        - All nodes over threshold: returns the (zero or near-zero) adjusted dict
+          rather than dividing by 0; caller decides whether to fall back to FLOPS
+          weights or hold the dispatch.
+    """
+
+    slack_threshold: float = 0.85
+    derate_factor: float = 0.0
+
+    def __post_init__(self) -> None:
+        if not 0.0 < self.slack_threshold <= 1.0:
+            raise ValueError(
+                f"slack_threshold must be in (0, 1], got {self.slack_threshold}"
+            )
+        if not 0.0 <= self.derate_factor <= 1.0:
+            raise ValueError(
+                f"derate_factor must be in [0, 1], got {self.derate_factor}"
+            )
+
+    def apply(
+        self,
+        weights: Mapping[str, float],
+        telemetry: Mapping[str, WorkerTelemetry],
+    ) -> dict[str, float]:
+        """Return new weights with over-threshold nodes derated and the rest
+        renormalised so the sum is 1 (or 0 when every node is over threshold)."""
+        adjusted: dict[str, float] = {}
+        for nid, w in weights.items():
+            t = telemetry.get(nid)
+            if t is None or t.power_cap_w <= 0:
+                adjusted[nid] = w
+                continue
+            utilization = t.power_draw_w / t.power_cap_w
+            if utilization >= self.slack_threshold:
+                adjusted[nid] = w * self.derate_factor
+            else:
+                adjusted[nid] = w
+        total = sum(adjusted.values())
+        if total <= 0:
+            return adjusted
+        return {nid: v / total for nid, v in adjusted.items()}
+
+
+@dataclass
 class WRRScheduler:
     """Weighted Round Robin over a stage's nodes; deficit-based for non-integer weights."""
 

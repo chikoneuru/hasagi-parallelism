@@ -2,6 +2,7 @@
 from hise.parallel.inter_batch import (
     InterBatchScheduler,
     Node,
+    PowerSlackGuard,
     energy_weights_for_stage,
     weights_for_stage,
 )
@@ -23,6 +24,7 @@ __all__ = [
     "LinkSpec",
     "Node",
     "Partition",
+    "PowerSlackGuard",
     "StageSpec",
     "StagnationTracker",
     "energy_weights_for_stage",
