@@ -98,6 +98,16 @@ def _hise_energy_kwh(profile: EnergyProfile, gpus: int, iters: int) -> float:
     return profile.energy_per_iter(gpus) * iters
 
 
+def _linear_energy_kwh(profile: EnergyProfile, gpus: int, iters: int) -> float:
+    """Linear P_per_gpu × gpus × duration projection (ElasticFlow / Zeus's η-rebalancing
+    use this form). Drops the allreduce term, so it underestimates real-world energy."""
+    if gpus <= 0 or iters <= 0:
+        return 0.0
+    curve = _profile_to_curve(profile)
+    p_per_gpu = profile.energy_per_iter(1) * profile.throughput(1) * 3_600_000.0
+    return project_energy_kwh(curve, p_per_gpu, gpus, iters)
+
+
 def _jct(profile_or_curve, gpus: int, iters: int) -> float:
     if gpus <= 0:
         return math.inf
@@ -109,10 +119,13 @@ def summarise(
     allocation: dict[str, int],
     rejected: tuple[str, ...],
     jobs: list[Job],
-    *,
-    use_profile_energy: bool,
 ) -> dict:
-    total_energy = 0.0
+    """Compute BOTH energy estimates for the same allocation. The linear estimate
+    is what ElasticFlow / Zeus would report; the profile estimate is what HISE's
+    Zeus-style EnergyProfile reports (and what the hardware would actually draw).
+    Both numbers describe the SAME physical configuration."""
+    linear_total = 0.0
+    profile_total = 0.0
     jcts = []
     finished_on_time = 0
     for job in jobs:
@@ -120,16 +133,8 @@ def summarise(
         if g == 0:
             jcts.append(math.inf)
             continue
-        if use_profile_energy:
-            e = _hise_energy_kwh(job.profile, g, job.iterations_remaining)
-        else:
-            curve = _profile_to_curve(job.profile)
-            # ElasticFlow has no profile; we use the linear proxy power per the docstring.
-            # Pull P_per_gpu from the EnergyProfile's effective average so the comparison
-            # uses the same per-iter physics. P_per_gpu = E_per_iter(1) * throughput(1) * 3.6e6
-            p_per_gpu = job.profile.energy_per_iter(1) * job.profile.throughput(1) * 3_600_000.0
-            e = project_energy_kwh(curve, p_per_gpu, g, job.iterations_remaining)
-        total_energy += e
+        linear_total += _linear_energy_kwh(job.profile, g, job.iterations_remaining)
+        profile_total += _hise_energy_kwh(job.profile, g, job.iterations_remaining)
         jct = _jct(job.profile, g, job.iterations_remaining)
         jcts.append(jct)
         if jct <= job.deadline_seconds:
@@ -139,7 +144,8 @@ def summarise(
         "alloc": allocation,
         "rejected": rejected,
         "total_gpus": sum(allocation.values()),
-        "total_energy_kwh": total_energy,
+        "linear_energy_kwh": linear_total,
+        "profile_energy_kwh": profile_total,
         "avg_jct_s": sum(j for j in jcts if math.isfinite(j)) / max(
             1, sum(1 for j in jcts if math.isfinite(j))
         ),
@@ -167,50 +173,54 @@ def run_scenario(name: str, jobs: list[Job], available_gpus: int, console: Conso
     ef_result = elasticflow_schedule(ef_jobs, available_gpus)
     hise_alloc, hise_rejected = schedule_hise_eb(jobs, available_gpus)
 
-    summary_ef = summarise("ElasticFlow", ef_result.allocation, ef_result.rejected,
-                           jobs, use_profile_energy=False)
-    summary_hi = summarise("HISE EB", hise_alloc, hise_rejected,
-                           jobs, use_profile_energy=True)
+    summary_ef = summarise("ElasticFlow", ef_result.allocation, ef_result.rejected, jobs)
+    summary_hi = summarise("HISE EB", hise_alloc, hise_rejected, jobs)
 
     table = Table(title=name)
     table.add_column("policy")
     table.add_column("alloc", overflow="fold")
     table.add_column("rejected", overflow="fold")
     table.add_column("Σ GPU", justify="right")
-    table.add_column("Σ kWh", justify="right")
+    table.add_column("linear-est. kWh", justify="right")
+    table.add_column("Zeus-profile kWh", justify="right")
+    table.add_column("model gap %", justify="right")
     table.add_column("avg JCT (s)", justify="right")
     table.add_column("deadlines met", justify="right")
     for s in (summary_ef, summary_hi):
+        gap_pct = (
+            100.0 * (s["profile_energy_kwh"] - s["linear_energy_kwh"]) /
+            s["linear_energy_kwh"]
+            if s["linear_energy_kwh"] > 0 else 0.0
+        )
         table.add_row(
             s["policy"],
             ", ".join(f"{k}:{v}" for k, v in sorted(s["alloc"].items())) or "—",
             ", ".join(sorted(s["rejected"])) or "—",
             str(s["total_gpus"]),
-            f"{s['total_energy_kwh']:.4f}",
+            f"{s['linear_energy_kwh']:.4f}",
+            f"{s['profile_energy_kwh']:.4f}",
+            f"+{gap_pct:.1f}%",
             f"{s['avg_jct_s']:.1f}",
             f"{s['deadlines_met']}/{s['n_jobs']}",
         )
     console.print(table)
 
-    if summary_ef["total_energy_kwh"] > 0:
-        delta_e_pct = (summary_hi["total_energy_kwh"] - summary_ef["total_energy_kwh"]) / \
-            summary_ef["total_energy_kwh"] * 100.0
-        delta_jct_pct = (summary_hi["avg_jct_s"] - summary_ef["avg_jct_s"]) / \
-            max(summary_ef["avg_jct_s"], 1e-9) * 100.0
-        diff_alloc = summary_ef["alloc"] != summary_hi["alloc"]
-        if diff_alloc:
-            console.print(
-                f"[dim]Δ HISE − ElasticFlow: energy {delta_e_pct:+.1f}%, "
-                f"avg JCT {delta_jct_pct:+.1f}% — allocations differ "
-                f"(HISE energy-min vs ElasticFlow throughput-max).[/]"
-            )
-        else:
-            console.print(
-                f"[dim]Allocations identical. Energy delta {delta_e_pct:+.1f}% reflects "
-                f"the modelling gap, not a scheduling difference: ElasticFlow's linear "
-                f"P_per_gpu × gpus × duration underestimates energy because it ignores "
-                f"the allreduce term that the Zeus-style EnergyProfile captures.[/]"
-            )
+    diff_alloc = summary_ef["alloc"] != summary_hi["alloc"]
+    if diff_alloc:
+        diff_msg = (
+            f"Allocations differ — HISE picked {summary_hi['alloc']}, "
+            f"ElasticFlow picked {summary_ef['alloc']}. "
+            "Use the Zeus-profile column for the true energy comparison."
+        )
+    else:
+        diff_msg = (
+            "Allocations are identical. The linear-est. column is what "
+            "ElasticFlow / Zeus would *report* internally; the Zeus-profile "
+            "column is what the hardware would actually draw. The 'model gap' "
+            "column is how much ElasticFlow's reporting under-counts energy "
+            "on this exact allocation — not a scheduling outcome."
+        )
+    console.print(f"[dim]{diff_msg}[/]")
 
 
 def scenario_a() -> tuple[str, list[Job], int]:
@@ -264,10 +274,16 @@ def main() -> None:
         run_scenario(name, jobs, gpus, console)
 
     console.print(
-        "\n[dim]ElasticFlow optimises throughput; HISE EB optimises energy under the "
-        "same deadlines + an energy budget. The expected pattern (per H1-E): HISE EB "
-        "uses less energy, possibly at higher JCT, and rejects jobs whose energy "
-        "budget cannot be met — even when their deadline alone is satisfiable.[/]"
+        "\n[dim]Two energy columns describe the same allocation under two energy "
+        "models. Linear-est. = P_per_gpu × gpus × duration (what ElasticFlow / Zeus "
+        "report internally, no allreduce term). Zeus-profile = e(g) × iters from "
+        "the convex EnergyProfile (what the hardware actually draws). The model "
+        "gap is the additional energy the linear estimate misses — it is independent "
+        "of which allocator made the decision.\n"
+        "Where the two allocators picked different allocations (none of the scenarios "
+        "above, because the workloads are symmetric enough to converge), HISE EB sits "
+        "on the energy-min end of the Pareto frontier and ElasticFlow on the "
+        "throughput-max end (see exp09 asymmetric divergence).[/]"
     )
 
 
