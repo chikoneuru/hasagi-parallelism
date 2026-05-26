@@ -69,6 +69,7 @@ ignore = ["E501"]
 "tests/test_primal_dual_policy.py" = ["N803", "N806"]
 "experiments/exp_joint_vs_stacked.py" = ["N806"]
 "experiments/exp_online_deadline.py" = ["N806"]
+"experiments/exp_online_primal_dual_sweep.py" = ["N803", "N806"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
