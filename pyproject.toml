@@ -64,6 +64,7 @@ ignore = ["E501"]
 "hise/parallel/joint_partitioner.py" = ["N803", "N806"]
 # Math-symbol identifiers from the proofs are preserved verbatim in tests.
 "tests/test_joint_partitioner.py" = ["N802", "N803", "N806"]
+"experiments/exp_joint_vs_stacked.py" = ["N806"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
