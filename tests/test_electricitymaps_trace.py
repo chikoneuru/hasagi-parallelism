@@ -124,7 +124,9 @@ def test_loader_is_drop_in_for_existing_plain_csv(tmp_path: Path) -> None:
 
 def test_zones_table_is_non_empty_and_documented() -> None:
     assert set(_GRID_ZONES) == {
-        "DE", "US-CA", "FR", "PL", "VN", "JP", "GB", "SG", "KR", "BR",
+        "DE", "US-CA", "FR", "PL", "VN", "JP",
+        "GB", "SG", "KR", "BR",
+        "NO", "ZA", "AU", "IN",
     }
     for params in _GRID_ZONES.values():
         assert params["mean_g"] > 0
@@ -151,9 +153,10 @@ def test_published_traces_span_published_order_of_magnitude() -> None:
         z: statistics.mean(published_grid_trace(z, days=14, sample_minutes=60, seed=1).intensities)
         for z in _GRID_ZONES
     }
-    assert means["FR"] < means["BR"] < means["GB"] < means["US-CA"] < means["DE"] < means["PL"]
-    # PL/FR ratio ≥ 8× (published statistics give ~11×).
-    assert means["PL"] / means["FR"] >= 8
+    assert means["NO"] < means["FR"] < means["BR"] < means["GB"] < means["US-CA"] < means["DE"]
+    assert means["DE"] < means["PL"] < means["ZA"]
+    # ZA/NO ratio ≥ 25× (published statistics give ~34×).
+    assert means["ZA"] / means["NO"] >= 25
 
 
 def test_each_published_trace_mean_within_tolerance() -> None:
