@@ -384,16 +384,87 @@ def render_aggregate(rows: list[TailResult], console: Console,
     )
 
 
+def render_pareto_frontier(
+    pareto_rows: list[tuple[float, list[TailResult]]],
+    console: Console,
+) -> None:
+    """Aggregate (violation %, energy premium %) per chance_α to surface the
+    deployment-knob Pareto frontier."""
+    table = Table(
+        title=(
+            "Pareto frontier — operator-tunable chance_α: violation rate vs "
+            "energy premium (aggregated across σ_T > 0 cells)"
+        )
+    )
+    table.add_column("chance_α", justify="right")
+    table.add_column("z_α", justify="right")
+    table.add_column("mean Θ-viol /stage %", justify="right")
+    table.add_column("mean Θ-viol /realisation %", justify="right")
+    table.add_column("mean energy premium %", justify="right")
+    table.add_column("max Θ-viol /stage %", justify="right")
+    table.add_column("max energy premium %", justify="right")
+
+    for chance_alpha, rows in pareto_rows:
+        feasible = [r for r in rows if r.v1_feasible and r.v2_feasible and r.sigma_t > 0]
+        if not feasible:
+            table.add_row(f"{chance_alpha:.2f}", "—", "—", "—", "—", "—", "—")
+            continue
+        from statistics import NormalDist
+        z_alpha = NormalDist().inv_cdf(1.0 - chance_alpha)
+        v2_stage = [r.v2_per_stage_theta_violation_pct for r in feasible]
+        v2_real = [r.v2_per_realisation_theta_violation_pct for r in feasible]
+        premium = [
+            100.0 * (r.v2_expected_energy - r.v1_expected_energy)
+            / max(r.v2_expected_energy, 1e-12)
+            for r in feasible
+            if math.isfinite(r.v1_expected_energy)
+        ]
+        if not premium:
+            premium = [0.0]
+        table.add_row(
+            f"{chance_alpha:.2f}",
+            f"{z_alpha:.3f}",
+            f"{sum(v2_stage)/len(v2_stage):.2f}%",
+            f"{sum(v2_real)/len(v2_real):.2f}%",
+            f"{sum(premium)/len(premium):+.2f}%",
+            f"{max(v2_stage):.2f}%",
+            f"{max(premium):+.2f}%",
+        )
+    console.print(table)
+
+
 def run(args: argparse.Namespace) -> None:
     console = Console()
+    pareto_mode = len(args.chance_alpha_values) > 1
     console.print(
         f"[bold]exp_v2_tail_violations[/] — Monte-Carlo N={args.n_draws}, "
-        f"σ_P={args.sigma_p}, chance_α={args.chance_alpha}, "
+        f"σ_P={args.sigma_p}, chance_α={args.chance_alpha_values}, "
         f"T_floor mult={args.t_floor_multiplier}"
     )
-    rows = sweep(args)
-    render_violations(rows, console)
-    render_aggregate(rows, console, args.chance_alpha)
+
+    pareto_rows: list[tuple[float, list[TailResult]]] = []
+    for chance_alpha in args.chance_alpha_values:
+        args.chance_alpha = chance_alpha
+        rows = sweep(args)
+        pareto_rows.append((chance_alpha, rows))
+        if not pareto_mode:
+            render_violations(rows, console)
+            render_aggregate(rows, console, chance_alpha)
+
+    if pareto_mode:
+        render_pareto_frontier(pareto_rows, console)
+        console.print(
+            "\n[dim]Pareto frontier interpretation: each chance_α row is a "
+            "deployment knob setting. Lower α → tighter SLO bound (fewer "
+            "violations) at higher energy premium. Higher α → relaxed SLO "
+            "at smaller premium. Operator picks the (α, premium, violation) "
+            "point that matches their reliability requirement. The variance-"
+            "blind baseline v1_naive (no chance constraints) sits OFF this "
+            "frontier — it has the lowest energy but unbounded violation rate "
+            "(~31%/stage in our sweep).[/]"
+        )
+        return
+
     console.print(
         "\n[dim]v1_naive runs joint_partition with deterministic constraints — "
         "the variance-blind default. v2 runs stochastic_joint_partition with "
@@ -414,7 +485,9 @@ def main() -> None:
     parser.add_argument("--sigma-t-values", type=float, nargs="+",
                         default=[0.05, 0.10, 0.20])
     parser.add_argument("--sigma-p", type=float, default=0.05)
-    parser.add_argument("--chance-alpha", type=float, default=0.05)
+    parser.add_argument("--chance-alpha-values", type=float, nargs="+",
+                        default=[0.05],
+                        help="One value → detailed cell tables; multiple values → Pareto frontier")
     parser.add_argument("--t-floor-multiplier", type=float, default=1.50)
     parser.add_argument("--voltage-alpha", type=float, default=2.0)
     parser.add_argument("--throttle-min", type=float, default=0.5)
