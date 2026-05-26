@@ -123,7 +123,9 @@ def test_loader_is_drop_in_for_existing_plain_csv(tmp_path: Path) -> None:
 
 
 def test_zones_table_is_non_empty_and_documented() -> None:
-    assert set(_GRID_ZONES) == {"DE", "US-CA", "FR", "PL", "VN", "JP"}
+    assert set(_GRID_ZONES) == {
+        "DE", "US-CA", "FR", "PL", "VN", "JP", "GB", "SG", "KR", "BR",
+    }
     for params in _GRID_ZONES.values():
         assert params["mean_g"] > 0
         assert params["daily_swing"] >= 0
@@ -139,15 +141,33 @@ def test_published_de_trace_matches_published_mean() -> None:
 
 
 def test_published_traces_span_published_order_of_magnitude() -> None:
-    """FR << US-CA << DE << VN << JP << PL — same ordering as the published
-    Data Portal annual dashboards."""
+    """Anchor-zone ordering matches the published Data Portal annual dashboards.
+
+    Mid-zone means (SG/VN/KR/JP) cluster within ~60 g of each other and may
+    swap under noise, so we only assert ordering on the anchor zones whose
+    published means are separated by clear gaps.
+    """
     means = {
         z: statistics.mean(published_grid_trace(z, days=14, sample_minutes=60, seed=1).intensities)
         for z in _GRID_ZONES
     }
-    assert means["FR"] < means["US-CA"] < means["DE"] < means["VN"] < means["JP"] < means["PL"]
+    assert means["FR"] < means["BR"] < means["GB"] < means["US-CA"] < means["DE"] < means["PL"]
     # PL/FR ratio ≥ 8× (published statistics give ~11×).
     assert means["PL"] / means["FR"] >= 8
+
+
+def test_each_published_trace_mean_within_tolerance() -> None:
+    """Every zone's empirical 14-day mean must land within ±25% of its declared
+    annual mean — looser tolerance for high-volatility zones like GB."""
+    for zone, params in _GRID_ZONES.items():
+        trace = published_grid_trace(zone, days=14, sample_minutes=60, seed=1)
+        emp = statistics.mean(trace.intensities)
+        declared = params["mean_g"]
+        rel_err = abs(emp - declared) / declared
+        assert rel_err < 0.25, (
+            f"{zone}: empirical mean {emp:.0f} g deviates from declared "
+            f"{declared:.0f} g by {rel_err:.1%}"
+        )
 
 
 def test_published_trace_is_deterministic_for_seed() -> None:

@@ -15,8 +15,9 @@ Three ways to build a ``CarbonTrace``:
 * ``synthetic_solar_trace`` — deterministic 24h cycle for offline experiments / unit tests.
 * ``published_grid_trace`` — parametric multi-harmonic model whose mean / daily-swing /
   weekly-swing parameters are fit to ElectricityMaps Data Portal annual statistics for
-  ``{DE, US-CA, FR, PL, VN, JP}``. Useful when an auth-tokened CSV download is not
-  available; reviewer-defensible because every parameter is documented + sourced.
+  ``{DE, US-CA, FR, PL, VN, JP, GB, SG, KR, BR}``. Useful when an auth-tokened CSV
+  download is not available; reviewer-defensible because every parameter is documented
+  + sourced.
 
 For paper-grade reporting, evaluate **all three** of ElectricityMaps, WattTime, and the
 IEA static grid-mix table in parallel — disagreement >20% between sources should be
@@ -207,6 +208,25 @@ _GRID_ZONES = {
     # with limited solar penetration, so smaller diurnal swing but a strong
     # weekday/weekend industrial cycle.
     "JP": dict(mean_g=490.0, daily_swing=70.0, weekly_swing=35.0, noise_sd=20.0),
+    # GB (Great Britain — National Grid): wind + gas balance creates very large
+    # daily AND noise swings — clean when wind is high, jumps to ~350 g when
+    # wind drops and CCGT takes over. The high noise_sd captures wind
+    # intermittency, a feature this zone is uniquely useful for stress-testing.
+    "GB": dict(mean_g=200.0, daily_swing=120.0, weekly_swing=40.0, noise_sd=50.0),
+    # SG (Singapore): ~95% natural gas (CCGT) → very stable baseload. Tropical
+    # climate removes seasonal heating peak; tiny diurnal swing. Useful as a
+    # representative for SE-Asia cloud regions (AWS ap-southeast-1, GCP
+    # asia-southeast1) where carbon-shift gains are inherently small.
+    "SG": dict(mean_g=430.0, daily_swing=30.0, weekly_swing=25.0, noise_sd=15.0),
+    # KR (South Korea, national aggregate): coal + nuclear + LNG mix similar to
+    # JP but with a slightly larger weekday industrial cycle. Complements JP for
+    # East-Asia cloud coverage (AWS ap-northeast-2, GCP asia-northeast3).
+    "KR": dict(mean_g=450.0, daily_swing=65.0, weekly_swing=35.0, noise_sd=20.0),
+    # BR (Brazil, national aggregate): ~60-70% hydro → very low mean, small
+    # diurnal swing (hydro is baseload). Rainy/dry season swing is the dominant
+    # variability, captured by the noise term. Southern Hemisphere — diurnal
+    # phase agrees with the existing zones but seasonal cycle inverts.
+    "BR": dict(mean_g=100.0, daily_swing=25.0, weekly_swing=15.0, noise_sd=20.0),
 }
 
 
@@ -226,9 +246,13 @@ def published_grid_trace(
     at https://app.electricitymaps.com. Order of magnitude per zone:
 
         FR    ≈  65 ±  15 (nuclear dominant)
+        BR    ≈ 100 ±  25 (hydro dominant, Southern Hemisphere)
+        GB    ≈ 200 ± 120 (wind + gas, high volatility)
         US-CA ≈ 240 ± 110 (solar-heavy, large diurnal swing)
         DE    ≈ 360 ± 150 (mixed renewables + lignite)
+        SG    ≈ 430 ±  30 (CCGT baseload, low swing)
         VN    ≈ 440 ±  90 (coal + hydro + emerging solar)
+        KR    ≈ 450 ±  65 (coal + nuclear + LNG)
         JP    ≈ 490 ±  70 (LNG + coal, modest renewable share)
         PL    ≈ 720 ±  55 (coal dominant, low diurnal swing)
 
