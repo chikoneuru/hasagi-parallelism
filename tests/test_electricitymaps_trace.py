@@ -123,7 +123,7 @@ def test_loader_is_drop_in_for_existing_plain_csv(tmp_path: Path) -> None:
 
 
 def test_zones_table_is_non_empty_and_documented() -> None:
-    assert set(_GRID_ZONES) == {"DE", "US-CA", "FR", "PL"}
+    assert set(_GRID_ZONES) == {"DE", "US-CA", "FR", "PL", "VN", "JP"}
     for params in _GRID_ZONES.values():
         assert params["mean_g"] > 0
         assert params["daily_swing"] >= 0
@@ -139,13 +139,13 @@ def test_published_de_trace_matches_published_mean() -> None:
 
 
 def test_published_traces_span_published_order_of_magnitude() -> None:
-    """FR (nuclear) << US-CA << DE << PL (coal) — same ordering as the published
+    """FR << US-CA << DE << VN << JP << PL — same ordering as the published
     Data Portal annual dashboards."""
     means = {
         z: statistics.mean(published_grid_trace(z, days=14, sample_minutes=60, seed=1).intensities)
         for z in _GRID_ZONES
     }
-    assert means["FR"] < means["US-CA"] < means["DE"] < means["PL"]
+    assert means["FR"] < means["US-CA"] < means["DE"] < means["VN"] < means["JP"] < means["PL"]
     # PL/FR ratio ≥ 8× (published statistics give ~11×).
     assert means["PL"] / means["FR"] >= 8
 

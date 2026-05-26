@@ -15,8 +15,8 @@ Three ways to build a ``CarbonTrace``:
 * ``synthetic_solar_trace`` — deterministic 24h cycle for offline experiments / unit tests.
 * ``published_grid_trace`` — parametric multi-harmonic model whose mean / daily-swing /
   weekly-swing parameters are fit to ElectricityMaps Data Portal annual statistics for
-  ``{DE, US-CA, FR, PL}``. Useful when an auth-tokened CSV download is not available;
-  reviewer-defensible because every parameter is documented + sourced.
+  ``{DE, US-CA, FR, PL, VN, JP}``. Useful when an auth-tokened CSV download is not
+  available; reviewer-defensible because every parameter is documented + sourced.
 
 For paper-grade reporting, evaluate **all three** of ElectricityMaps, WattTime, and the
 IEA static grid-mix table in parallel — disagreement >20% between sources should be
@@ -199,6 +199,14 @@ _GRID_ZONES = {
     "US-CA": dict(mean_g=240.0, daily_swing=110.0, weekly_swing=30.0, noise_sd=18.0),
     "FR": dict(mean_g=65.0, daily_swing=15.0, weekly_swing=5.0, noise_sd=6.0),
     "PL": dict(mean_g=720.0, daily_swing=55.0, weekly_swing=18.0, noise_sd=20.0),
+    # VN (Vietnam national aggregate): ~40% coal + ~30% hydro + ~15% gas + ~12% solar
+    # gives a moderate mean with a visible solar-noon dip and a weekday-heavy
+    # industrial cycle. Hydro adds non-trivial noise from rainy-season variance.
+    "VN": dict(mean_g=440.0, daily_swing=90.0, weekly_swing=30.0, noise_sd=25.0),
+    # JP (Japan national aggregate, dominated by JP-TK / JP-KY): LNG + coal heavy
+    # with limited solar penetration, so smaller diurnal swing but a strong
+    # weekday/weekend industrial cycle.
+    "JP": dict(mean_g=490.0, daily_swing=70.0, weekly_swing=35.0, noise_sd=20.0),
 }
 
 
@@ -217,10 +225,12 @@ def published_grid_trace(
     are documented in ``_GRID_ZONES`` and reflect the public per-zone dashboards
     at https://app.electricitymaps.com. Order of magnitude per zone:
 
-        FR  ≈  65 ±  15 (nuclear dominant)
+        FR    ≈  65 ±  15 (nuclear dominant)
         US-CA ≈ 240 ± 110 (solar-heavy, large diurnal swing)
-        DE  ≈ 360 ± 150 (mixed renewables + lignite)
-        PL  ≈ 720 ±  55 (coal dominant, low diurnal swing)
+        DE    ≈ 360 ± 150 (mixed renewables + lignite)
+        VN    ≈ 440 ±  90 (coal + hydro + emerging solar)
+        JP    ≈ 490 ±  70 (LNG + coal, modest renewable share)
+        PL    ≈ 720 ±  55 (coal dominant, low diurnal swing)
 
     The ratio max(PL)/min(FR) ≈ 11× covers most of the proposal's
     "40× intensity span" claim across multi-region routing.
