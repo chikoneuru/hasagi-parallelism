@@ -18,6 +18,10 @@ from hise.parallel.partitioner import (
     partition_pipeline,
 )
 from hise.parallel.planner import HybridStrategy, select_hybrid_strategy
+from hise.parallel.stochastic_joint_partitioner import (
+    StochasticJointPlan,
+    stochastic_joint_partition,
+)
 
 __all__ = [
     "EnergyAwareWRR",
@@ -31,10 +35,12 @@ __all__ = [
     "PowerSlackGuard",
     "StageSpec",
     "StagnationTracker",
+    "StochasticJointPlan",
     "energy_weights_for_stage",
     "incremental_partition",
     "joint_partition",
     "partition_pipeline",
     "select_hybrid_strategy",
+    "stochastic_joint_partition",
     "weights_for_stage",
 ]

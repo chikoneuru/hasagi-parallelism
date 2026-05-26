@@ -62,8 +62,10 @@ ignore = ["E501"]
 # Math/algorithm code follows literature naming (K stages from PipeDream, INF for math.inf).
 "hise/parallel/partitioner.py" = ["N803", "N806"]
 "hise/parallel/joint_partitioner.py" = ["N803", "N806"]
+"hise/parallel/stochastic_joint_partitioner.py" = ["N803", "N806"]
 # Math-symbol identifiers from the proofs are preserved verbatim in tests.
 "tests/test_joint_partitioner.py" = ["N802", "N803", "N806"]
+"tests/test_stochastic_joint_partitioner.py" = ["N802", "N803", "N806"]
 "experiments/exp_joint_vs_stacked.py" = ["N806"]
 "experiments/exp_online_deadline.py" = ["N806"]
 
