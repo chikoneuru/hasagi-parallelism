@@ -69,19 +69,17 @@ class KnativePool:
     kubectl: str = "kubectl"
     poll_interval_s: float = 0.5
 
-    def _patch_annotation(self, key: str, value: str) -> None:
-        """Set a single annotation on the Knative template spec.
-
-        Knative re-reads its scale annotations on every update, but only
-        the ``serving.knative.dev`` controller's reconciler applies them —
-        we only need to push the annotation onto the latest revision's
-        template, no rollout required.
+    def _patch_annotations(self, annotations: dict[str, str]) -> None:
+        """Apply a batch of annotations on the Knative template spec in one
+        atomic call. Knative's validation webhook rejects half-updates that
+        leave min-scale > max-scale, so callers must always patch
+        consistent pairs together.
         """
         patch = json.dumps({
             "spec": {
                 "template": {
                     "metadata": {
-                        "annotations": {key: value}
+                        "annotations": annotations
                     }
                 }
             }
@@ -170,8 +168,10 @@ class KnativePool:
         if target < 0:
             raise ValueError(f"target must be >= 0, got {target}")
         target_str = str(target)
-        self._patch_annotation("autoscaling.knative.dev/min-scale", target_str)
-        self._patch_annotation("autoscaling.knative.dev/max-scale", target_str)
+        self._patch_annotations({
+            "autoscaling.knative.dev/min-scale": target_str,
+            "autoscaling.knative.dev/max-scale": target_str,
+        })
         logger.info(
             "knative-pool: patched %s/%s min=max=%d", self.namespace, self.service, target,
         )
@@ -220,9 +220,23 @@ class KnativePool:
             timed_out=timed_out,
         )
 
-    def observe(self) -> list[PodLifecycle]:
-        """Return the current pod-lifecycle snapshots without scaling."""
-        return [self._snapshot_pod(it) for it in self._list_pods()]
+    def observe(self, include_terminating: bool = False) -> list[PodLifecycle]:
+        """Return the current pod-lifecycle snapshots without scaling.
+
+        By default Terminating pods (those with a non-null
+        ``deletionTimestamp``) are excluded — they no longer take traffic
+        and including them pollutes scale-event diffs. Pass
+        ``include_terminating=True`` if you specifically need the dying
+        pods (e.g., to time their drain wall-clock).
+        """
+        out: list[PodLifecycle] = []
+        for it in self._list_pods():
+            if not include_terminating and it.get("metadata", {}).get("deletionTimestamp"):
+                continue
+            if it.get("status", {}).get("phase") in ("Succeeded", "Failed"):
+                continue
+            out.append(self._snapshot_pod(it))
+        return out
 
 
 def _parse_iso8601(s: str) -> float:
