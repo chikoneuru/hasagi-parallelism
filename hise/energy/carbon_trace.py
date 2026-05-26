@@ -15,7 +15,7 @@ Three ways to build a ``CarbonTrace``:
 * ``synthetic_solar_trace`` — deterministic 24h cycle for offline experiments / unit tests.
 * ``published_grid_trace`` — parametric multi-harmonic model whose mean / daily-swing /
   weekly-swing parameters are fit to ElectricityMaps Data Portal annual statistics for
-  14 zones spanning a ~34× intensity range (``NO`` → ``ZA``). Useful when an
+  16 zones spanning a ~34× intensity range (``NO`` → ``ZA``). Useful when an
   auth-tokened CSV download is not available; reviewer-defensible because every
   parameter is documented + sourced.
 
@@ -247,6 +247,18 @@ _GRID_ZONES = {
     # important because most carbon-aware ML papers omit it. Solar growing
     # fast → moderate diurnal swing.
     "IN": dict(mean_g=620.0, daily_swing=80.0, weekly_swing=30.0, noise_sd=30.0),
+    # CN (China national aggregate): ~60% coal + ~20% hydro + ~13% wind/solar +
+    # smaller nuclear share. Largest electricity grid on the planet and the
+    # largest cloud market in Asia (AWS cn-north-1 / cn-northwest-1). Coal
+    # baseload dominates so the diurnal swing is moderate despite huge solar
+    # capacity; hydro adds seasonal noise.
+    "CN": dict(mean_g=600.0, daily_swing=65.0, weekly_swing=30.0, noise_sd=25.0),
+    # AE (United Arab Emirates): ~70% natural gas with Barakah nuclear (4 ×
+    # 1.4 GW APR-1400 reactors, ~25% of national supply since 2024) pulling
+    # mean intensity down from the pre-nuclear ~500 g baseline. Limited solar
+    # share so a small diurnal swing; stable grid with nuclear baseload.
+    # Only Middle East entry in the zone table (AWS me-central-1).
+    "AE": dict(mean_g=430.0, daily_swing=50.0, weekly_swing=20.0, noise_sd=15.0),
 }
 
 
@@ -271,11 +283,13 @@ def published_grid_trace(
         GB    ≈ 200 ± 120 (wind + gas, high volatility)
         US-CA ≈ 240 ± 110 (solar-heavy, large diurnal swing)
         DE    ≈ 360 ± 150 (mixed renewables + lignite)
+        AE    ≈ 430 ±  50 (gas + Barakah nuclear, Middle East entry)
         SG    ≈ 430 ±  30 (CCGT baseload, low swing)
         VN    ≈ 440 ±  90 (coal + hydro + emerging solar)
         KR    ≈ 450 ±  65 (coal + nuclear + LNG)
         JP    ≈ 490 ±  70 (LNG + coal, modest renewable share)
         AU    ≈ 560 ± 120 (coal + solar + wind, Southern Hemisphere)
+        CN    ≈ 600 ±  65 (coal + hydro, largest grid on the planet)
         IN    ≈ 620 ±  80 (coal-dominant emerging market, growing solar)
         PL    ≈ 720 ±  55 (coal dominant, low diurnal swing)
         ZA    ≈ 940 ±  50 (coal ~85%, high-extreme anchor)

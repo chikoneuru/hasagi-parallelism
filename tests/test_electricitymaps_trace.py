@@ -127,6 +127,7 @@ def test_zones_table_is_non_empty_and_documented() -> None:
         "DE", "US-CA", "FR", "PL", "VN", "JP",
         "GB", "SG", "KR", "BR",
         "NO", "ZA", "AU", "IN",
+        "CN", "AE",
     }
     for params in _GRID_ZONES.values():
         assert params["mean_g"] > 0
