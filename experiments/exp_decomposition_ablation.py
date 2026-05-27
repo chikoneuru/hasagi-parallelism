@@ -56,24 +56,50 @@ from hise.parallel.partitioner import LinkSpec, partition_pipeline
 
 @dataclass(frozen=True)
 class AttributionCell:
-    """Per-cell decomposition of the joint energy gap into its three mechanisms."""
+    """Per-cell decomposition of the joint energy gap into its three mechanisms.
+
+    Each cell carries both the strict view (NaN when any allocator misses
+    the T_floor deadline) and the relaxed view (uses each allocator's
+    best-effort raw energy regardless of deadline feasibility). The
+    relaxed view is always defined for the partition baselines and Perseus
+    variants; it remains undefined only when the joint DP itself reports
+    no plan (truly infeasible regime).
+    """
 
     model: str
     hardware: str
     t_floor_multiplier: float
-    # Raw allocator energies; inf when infeasible at this T_floor.
+    # Strict allocator energies; inf when infeasible at this T_floor.
     e_bottleneck: float
     e_energy_partition: float
     e_bottleneck_perseus: float
     e_energy_perseus: float
     e_joint: float
-    # Attribution (as fraction of bottleneck-only baseline). NaN if baseline infeasible.
+    # Relaxed (deadline-ignored) allocator energies; inf only when no
+    # partition or projection exists. Falls back to unit-throttle energy
+    # when Perseus has no admissible throttle vector.
+    raw_e_bottleneck: float
+    raw_e_energy_partition: float
+    raw_e_bottleneck_perseus: float
+    raw_e_energy_perseus: float
+    raw_e_joint: float
+    # Strict attribution (as fraction of strict bottleneck baseline).
+    # NaN when any contributing strict energy is inf.
     partition_only_pct: float
     throttle_only_pct: float
     sequential_combined_pct: float
     joint_full_pct: float
     joint_synergy_pct: float
     synergy_fraction: float
+    # Relaxed attribution against the raw bottleneck-only energy.
+    # Always defined for partition_only/throttle_only/sequential; defined
+    # for joint only when the joint DP returned a plan.
+    partition_only_pct_relaxed: float
+    throttle_only_pct_relaxed: float
+    sequential_combined_pct_relaxed: float
+    joint_full_pct_relaxed: float
+    joint_synergy_pct_relaxed: float
+    synergy_fraction_relaxed: float
     joint_feasible: bool
 
 
@@ -116,6 +142,14 @@ def _cell_attribution(
     e_en_pers = by_name["energy + Perseus"].energy if by_name["energy + Perseus"].feasible else math.inf
     e_joint = by_name["joint"].energy if by_name["joint"].feasible else math.inf
 
+    # Relaxed allocator energies — defined whenever the partition exists,
+    # ignoring T_floor feasibility.
+    r_bot = by_name["bottleneck-only"].raw_energy
+    r_en = by_name["energy-only"].raw_energy
+    r_bot_pers = by_name["bottleneck + Perseus"].raw_energy
+    r_en_pers = by_name["energy + Perseus"].raw_energy
+    r_joint = by_name["joint"].raw_energy
+
     partition_only_pct = _pct(e_bot, e_en)
     throttle_only_pct = _pct(e_bot, e_bot_pers)
     sequential_combined_pct = _pct(e_bot, e_en_pers)
@@ -130,18 +164,43 @@ def _cell_attribution(
         if not math.isnan(joint_synergy_pct) and joint_full_pct > 0
         else math.nan
     )
+
+    partition_only_pct_r = _pct(r_bot, r_en)
+    throttle_only_pct_r = _pct(r_bot, r_bot_pers)
+    sequential_combined_pct_r = _pct(r_bot, r_en_pers)
+    joint_full_pct_r = _pct(r_bot, r_joint)
+    joint_synergy_pct_r = (
+        joint_full_pct_r - sequential_combined_pct_r
+        if not math.isnan(joint_full_pct_r) and not math.isnan(sequential_combined_pct_r)
+        else math.nan
+    )
+    synergy_fraction_r = (
+        joint_synergy_pct_r / joint_full_pct_r
+        if not math.isnan(joint_synergy_pct_r) and joint_full_pct_r > 0
+        else math.nan
+    )
+
     return AttributionCell(
         model=model_label, hardware=hardware_label,
         t_floor_multiplier=t_floor_multiplier,
         e_bottleneck=e_bot, e_energy_partition=e_en,
         e_bottleneck_perseus=e_bot_pers, e_energy_perseus=e_en_pers,
         e_joint=e_joint,
+        raw_e_bottleneck=r_bot, raw_e_energy_partition=r_en,
+        raw_e_bottleneck_perseus=r_bot_pers, raw_e_energy_perseus=r_en_pers,
+        raw_e_joint=r_joint,
         partition_only_pct=partition_only_pct,
         throttle_only_pct=throttle_only_pct,
         sequential_combined_pct=sequential_combined_pct,
         joint_full_pct=joint_full_pct,
         joint_synergy_pct=joint_synergy_pct,
         synergy_fraction=synergy_fraction,
+        partition_only_pct_relaxed=partition_only_pct_r,
+        throttle_only_pct_relaxed=throttle_only_pct_r,
+        sequential_combined_pct_relaxed=sequential_combined_pct_r,
+        joint_full_pct_relaxed=joint_full_pct_r,
+        joint_synergy_pct_relaxed=joint_synergy_pct_r,
+        synergy_fraction_relaxed=synergy_fraction_r,
         joint_feasible=by_name["joint"].feasible,
     )
 
@@ -197,7 +256,7 @@ def run(args: argparse.Namespace) -> int:
                     throttle_curve=throttle_curve,
                 ))
 
-    per_cell = Table(title="Per-cell attribution (% of bottleneck-only baseline)")
+    per_cell = Table(title="Per-cell attribution — strict (deadline-feasible) % of bottleneck baseline")
     per_cell.add_column("model")
     per_cell.add_column("hw")
     per_cell.add_column("Tfloor×", justify="right")
@@ -219,44 +278,78 @@ def run(args: argparse.Namespace) -> int:
         )
     console.print(per_cell)
 
-    # Aggregate per-mechanism mean / median across the grid (NaN cells excluded).
-    aggregate = Table(title=f"Aggregate decomposition over {len(cells)} cells")
-    aggregate.add_column("mechanism")
-    aggregate.add_column("mean", justify="right")
-    aggregate.add_column("median", justify="right")
-    aggregate.add_column("max", justify="right")
-    parts = [c.partition_only_pct for c in cells]
-    throttles = [c.throttle_only_pct for c in cells]
-    seqs = [c.sequential_combined_pct for c in cells]
-    joints = [c.joint_full_pct for c in cells]
-    synergies = [c.joint_synergy_pct for c in cells]
-    fractions = [c.synergy_fraction for c in cells]
-    for label, vals in (
-        ("partition-only", parts),
-        ("throttle-only", throttles),
-        ("sequential combined", seqs),
-        ("joint full", joints),
-        ("joint synergy", synergies),
-    ):
-        finite = [v for v in vals if not math.isnan(v)]
-        if not finite:
-            aggregate.add_row(label, "—", "—", "—")
-            continue
-        aggregate.add_row(
-            label,
-            f"{_mean_finite(vals):+.2f}%",
-            f"{_median_finite(vals):+.2f}%",
-            f"{max(finite):+.2f}%",
+    per_cell_r = Table(title="Per-cell attribution — RELAXED (deadline-agnostic) % of raw bottleneck baseline")
+    per_cell_r.add_column("model")
+    per_cell_r.add_column("hw")
+    per_cell_r.add_column("Tfloor×", justify="right")
+    per_cell_r.add_column("partition", justify="right")
+    per_cell_r.add_column("throttle", justify="right")
+    per_cell_r.add_column("seq", justify="right")
+    per_cell_r.add_column("joint", justify="right")
+    per_cell_r.add_column("synergy", justify="right")
+    per_cell_r.add_column("syn frac", justify="right")
+    for c in cells:
+        per_cell_r.add_row(
+            c.model, c.hardware, f"{c.t_floor_multiplier:.2f}",
+            _fmt_pct(c.partition_only_pct_relaxed),
+            _fmt_pct(c.throttle_only_pct_relaxed),
+            _fmt_pct(c.sequential_combined_pct_relaxed),
+            _fmt_pct(c.joint_full_pct_relaxed),
+            _fmt_pct(c.joint_synergy_pct_relaxed),
+            f"{c.synergy_fraction_relaxed*100:.1f}%" if not math.isnan(c.synergy_fraction_relaxed) else "—",
         )
-    finite_frac = [v for v in fractions if not math.isnan(v)]
-    if finite_frac:
-        aggregate.add_row(
-            "synergy fraction (of joint full)",
-            f"{statistics.mean(finite_frac)*100:.1f}%",
-            f"{statistics.median(finite_frac)*100:.1f}%",
-            f"{max(finite_frac)*100:.1f}%",
-        )
-    console.print(aggregate)
+    console.print(per_cell_r)
+
+    # Aggregate per-mechanism mean / median across the grid for both views.
+    def _agg_table(title: str, getter) -> Table:
+        tbl = Table(title=title)
+        tbl.add_column("mechanism")
+        tbl.add_column("mean", justify="right")
+        tbl.add_column("median", justify="right")
+        tbl.add_column("max", justify="right")
+        tbl.add_column("n (finite)", justify="right")
+        n_total = len(cells)
+        for label, attr in (
+            ("partition-only", "partition_only_pct"),
+            ("throttle-only", "throttle_only_pct"),
+            ("sequential combined", "sequential_combined_pct"),
+            ("joint full", "joint_full_pct"),
+            ("joint synergy", "joint_synergy_pct"),
+        ):
+            field = attr if getter == "strict" else attr.replace("_pct", "_pct_relaxed")
+            vals = [getattr(c, field) for c in cells]
+            finite = [v for v in vals if not math.isnan(v)]
+            if not finite:
+                tbl.add_row(label, "—", "—", "—", f"0/{n_total}")
+                continue
+            tbl.add_row(
+                label,
+                f"{_mean_finite(vals):+.2f}%",
+                f"{_median_finite(vals):+.2f}%",
+                f"{max(finite):+.2f}%",
+                f"{len(finite)}/{n_total}",
+            )
+        frac_field = "synergy_fraction" if getter == "strict" else "synergy_fraction_relaxed"
+        frac_vals = [getattr(c, frac_field) for c in cells]
+        finite_frac = [v for v in frac_vals if not math.isnan(v)]
+        if finite_frac:
+            tbl.add_row(
+                "synergy fraction (of joint full)",
+                f"{statistics.mean(finite_frac)*100:.1f}%",
+                f"{statistics.median(finite_frac)*100:.1f}%",
+                f"{max(finite_frac)*100:.1f}%",
+                f"{len(finite_frac)}/{n_total}",
+            )
+        return tbl
+
+    console.print(_agg_table(
+        f"Aggregate decomposition — strict view over {len(cells)} cells",
+        "strict",
+    ))
+    console.print(_agg_table(
+        f"Aggregate decomposition — RELAXED view over {len(cells)} cells",
+        "relaxed",
+    ))
 
     if args.out:
         from pathlib import Path

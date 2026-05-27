@@ -53,6 +53,13 @@ class AllocResult:
     energy: float
     pipeline_time: float
     feasible: bool
+    # Best-effort energy at the chosen partition/throttle. Always populated
+    # for partition baselines and Perseus variants (with a unit-throttle
+    # fallback when the Perseus projection is empty). Matches ``energy``
+    # when feasible; remains finite when the deadline is missed but the
+    # partition itself exists, so a relaxed decomposition can still
+    # compute synergy on infeasible cells.
+    raw_energy: float = math.inf
 
 
 def _discrete_perseus_throttle(
@@ -162,23 +169,33 @@ def evaluate_workload(
     bot = partition_pipeline(layers, stages, links, objective="bottleneck")
     en = partition_pipeline(layers, stages, links, objective="energy")
 
+    # Per-partition unit-throttle energy is the relaxed reference: even if
+    # the deadline is missed, the partition exists and has a finite energy.
+    raw_unit_energy: dict[str, float] = {}
     for name, partition in (("bottleneck-only", bot), ("energy-only", en)):
         e, tp = _partition_energy_under_throttle(
             partition, stages, unit_throttle, voltage_alpha, throttle_curve,
         )
         feasible = tp <= t_floor + 1e-9
+        raw_unit_energy[name] = e
         results.append(AllocResult(
             name=name, cuts=partition.cuts, throttle_factors=unit_throttle,
             energy=e if feasible else math.inf,
             pipeline_time=tp, feasible=feasible,
+            raw_energy=e,
         ))
 
     for name, partition in (("bottleneck + Perseus", bot), ("energy + Perseus", en)):
+        base_name = "bottleneck-only" if name.startswith("bottleneck") else "energy-only"
         proj = _discrete_perseus_throttle(partition, R)
         if proj is None:
+            # Throttle projection empty (deadline cannot be met by any
+            # admissible throttle vector). Fall back to unit throttle for
+            # raw_energy so the relaxed decomposition still has a number.
             results.append(AllocResult(
                 name=name, cuts=partition.cuts, throttle_factors=(),
                 energy=math.inf, pipeline_time=math.inf, feasible=False,
+                raw_energy=raw_unit_energy.get(base_name, math.inf),
             ))
             continue
         e, tp = _partition_energy_under_throttle(
@@ -189,6 +206,7 @@ def evaluate_workload(
             name=name, cuts=partition.cuts, throttle_factors=proj,
             energy=e if feasible else math.inf,
             pipeline_time=tp, feasible=feasible,
+            raw_energy=e,
         ))
 
     plan = joint_partition(
@@ -206,6 +224,7 @@ def evaluate_workload(
         energy=plan.energy_per_iter,
         pipeline_time=plan.pipeline_time_s,
         feasible=plan.is_feasible(),
+        raw_energy=plan.energy_per_iter,
     ))
     return results
 
