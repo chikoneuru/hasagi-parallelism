@@ -1,6 +1,15 @@
 # HASAGI Testbed
 
-Reference implementation for **HASAGI — Hybrid Parallelism Architecture for Energy-Aware Serverless AI Training**.
+Reference implementation for **HASAGI — Hybrid Architecture for Serverless AI Training under Grid Intensity**.
+
+> **What is actually measured vs modelled (read first).** On the single-GPU
+> testbed (RTX 3080 Ti) the **energy** results are real NVML measurements; **carbon**
+> is a derived proxy (energy × grid intensity). The hybrid-parallel partitioner and
+> the ZeRO-style state redistribution are **algorithm + simulation only — there is no
+> real `torch.distributed`/pipeline execution** in this version, and multi-GPU
+> training is future work. Workloads in the power-cap study are small synthetic
+> microbenchmarks (a TinyResNet and a small Transformer), not full training runs.
+> Claims are scoped accordingly throughout; see "Measured findings" below.
 
 ## Layout
 
@@ -123,3 +132,40 @@ intensity value.
 
 Tenplex-style PTC state redistribution and end-to-end training-loop integration with
 real NVML on a multi-GPU testbed are explicit follow-ups.
+
+## Measured findings (single-GPU, honest scope)
+
+These are the defensible results on the current testbed. Energy is measured (NVML);
+carbon is energy × a grid-intensity trace. Numbers carry their caveats.
+
+- **Carbon-aware throttle vs pause, on 16 real ElectricityMaps zones × 2 seasons**
+  ([`exp_realtrace_pareto.py`](experiments/exp_realtrace_pareto.py),
+  [`exp_realtrace_sensitivity.py`](experiments/exp_realtrace_sensitivity.py)). Against a
+  GREEN-style temporal-shifter ported across its full capability range, throttling
+  to the energy-optimal cap and pausing are **carbon-comparable at a matched budget**
+  (zone-clustered fair gap +0.57 pp, not significant); the carbon winner is
+  zone-dependent. The robust advantage of throttle over pause for *training* is
+  **latency** — a 24 h job finishes ~+2 h late under throttle vs ~+14 h under
+  deferral. **For training, throttle, don't pause.**
+- **Decomposition: most of the saving is not carbon-awareness.** Throttle's ~+9 %
+  carbon vs always-full splits into ~+7.4 % same-budget *carbon-blind* cap efficiency
+  (established prior art: Zeus, Perseus/EnvPipe) plus only **+1.56 pp [+0.99, +2.15]**
+  attributable to the carbon *signal* (knowing which windows are dirty), Holm-robust
+  at the headline operating point. The carbon signal is the genuine, modest contribution.
+- **Energy-optimal power cap (repeated DVFS sweep, error bars + both cap-orders)**
+  ([`exp_hardware_pareto.py`](experiments/exp_hardware_pareto.py) `--repeats --cap-order`,
+  [`exp_cap_robustness.py`](experiments/exp_cap_robustness.py)). The energy-per-iter
+  U-curve has a **broad, order-invariant flat bottom** (ResNet ~200–250 W, the
+  Transformer ~250–300 W) whose plateaus **overlap at ~250 W** — so an earlier
+  single-sweep "workload-dependent optimum (200 vs 250 W)" claim **did not survive
+  repeats and is withdrawn**. The surviving effect is **under-capping risk**: a
+  too-low cap penalises the compute-heavy Transformer (~+17 % at 200 W, ~+73 % at
+  150 W) while ResNet tolerates it. A cap in the ~250–300 W overlap serves both.
+- **Reproducibility note.** Result artifacts and downloaded traces live under
+  gitignored `artifacts/` and `data_cache/`; regenerate the carbon traces with
+  `experiments/fetch_electricitymaps_traces.py` (needs `$ELECTRICITYMAPS_TOKEN`) and
+  the GPU sweeps with `exp_hardware_pareto.py` (needs `nvidia-smi -pl` privileges).
+
+**Not yet established (future work):** real multi-GPU / distributed execution; the
+hybrid-parallel re-partition and ZeRO redistribution beyond algorithm + simulation;
+any carbon claim on real training of large models.

@@ -31,6 +31,7 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import statistics
 import subprocess
 import time
 from dataclasses import asdict, dataclass
@@ -305,6 +306,47 @@ def fit_voltage_alpha(rows: list[CellResult]) -> tuple[float, float]:
     return (alpha, p_max)
 
 
+def _sd(xs: list[float]) -> float:
+    return statistics.stdev(xs) if len(xs) > 1 else 0.0
+
+
+def _aggregate_repeats(cap_w_requested: float, reps: list[CellResult]) -> tuple[CellResult, dict]:
+    """Collapse ``reps`` measurements at one cap into a MEAN CellResult (for the
+    profile/fit/table machinery) plus a stats dict carrying the run-to-run spread
+    (sd / coefficient-of-variation) so the optimum can be reported with error bars."""
+    thr = [r.throughput_iters_per_s for r in reps]
+    pw = [r.avg_power_w for r in reps]
+    eit = [r.energy_per_iter_j for r in reps]
+    mean_eit = statistics.mean(eit)
+    mean_cell = CellResult(
+        cap_w_requested=cap_w_requested,
+        cap_w_observed=statistics.mean([r.cap_w_observed for r in reps]),
+        iters=reps[0].iters,
+        wall_seconds=statistics.mean([r.wall_seconds for r in reps]),
+        throughput_iters_per_s=statistics.mean(thr),
+        avg_power_w=statistics.mean(pw),
+        peak_power_w=max(r.peak_power_w for r in reps),
+        avg_sm_clock_mhz=statistics.mean([r.avg_sm_clock_mhz for r in reps]),
+        avg_temp_c=statistics.mean([r.avg_temp_c for r in reps]),
+        peak_temp_c=max(r.peak_temp_c for r in reps),
+        energy_per_iter_j=mean_eit,
+        energy_per_iter_kwh=mean_eit / 3_600_000.0,
+        samples_count=sum(r.samples_count for r in reps),
+    )
+    stats = {
+        "cap_w_requested": cap_w_requested,
+        "cap_w_observed_mean": mean_cell.cap_w_observed,
+        "n_repeats": len(reps),
+        "throughput_mean": statistics.mean(thr), "throughput_sd": _sd(thr),
+        "avg_power_mean": statistics.mean(pw), "avg_power_sd": _sd(pw),
+        "energy_per_iter_j_mean": mean_eit, "energy_per_iter_j_sd": _sd(eit),
+        "energy_per_iter_cv": _sd(eit) / mean_eit if mean_eit > 0 else 0.0,
+        "energy_per_iter_j_repeats": eit,
+        "avg_temp_c_mean": mean_cell.avg_temp_c,
+    }
+    return mean_cell, stats
+
+
 def run_sweep(args: argparse.Namespace) -> int:
     console = Console()
     if not torch.cuda.is_available():
@@ -341,9 +383,10 @@ def run_sweep(args: argparse.Namespace) -> int:
             "Re-run with --cap-order descending to check the optimum is order-invariant."
         )
     rows: list[CellResult] = []
+    repeat_stats: list[dict] = []
     try:
         for cap_w in caps:
-            console.print(f"\n[bold]→ Setting power cap to {cap_w:.0f} W[/]")
+            console.print(f"\n[bold]→ Setting power cap to {cap_w:.0f} W[/] ({args.repeats} repeat(s))")
             try:
                 set_power_cap(cap_w)
             except subprocess.CalledProcessError as e:
@@ -354,20 +397,26 @@ def run_sweep(args: argparse.Namespace) -> int:
                 )
                 return 3
             time.sleep(args.settle_seconds)
-            result = run_inner(
-                handle, cap_w,
-                iters=args.iters, warmup_iters=args.warmup_iters,
-                batch_size=args.batch_size, spatial=args.spatial,
-                channels=args.channels, t0=t0, workload=args.workload,
-                seq_len=args.seq_len, d_model=args.d_model, layers=args.layers,
-            )
+            reps: list[CellResult] = []
+            for rep in range(max(1, args.repeats)):
+                if rep > 0 and args.cooldown_seconds > 0:
+                    time.sleep(args.cooldown_seconds)
+                reps.append(run_inner(
+                    handle, cap_w,
+                    iters=args.iters, warmup_iters=args.warmup_iters,
+                    batch_size=args.batch_size, spatial=args.spatial,
+                    channels=args.channels, t0=t0, workload=args.workload,
+                    seq_len=args.seq_len, d_model=args.d_model, layers=args.layers,
+                ))
+            result, stats = _aggregate_repeats(cap_w, reps)
             rows.append(result)
+            repeat_stats.append(stats)
             console.print(
                 f"  observed cap = {result.cap_w_observed:.0f} W | "
                 f"throughput = {result.throughput_iters_per_s:.2f} iter/s | "
                 f"avg power = {result.avg_power_w:.1f} W | "
-                f"energy/iter = {result.energy_per_iter_j:.3f} J | "
-                f"avg clock = {result.avg_sm_clock_mhz:.0f} MHz"
+                f"energy/iter = {result.energy_per_iter_j:.3f} ± {stats['energy_per_iter_j_sd']:.3f} J "
+                f"(CV {stats['energy_per_iter_cv'] * 100:.1f}%) | temp {result.avg_temp_c:.0f}C"
             )
     finally:
         # Always restore the original cap, even on Ctrl-C.
@@ -390,18 +439,19 @@ def run_sweep(args: argparse.Namespace) -> int:
     table.add_column("throughput (iter/s)", justify="right")
     table.add_column("avg power (W)", justify="right")
     table.add_column("avg clock (MHz)", justify="right")
-    table.add_column("E/iter (J)", justify="right")
-    table.add_column("E/iter (mJ/W)", justify="right")
-    for r in rows:
-        eff = r.energy_per_iter_j / max(r.avg_power_w, 1e-9) * 1000.0
+    table.add_column("E/iter (J) ± sd", justify="right")
+    table.add_column("CV %", justify="right")
+    table.add_column("temp C", justify="right")
+    for r, st in zip(rows, repeat_stats, strict=True):
         table.add_row(
             f"{r.cap_w_requested:.0f}",
             f"{r.cap_w_observed:.0f}",
             f"{r.throughput_iters_per_s:.2f}",
             f"{r.avg_power_w:.1f}",
             f"{r.avg_sm_clock_mhz:.0f}",
-            f"{r.energy_per_iter_j:.3f}",
-            f"{eff:.3f}",
+            f"{r.energy_per_iter_j:.3f} ± {st['energy_per_iter_j_sd']:.3f}",
+            f"{st['energy_per_iter_cv'] * 100:.1f}",
+            f"{r.avg_temp_c:.0f}",
         )
     console.print(table)
 
@@ -420,7 +470,10 @@ def run_sweep(args: argparse.Namespace) -> int:
         out_path.write_text(json.dumps({
             "gpu_name": gpu_name,
             "workload": args.workload,
+            "cap_order": args.cap_order,
+            "repeats": args.repeats,
             "rows": [asdict(r) for r in rows],
+            "repeat_stats": repeat_stats,
             "alpha": alpha,
             "p_max_w": p_max,
         }, indent=2))
@@ -432,9 +485,12 @@ def run_sweep(args: argparse.Namespace) -> int:
     # measured exponent is sub-linear (~0.85-0.95 here) — well below the α=2.0
     # the older synthetic voltage model assumed. The sane band is widened to
     # admit that real regime; a value far outside it would flag a bad sweep.
+    # Sort by cap so the monotonicity check is independent of sweep order
+    # (a descending --cap-order would otherwise false-FAIL: rows come back high→low).
+    by_cap = sorted(rows, key=lambda r: r.cap_w_observed)
     monotone = all(
-        rows[i].throughput_iters_per_s >= rows[i - 1].throughput_iters_per_s - 1e-3
-        for i in range(1, len(rows))
+        by_cap[i].throughput_iters_per_s >= by_cap[i - 1].throughput_iters_per_s - 1e-3
+        for i in range(1, len(by_cap))
     )
     alpha_sane = 0.5 <= alpha <= 3.5
     ok = monotone and alpha_sane
@@ -498,6 +554,11 @@ def main() -> int:
     parser.add_argument("--cap-order", choices=["ascending", "descending"], default="ascending",
                         help="Order to sweep caps; descending checks the optimum is not a "
                              "thermal-ordering artifact (higher caps run hotter).")
+    parser.add_argument("--repeats", type=int, default=1,
+                        help="Measurements per cap (re-randomising init each time) → run-to-run "
+                             "error bars (sd / CV) on the energy-per-iter U-curve.")
+    parser.add_argument("--cooldown-seconds", type=float, default=0.0,
+                        help="Idle sleep between repeats to bleed off accumulated heat.")
     parser.add_argument("--out", type=str, default=None,
                         help="Optional path to write raw JSON results.")
     args = parser.parse_args()

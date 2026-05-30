@@ -1,5 +1,17 @@
 """Workload-dependent energy-optimal power cap, from measured DVFS sweeps.
 
+SUPERSEDED FOR THE WORKLOAD-DEPENDENCE CLAIM: this tool compares SINGLE sweeps and
+reports an apparent ResNet 200 W vs transformer 250 W split. A rigorous re-measure
+(``exp_cap_robustness``: 3 repeats per cap × both cap-orders) found that split is
+within run-to-run noise — the optimal plateaus are broad and OVERLAP at ~250 W
+(ResNet ~200–250 W, transformer ~250–300 W), so the strong "workload-dependent
+optimum" conclusion is withdrawn. The surviving effect is asymmetric LOW-SIDE
+sensitivity (under-capping hurts the compute-heavy transformer far more). Read the
+cross-application penalty here as "under-capping is costly", and treat
+``exp_cap_robustness`` as the authoritative result. Kept for the per-sweep
+decomposition detail (eco-lever ratios, the interior-minimum check).
+
+
 The carbon-throttle policy leans to the GPU's *energy-optimal* power cap during
 high-carbon windows. That cap is a hardware × WORKLOAD property, not a constant:
 the power-vs-cap exponent alpha is stable across workloads (power is bounded by
