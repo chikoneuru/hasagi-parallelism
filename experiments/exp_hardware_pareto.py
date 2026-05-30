@@ -163,6 +163,8 @@ class CellResult:
     avg_power_w: float
     peak_power_w: float
     avg_sm_clock_mhz: float
+    avg_temp_c: float
+    peak_temp_c: float
     energy_per_iter_j: float
     energy_per_iter_kwh: float
     samples_count: int
@@ -238,10 +240,13 @@ def run_inner(
 
     powers = [s.power_w for s in samples]
     clocks = [s.sm_clock_mhz for s in samples]
+    temps = [s.temp_c for s in samples]
     avg_power = sum(powers) / len(powers) if powers else 0.0
     peak_power = max(powers) if powers else 0.0
     throughput = iters / wall if wall > 0 else 0.0
     avg_clock = sum(clocks) / len(clocks) if clocks else 0.0
+    avg_temp = sum(temps) / len(temps) if temps else 0.0
+    peak_temp = max(temps) if temps else 0.0
     energy_per_iter_j = (avg_power * wall) / iters if iters > 0 else 0.0
     return CellResult(
         cap_w_requested=cap_w_requested,
@@ -252,6 +257,8 @@ def run_inner(
         avg_power_w=avg_power,
         peak_power_w=peak_power,
         avg_sm_clock_mhz=avg_clock,
+        avg_temp_c=avg_temp,
+        peak_temp_c=peak_temp,
         energy_per_iter_j=energy_per_iter_j,
         energy_per_iter_kwh=energy_per_iter_j / 3_600_000.0,
         samples_count=len(samples),
@@ -277,9 +284,15 @@ def fit_voltage_alpha(rows: list[CellResult]) -> tuple[float, float]:
 
     Returns ``(alpha, p_max)``. ``p_max`` is taken from the row with the
     highest observed cap; ``alpha`` is the slope of log(power)/log(cap/p_max).
-    Rows where ``cap_w_observed ≤ 0`` are skipped.
+    Rows where ``cap_w_observed ≤ 0`` are skipped, as are NON-BINDING rows where
+    the drawn power exceeds the requested cap (the request is below the card's
+    enforceable floor, so ``P ∝ cap^α`` does not hold there and the off-model
+    point distorts the slope). Caps where power sits at or below the cap are
+    kept — those are the rows where the cap actually constrains.
     """
-    rows = [r for r in rows if r.cap_w_observed > 0 and r.avg_power_w > 0]
+    rows = [r for r in rows
+            if r.cap_w_observed > 0 and r.avg_power_w > 0
+            and r.avg_power_w <= r.cap_w_observed * 1.02]
     if len(rows) < 2:
         return (float("nan"), float("nan"))
     p_max = max(r.avg_power_w for r in rows)
@@ -320,7 +333,13 @@ def run_sweep(args: argparse.Namespace) -> int:
     original_cap = pynvml.nvmlDeviceGetEnforcedPowerLimit(handle) / 1000.0
     console.print(f"[dim]restore-on-exit cap = {original_cap:.0f} W[/]")
 
-    caps = sorted({float(c) for c in args.caps})
+    caps = sorted({float(c) for c in args.caps}, reverse=(args.cap_order == "descending"))
+    if args.cap_order == "ascending":
+        console.print(
+            "[yellow]note:[/] ascending cap order measures higher caps on a hotter GPU; a cooler card "
+            "sustains higher boost clocks, which can bias a flat U-curve toward the lower (cooler) cap. "
+            "Re-run with --cap-order descending to check the optimum is order-invariant."
+        )
     rows: list[CellResult] = []
     try:
         for cap_w in caps:
@@ -476,6 +495,9 @@ def main() -> int:
     parser.add_argument("--layers", type=int, default=6)
     parser.add_argument("--settle-seconds", type=float, default=2.0,
                         help="Wait after cap change for the GPU to settle.")
+    parser.add_argument("--cap-order", choices=["ascending", "descending"], default="ascending",
+                        help="Order to sweep caps; descending checks the optimum is not a "
+                             "thermal-ordering artifact (higher caps run hotter).")
     parser.add_argument("--out", type=str, default=None,
                         help="Optional path to write raw JSON results.")
     args = parser.parse_args()
