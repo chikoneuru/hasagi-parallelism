@@ -180,6 +180,66 @@ def test_pool_scale_fn_called_on_change() -> None:
     assert events[0] == (job.job_id, 3)
 
 
+# --- Serverless seam: pause must drive the pool to zero replicas ---
+
+def test_pause_decision_drives_pool_scale_to_zero() -> None:
+    """A dirty-grid pause (the only dispatched pause path, via RuleBasedPolicy)
+    drives the pool to 0 replicas while the job retains a >=1 desired width for
+    the eventual resume. This is the wiring that makes a pause cost a real
+    cold-start instead of idling at one replica."""
+    from hasagi.energy.policy import RuleBasedPolicy
+
+    store = JobStore()
+    job = _make_job(allocated=2)
+    store.add(job)
+    events: list[tuple[str, int]] = []
+
+    loop = EnergyAwareControlLoop(
+        job_store=store,
+        energy_policy=RuleBasedPolicy(min_gpus=1, max_gpus=8, pause_above_g_per_kwh=800.0),
+        telemetry_source=lambda: {},
+        runtime_model=_runtime(),
+        intensity_at_now=lambda: 900.0,   # dirty grid → pause
+        pool_scale_fn=lambda jid, gpus: events.append((jid, gpus)),
+    )
+    result = loop.tick(now_seconds=0.0)
+
+    assert result.decisions[job.job_id].pause is True
+    assert result.pool_targets[job.job_id] == 0
+    assert events == [(job.job_id, 0)]
+    updated = store.get(job.job_id)
+    assert updated is not None
+    assert updated.state == JobState.PAUSED
+    assert updated.allocated_gpus >= 1   # desired width retained for resume
+
+
+def test_clean_grid_runs_pool_at_target() -> None:
+    """Clean grid → no pause → pool driven to the running target (>=1)."""
+    from hasagi.energy.policy import RuleBasedPolicy
+
+    store = JobStore()
+    job = _make_job(allocated=2)
+    store.add(job)
+    events: list[tuple[str, int]] = []
+
+    loop = EnergyAwareControlLoop(
+        job_store=store,
+        energy_policy=RuleBasedPolicy(min_gpus=1, max_gpus=8),
+        telemetry_source=lambda: {},
+        runtime_model=_runtime(),
+        intensity_at_now=lambda: 300.0,   # mid-band → steady, no pause
+        pool_scale_fn=lambda jid, gpus: events.append((jid, gpus)),
+    )
+    result = loop.tick(now_seconds=0.0)
+
+    assert result.decisions[job.job_id].pause is False
+    assert result.pool_targets[job.job_id] >= 1
+    assert events[0][1] >= 1
+    updated = store.get(job.job_id)
+    assert updated is not None
+    assert updated.state == JobState.RUNNING
+
+
 # --- Repartition wiring ---
 
 def test_scale_down_triggers_repartition_with_context() -> None:

@@ -41,6 +41,7 @@ from hasagi.energy.policy import (
     MPCPolicy,
     OnlinePrimalDualPolicy,
     PowerAwareRulePolicy,
+    RuleBasedPolicy,
 )
 from hasagi.energy.telemetry import WorkerTelemetry
 from hasagi.orchestrator.deadline_selector import DeadlineFloor, DeadlineFloorSelector
@@ -98,6 +99,7 @@ class TickResult:
     decisions: dict[str, EnergyDecision] = field(default_factory=dict)
     strategies: dict[str, HybridStrategy] = field(default_factory=dict)
     partitions: dict[str, Partition] = field(default_factory=dict)
+    pool_targets: dict[str, int] = field(default_factory=dict)   # job_id → replicas driven this tick
     fallbacks: dict[str, str] = field(default_factory=dict)   # job_id → reason
     deadline_floors: dict[str, DeadlineFloor] = field(default_factory=dict)
     deadline_overrides: dict[str, str] = field(default_factory=dict)   # job_id → reason
@@ -132,7 +134,7 @@ class EnergyAwareControlLoop:
     """
 
     job_store: JobStore
-    energy_policy: PowerAwareRulePolicy | MPCPolicy | OnlinePrimalDualPolicy
+    energy_policy: PowerAwareRulePolicy | MPCPolicy | OnlinePrimalDualPolicy | RuleBasedPolicy
     telemetry_source: Callable[[], Mapping[str, WorkerTelemetry]]
     runtime_model: SimpleRuntimeModel
     intensity_at_now: Callable[[], float] | None = None
@@ -163,6 +165,13 @@ class EnergyAwareControlLoop:
             return self.energy_policy.decide(current_gpus, forecast)
         if isinstance(self.energy_policy, OnlinePrimalDualPolicy):
             intensity = self.intensity_at_now() if self.intensity_at_now else 1.0
+            return self.energy_policy.decide(current_gpus, intensity)
+        if isinstance(self.energy_policy, RuleBasedPolicy):
+            # Carbon-only baseline: the one dispatched policy that can emit
+            # ``pause=True`` (scale-to-zero) when the grid crosses its pause
+            # threshold. Absent an intensity source it sees a clean grid (0.0)
+            # and never pauses.
+            intensity = self.intensity_at_now() if self.intensity_at_now else 0.0
             return self.energy_policy.decide(current_gpus, intensity)
         raise TypeError(f"Unsupported energy policy type: {type(self.energy_policy).__name__}")
 
@@ -283,9 +292,17 @@ class EnergyAwareControlLoop:
                 state=JobState.PAUSED if decision.pause else JobState.RUNNING,
                 last_decision_reason=decision.reason,
             )
+            # A paused job releases its workers to zero replicas (scale-to-zero):
+            # the desired width is retained in ``allocated_gpus`` for the eventual
+            # resume, but no replica should be running while paused. A running job
+            # drives the pool to its decided ``target``. Keeping these distinct is
+            # what makes pause cost a real cold-start on resume instead of merely
+            # idling at >=1 replica.
+            pool_target = 0 if decision.pause else target
+            result.pool_targets[job.job_id] = pool_target
             if self.pool_scale_fn:
                 try:
-                    self.pool_scale_fn(job.job_id, target)
+                    self.pool_scale_fn(job.job_id, pool_target)
                 except Exception:  # pragma: no cover
                     logger.exception("pool scale failed for job %s", job.job_id)
         return result
