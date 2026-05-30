@@ -60,6 +60,13 @@ from hasagi.energy.throttle_pareto import (
     pareto,
     simulate_policy,
 )
+from hasagi.energy.trace_schedule import (
+    diurnal_offsets,
+    quantile_threshold,
+    rotate,
+    trace_to_hourly,
+    zone_stats,
+)
 
 __all__ = [
     "OBSERVATION_DIM",
@@ -104,12 +111,17 @@ __all__ = [
     "build_observation",
     "compute_reward",
     "discrete_action_space_size",
+    "diurnal_offsets",
     "load_csv_trace",
     "marginal_kwh_from_trace",
     "nvml_cumulative_kwh_fn",
     "pareto",
+    "quantile_threshold",
     "regime_breakdown",
     "regime_carbon",
+    "rotate",
     "simulate_policy",
     "synthetic_solar_trace",
+    "trace_to_hourly",
+    "zone_stats",
 ]
