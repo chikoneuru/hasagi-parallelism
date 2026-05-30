@@ -42,18 +42,25 @@ class HostTrainer:
     _loss_fn: object = field(default=None, init=False, repr=False)
     iters_done: int = field(default=0, init=False)
 
-    def _build(self) -> None:
+    def _build_model(self) -> None:
         import torch
 
-        from hasagi.data.datasets import build_loader
         from hasagi.models.zoo import build_model
 
         self._device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self._model = build_model(self.model_name).to(self._device)
         self._optim = torch.optim.SGD(self._model.parameters(), lr=0.01, momentum=0.9)
         self._loss_fn = torch.nn.CrossEntropyLoss()
+
+    def _build_loader(self) -> None:
+        from hasagi.data.datasets import build_loader
+
         self._loader = build_loader(self.dataset, batch_size=self.batch_size)
         self._loader_iter = iter(self._loader)
+
+    def _build(self) -> None:
+        self._build_model()
+        self._build_loader()
 
     def _next_batch(self):
         try:
@@ -84,30 +91,42 @@ class HostTrainer:
         if self._device.type == "cuda":
             torch.cuda.synchronize()
 
-    def teardown(self) -> None:
-        """Release the GPU as scale-to-zero would: drop the model + free memory."""
+    def teardown(self, keep_dataloader: bool = False) -> None:
+        """Release the GPU as scale-to-zero would: drop the model + free memory.
+
+        ``keep_dataloader=True`` leaves the dataloader (and its worker processes)
+        alive. On a host whose process survives the pause, this avoids paying the
+        cold-dataloader first-batch cost on resume — a measured ~0.76 s that
+        otherwise dominates the discrete resume cost. The GPU-resident state
+        (model, optimiser) is always freed.
+        """
         import torch
 
         self._model = None
         self._optim = None
-        self._loader_iter = None
+        if not keep_dataloader:
+            self._loader = None
+            self._loader_iter = None
         if torch.cuda.is_available():
             torch.cuda.empty_cache()
             torch.cuda.synchronize()
 
     def resume(self) -> None:
-        """Real resume cost: rebuild, reload state, re-init CUDA, warm up."""
+        """Real resume cost: rebuild model, reload state, warm up. Rebuilds the
+        dataloader only if it was torn down (see ``teardown(keep_dataloader)``)."""
         import torch
 
-        self._build()                       # rebuild graph + dataloader (CUDA re-init)
+        self._build_model()                 # rebuild model + optimiser
         # Our own trusted checkpoint (the model + optimiser state written above).
         state = torch.load(self.ckpt_path, map_location="cpu", weights_only=False)
         self._model.load_state_dict(state["model"])
         self._optim.load_state_dict(state["optim"])
         self.iters_done = int(state.get("iters_done", self.iters_done))
+        if self._loader is None:             # only pay the cold-dataloader cost if needed
+            self._build_loader()
         if self._device.type == "cuda":
             torch.cuda.synchronize()
-        self.train_iters_count(self.warmup_iters)   # first-iter warmup
+        self.train_iters_count(self.warmup_iters)   # clock-ramp / first-iter warmup
 
     def train_iters_count(self, n: int) -> int:
         """Run exactly ``n`` real training iterations on the GPU."""

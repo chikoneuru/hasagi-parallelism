@@ -97,7 +97,9 @@ def _run_policy(
     context exists); the held-context power then correctly lands in our idle phase.
     """
     console.print(f"[bold]Policy: {name}[/] (target {total_iters} iters)")
-    trainer = HostTrainer(ckpt_path=ckpt_path)
+    # warmup_iters spans the post-resume clock ramp (~15 iters) so the ramp's
+    # energy is charged to cold-start, not folded into the active phase.
+    trainer = HostTrainer(ckpt_path=ckpt_path, warmup_iters=15)
     ledger = PodEnergyLedger(energy_kwh_fn=lambda: 0.0)   # marks only; re-integrated later
     running = False
     ever_started = False
@@ -127,13 +129,19 @@ def _run_policy(
             _train_until(trainer, tick_seconds, total_iters)
         else:
             if running:
+                # Entering a pause: mark IDLE FIRST so the checkpoint + GPU release
+                # (and any pod drain) are billed to idle, not folded into the active
+                # phase. ``KnativePool.scale(0)`` blocks on full drain, which is real
+                # serverless latency but not part of the training job's active work.
+                ledger.mark(PHASE_IDLE, intensity)
                 trainer.checkpoint()
-                trainer.teardown()
+                trainer.teardown(keep_dataloader=True)   # warm loader → cheap resume
                 if pool is not None:
                     pool.scale(target=0, timeout_seconds=10.0, wait_for_ready=False)
                 running = False
                 pauses += 1
-            ledger.mark(PHASE_IDLE, intensity)
+            else:
+                ledger.mark(PHASE_IDLE, intensity)
             time.sleep(tick_seconds)
             if sample_background:
                 # Shared-GPU only: re-anchor the (co-tenant) background. On a
@@ -142,15 +150,18 @@ def _run_policy(
                 bg_model.add(time.monotonic(), meter.sample_power_w())
 
     makespan_s = time.monotonic() - t0
+    # The ledger's t_end is the END OF WORK, captured before teardown — otherwise
+    # the final teardown (dataloader-worker shutdown, ~seconds) and the settle
+    # would be absorbed into the last phase's duration and inflate its J/iter.
+    end_s = time.monotonic()
     if running:
         trainer.teardown()
         running = False
     if pool is not None:
         pool.scale(target=0, timeout_seconds=10.0, wait_for_ready=False)
-    time.sleep(_SETTLE_S)                         # let clocks drop before bracketing
-    end_s = time.monotonic()
     if sample_background:
-        bg_model.add(end_s, meter.sample_power_w())   # post-run bracket (job off GPU)
+        time.sleep(_SETTLE_S)                     # let clocks drop before bracketing
+        bg_model.add(time.monotonic(), meter.sample_power_w())   # post-run bracket
     console.print(
         f"  done: {trainer.iters_done} iters in {ticks} ticks, {pauses} pause(s), "
         f"makespan {makespan_s:.1f}s"
@@ -183,6 +194,7 @@ def _policy_json(d: dict) -> dict:
         "power_by_phase_w": {
             ph: _phase_power_w(rep, ph) for ph in rep.energy_by_phase_kwh
         },
+        "intervals_phase_dur_s": [(iv.phase, round(iv.duration_s, 2)) for iv in rep.intervals],
         "total_carbon_g_measured": rep.total_carbon_g,
     }
 
@@ -218,7 +230,7 @@ def run(args: argparse.Namespace) -> int:
         )
     meter.start()
 
-    pool = None if args.no_drive_pod else KnativePool(service=args.service, namespace=args.namespace)
+    pool = KnativePool(service=args.service, namespace=args.namespace) if args.drive_pod else None
     try:
         base = _run_policy(
             console, "always-on", ckpt_path="./artifacts/deferral_base_ckpt.pt",
@@ -336,8 +348,10 @@ def main() -> int:
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--service", default="hasagi-worker-lifecycle")
     p.add_argument("--namespace", default="hasagi-validation")
-    p.add_argument("--no-drive-pod", action="store_true",
-                   help="Skip the Knative pod; run the host-side study alone.")
+    p.add_argument("--drive-pod", action="store_true",
+                   help="Also drive the Knative pod scale-to-zero. Off by default: it adds real "
+                        "pod-drain latency that is not part of the training job's makespan, and the "
+                        "pod lifecycle fidelity lives in exp_serverless_training_ledger.")
     p.add_argument("--device", type=int, default=0)
     p.add_argument("--intensities", default="200,200,900,900",
                    help="Comma-separated per-tick grid intensity gCO2/kWh; cycled until done.")
