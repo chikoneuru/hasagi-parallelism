@@ -14,8 +14,18 @@ from __future__ import annotations
 
 import statistics
 from collections.abc import Sequence
+from dataclasses import dataclass
+from pathlib import Path
 
-from hasagi.energy.carbon_trace import CarbonTrace
+from hasagi.energy.carbon_trace import (
+    _GRID_ZONES,
+    CarbonTrace,
+    load_electricitymaps_csv,
+    published_grid_trace,
+)
+
+#: ElectricityMaps zone IDs the project reports on (the agreed 16-zone set).
+GRID_ZONE_IDS: tuple[str, ...] = tuple(_GRID_ZONES)
 
 
 def trace_to_hourly(trace: CarbonTrace) -> list[float]:
@@ -77,3 +87,61 @@ def zone_stats(values: Sequence[float]) -> dict[str, float]:
         "max": max(values),
         "swing": max(values) - min(values),
     }
+
+
+@dataclass(frozen=True)
+class ZoneTrace:
+    """A zone's carbon trace plus where it came from.
+
+    ``source`` is ``"real-csv"`` when a dropped-in ElectricityMaps export was
+    found for the zone, else ``"synthetic-parametric"`` (the labelled fallback).
+    Cross-zone significance should be computed over the real zones only.
+    """
+
+    zone: str
+    trace: CarbonTrace
+    source: str
+    csv_path: str | None
+
+
+def find_zone_csv(real_dir: str | Path, zone: str) -> Path | None:
+    """First CSV in ``real_dir`` whose name starts with ``<zone-id>_`` (case-insensitive).
+
+    Drop ElectricityMaps zone exports in named like ``de_2024-...csv``,
+    ``us-ca_2024-...csv`` — the zone id (lower-cased, hyphens kept) then an
+    underscore. Returns ``None`` if no match.
+    """
+    d = Path(real_dir)
+    if not d.is_dir():
+        return None
+    prefix = zone.lower() + "_"
+    for f in sorted(d.glob("*.csv")):
+        if f.name.lower().startswith(prefix):
+            return f
+    return None
+
+
+def load_zone_traces(
+    real_dir: str | Path,
+    zones: Sequence[str] = GRID_ZONE_IDS,
+    *,
+    synthetic_days: int = 14,
+) -> dict[str, ZoneTrace]:
+    """Load each zone's trace: a dropped-in real CSV if present, else synthetic.
+
+    This is the multi-zone drop-in: place real ElectricityMaps CSVs in
+    ``real_dir`` (one per zone, named ``<zone>_*.csv``) and those zones load as
+    ``real-csv``; the rest fall back to the labelled ``synthetic-parametric``
+    generator. As more real CSVs are added, more zones flip to real and the
+    cross-zone (clustered) inference over real zones strengthens.
+    """
+    out: dict[str, ZoneTrace] = {}
+    for z in zones:
+        csv = find_zone_csv(real_dir, z)
+        if csv is not None:
+            out[z] = ZoneTrace(z, load_electricitymaps_csv(csv), "real-csv", str(csv))
+        else:
+            out[z] = ZoneTrace(
+                z, published_grid_trace(z, days=synthetic_days), "synthetic-parametric", None,
+            )
+    return out
