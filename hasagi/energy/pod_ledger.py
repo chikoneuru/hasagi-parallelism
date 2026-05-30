@@ -35,6 +35,8 @@ from collections.abc import Callable
 from dataclasses import dataclass, field
 from typing import Protocol
 
+from hasagi.energy.background import BackgroundModel, marginal_kwh_from_trace
+
 PHASE_COLD_START = "cold_start"
 PHASE_ACTIVE = "active"
 PHASE_IDLE = "idle"
@@ -167,16 +169,49 @@ class PodEnergyLedger:
         mark of their own.
         """
         if not self._marks:
-            return LedgerReport(
-                intervals=(), total_energy_kwh=0.0, total_carbon_g=0.0,
-                energy_by_phase_kwh={}, carbon_by_phase_g={},
-                duration_by_phase_s={}, phase_counts={},
-            )
+            return self._assemble([])
 
         t = self.clock() if t_s is None else t_s
         e = self.energy_kwh_fn() if cumulative_kwh is None else cumulative_kwh
         sealed = [*self._marks, LedgerMark(_END, t, e, None)]
+        raw: list[tuple[str, float, float, float | None, float]] = []
+        for cur, nxt in zip(sealed, sealed[1:], strict=False):
+            # Cumulative energy is monotonic; clamp guards meter jitter / resets.
+            energy = max(0.0, nxt.cumulative_kwh - cur.cumulative_kwh)
+            raw.append((cur.phase, cur.t_s, nxt.t_s, cur.intensity_g_per_kwh, energy))
+        return self._assemble(raw)
 
+    def report_from_trace(
+        self,
+        trace: list[tuple[float, float]],
+        background: BackgroundModel,
+        *,
+        t_end: float | None = None,
+    ) -> LedgerReport:
+        """Re-attribute from a recorded power trace and a time-varying background.
+
+        Uses the marks' timestamps (not their cumulative reads) as phase
+        boundaries and integrates ``max(0, P_device − background(t))`` over each
+        interval. This corrects for a co-tenant whose load drifts during the run,
+        which a single fixed background cannot. The trailing phase runs to
+        ``t_end`` (or the last trace timestamp).
+        """
+        if not self._marks:
+            return self._assemble([])
+        if t_end is None:
+            t_end = trace[-1][0] if trace else self._marks[-1].t_s
+        boundaries = [*self._marks, LedgerMark(_END, t_end, 0.0, None)]
+        raw: list[tuple[str, float, float, float | None, float]] = []
+        for cur, nxt in zip(boundaries, boundaries[1:], strict=False):
+            energy = marginal_kwh_from_trace(trace, background, cur.t_s, nxt.t_s)
+            raw.append((cur.phase, cur.t_s, nxt.t_s, cur.intensity_g_per_kwh, energy))
+        return self._assemble(raw)
+
+    @staticmethod
+    def _assemble(
+        raw: list[tuple[str, float, float, float | None, float]],
+    ) -> LedgerReport:
+        """Build a ``LedgerReport`` from ``(phase, start_s, end_s, intensity, energy_kwh)`` rows."""
         intervals: list[PhaseInterval] = []
         energy_by_phase: dict[str, float] = {}
         carbon_by_phase: dict[str, float] = {}
@@ -184,29 +219,18 @@ class PodEnergyLedger:
         phase_counts: dict[str, int] = {}
         total_energy = 0.0
         total_carbon = 0.0
-
-        for cur, nxt in zip(sealed, sealed[1:], strict=False):
-            # Cumulative energy is monotonic; clamp guards meter jitter / resets.
-            energy = max(0.0, nxt.cumulative_kwh - cur.cumulative_kwh)
-            carbon = (
-                energy * cur.intensity_g_per_kwh
-                if cur.intensity_g_per_kwh is not None else 0.0
-            )
-            interval = PhaseInterval(
-                phase=cur.phase, start_s=cur.t_s, end_s=nxt.t_s,
-                energy_kwh=energy, intensity_g_per_kwh=cur.intensity_g_per_kwh,
-                carbon_g=carbon,
-            )
-            intervals.append(interval)
-            energy_by_phase[cur.phase] = energy_by_phase.get(cur.phase, 0.0) + energy
-            carbon_by_phase[cur.phase] = carbon_by_phase.get(cur.phase, 0.0) + carbon
-            duration_by_phase[cur.phase] = (
-                duration_by_phase.get(cur.phase, 0.0) + interval.duration_s
-            )
-            phase_counts[cur.phase] = phase_counts.get(cur.phase, 0) + 1
+        for phase, start_s, end_s, intensity, energy in raw:
+            carbon = energy * intensity if intensity is not None else 0.0
+            intervals.append(PhaseInterval(
+                phase=phase, start_s=start_s, end_s=end_s, energy_kwh=energy,
+                intensity_g_per_kwh=intensity, carbon_g=carbon,
+            ))
+            energy_by_phase[phase] = energy_by_phase.get(phase, 0.0) + energy
+            carbon_by_phase[phase] = carbon_by_phase.get(phase, 0.0) + carbon
+            duration_by_phase[phase] = duration_by_phase.get(phase, 0.0) + (end_s - start_s)
+            phase_counts[phase] = phase_counts.get(phase, 0) + 1
             total_energy += energy
             total_carbon += carbon
-
         return LedgerReport(
             intervals=tuple(intervals),
             total_energy_kwh=total_energy,

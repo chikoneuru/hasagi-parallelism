@@ -47,6 +47,7 @@ class MarginalEnergyMeter:
         poll_interval_ms: int = 100,
         nvml_module: Any = None,
         clock: Callable[[], float] = time.monotonic,
+        record_trace: bool = False,
     ) -> None:
         if nvml_module is None:
             try:
@@ -71,6 +72,8 @@ class MarginalEnergyMeter:
         self._device_kwh = 0.0
         self._background_kwh = 0.0
         self._last_ts: float | None = None
+        self._record_trace = record_trace
+        self._trace: list[tuple[float, float]] = []
 
     # --- NVML lifecycle ---
 
@@ -111,6 +114,8 @@ class MarginalEnergyMeter:
     def _integrate(self, now: float, power_w: float) -> None:
         """Add the slice since the last sample to all three integrals."""
         with self._lock:
+            if self._record_trace:
+                self._trace.append((now, power_w))
             if self._last_ts is None:
                 self._last_ts = now
                 return
@@ -169,6 +174,17 @@ class MarginalEnergyMeter:
         """kWh attributed to the background (co-tenant + display)."""
         with self._lock:
             return self._background_kwh
+
+    def power_trace(self) -> list[tuple[float, float]]:
+        """A copy of the recorded ``(t_s, device_watts)`` samples (if enabled)."""
+        with self._lock:
+            return list(self._trace)
+
+    def sample_power_w(self) -> float:
+        """One-shot whole-device power read (W). Use while our job is off the GPU
+        to record a background anchor."""
+        self._init_nvml()
+        return self._power_w()
 
     def __enter__(self) -> MarginalEnergyMeter:
         self.start()

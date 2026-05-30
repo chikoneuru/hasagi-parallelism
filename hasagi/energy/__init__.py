@@ -1,4 +1,5 @@
 """Energy-Signal Aware Scheduler — telemetry, carbon trace, API client, scheduling policies."""
+from hasagi.energy.background import BackgroundModel, marginal_kwh_from_trace
 from hasagi.energy.carbon_sources import (
     AggregateCarbonReading,
     CarbonReading,
@@ -57,6 +58,7 @@ __all__ = [
     "OBSERVATION_DIM",
     "AggregateCarbonReading",
     "AggregateTelemetrySource",
+    "BackgroundModel",
     "CarbonReading",
     "CarbonSource",
     "CarbonTrace",
@@ -93,6 +95,7 @@ __all__ = [
     "compute_reward",
     "discrete_action_space_size",
     "load_csv_trace",
+    "marginal_kwh_from_trace",
     "nvml_cumulative_kwh_fn",
     "regime_breakdown",
     "regime_carbon",

@@ -39,6 +39,7 @@ from pathlib import Path
 
 from rich.console import Console
 
+from hasagi.energy.background import BackgroundModel
 from hasagi.energy.marginal_meter import MarginalEnergyMeter
 from hasagi.energy.pod_ledger import (
     PHASE_ACTIVE,
@@ -50,6 +51,11 @@ from hasagi.energy.pod_ledger import (
 from hasagi.energy.regime import GpuRegime, break_even_window_s, regime_breakdown
 from hasagi.pool.knative_pool import KnativePool
 from hasagi.worker.host_trainer import HostTrainer
+
+# Seconds to wait after releasing the GPU before sampling a background anchor,
+# so the clocks have dropped to idle and the sample is not contaminated by the
+# just-finished work.
+_SETTLE_S = 1.5
 
 
 def _train_until(trainer: HostTrainer, seconds: float, total_iters: int) -> None:
@@ -64,7 +70,8 @@ def _run_policy(
     name: str,
     *,
     ckpt_path: str,
-    energy_fn,
+    meter: MarginalEnergyMeter,
+    bg_model: BackgroundModel,
     schedule: list[float],
     threshold: float,
     total_iters: int,
@@ -75,14 +82,20 @@ def _run_policy(
     """Run one policy to completion (``total_iters``); return its ledger + stats.
 
     ``threshold = inf`` makes the policy never pause (the always-on baseline).
+    Energy is NOT integrated online here: the ledger records phase marks with
+    timestamps, and a background anchor is sampled whenever our job is off the
+    GPU (before the first start, at each pause, and after completion). The caller
+    re-integrates the recorded device trace against the time-varying background.
     """
     console.print(f"[bold]Policy: {name}[/] (target {total_iters} iters)")
     trainer = HostTrainer(ckpt_path=ckpt_path)
-    ledger = PodEnergyLedger(energy_fn)
+    ledger = PodEnergyLedger(energy_kwh_fn=lambda: 0.0)   # marks only; re-integrated later
     running = False
     ever_started = False
     pauses = 0
     ticks = 0
+
+    bg_model.add(time.monotonic(), meter.sample_power_w())   # pre-run bracket (job off GPU)
     t0 = time.monotonic()
 
     while trainer.iters_done < total_iters and ticks < max_ticks:
@@ -112,19 +125,29 @@ def _run_policy(
                 pauses += 1
             ledger.mark(PHASE_IDLE, intensity)
             time.sleep(tick_seconds)
+            # Anchor the background only AFTER the idle window settles: sampling
+            # right at teardown reads an elevated draw (the process still holds
+            # the CUDA context and the clocks have not yet dropped), which would
+            # over-estimate the background near adjacent active windows.
+            bg_model.add(time.monotonic(), meter.sample_power_w())
 
     makespan_s = time.monotonic() - t0
-    report = ledger.report()
+    if running:
+        trainer.teardown()
+        running = False
     if pool is not None:
         pool.scale(target=0, timeout_seconds=10.0, wait_for_ready=False)
+    time.sleep(_SETTLE_S)                         # let clocks drop before bracketing
+    end_s = time.monotonic()
+    bg_model.add(end_s, meter.sample_power_w())   # post-run bracket (job off GPU)
     console.print(
         f"  done: {trainer.iters_done} iters in {ticks} ticks, {pauses} pause(s), "
-        f"makespan {makespan_s:.1f}s; marginal active power "
-        f"≈ {_phase_power_w(report, PHASE_ACTIVE):.0f} W"
+        f"makespan {makespan_s:.1f}s"
     )
     return {
         "name": name,
-        "report": report,
+        "ledger": ledger,
+        "end_s": end_s,
         "iters": trainer.iters_done,
         "ticks": ticks,
         "pauses": pauses,
@@ -138,6 +161,21 @@ def _phase_power_w(rep: LedgerReport, phase: str) -> float:
     return e_kwh * 3_600_000.0 / dur_s if dur_s > 0 else 0.0
 
 
+def _policy_json(d: dict) -> dict:
+    """Compact JSON-safe summary of a policy run (drops the live ledger object)."""
+    rep: LedgerReport = d["report"]
+    return {
+        "iters": d["iters"], "ticks": d["ticks"], "pauses": d["pauses"],
+        "makespan_s": d["makespan_s"],
+        "energy_by_phase_wh": {k: v * 1000.0 for k, v in rep.energy_by_phase_kwh.items()},
+        "duration_by_phase_s": dict(rep.duration_by_phase_s),
+        "power_by_phase_w": {
+            ph: _phase_power_w(rep, ph) for ph in rep.energy_by_phase_kwh
+        },
+        "total_carbon_g_measured": rep.total_carbon_g,
+    }
+
+
 def run(args: argparse.Namespace) -> int:
     console = Console()
     schedule = [float(x) for x in args.intensities.split(",")]
@@ -148,30 +186,53 @@ def run(args: argparse.Namespace) -> int:
         f"schedule={schedule}"
     )
 
-    meter = MarginalEnergyMeter(device_index=args.device, poll_interval_ms=100)
-    bg_mean, bg_sd = meter.calibrate(seconds=args.calibrate_s)
-    console.print(f"[bold]Background[/]: {bg_mean:.1f} W (sd {bg_sd:.1f} W) subtracted.")
+    meter = MarginalEnergyMeter(device_index=args.device, poll_interval_ms=100, record_trace=True)
+    bg_cal, bg_sd = meter.calibrate(seconds=args.calibrate_s)
+    console.print(
+        f"[bold]Background[/]: {bg_cal:.1f} W (sd {bg_sd:.1f} W) at calibration; "
+        f"tracked continuously via brackets + pause anchors."
+    )
+    bg_model = BackgroundModel()
     meter.start()
-    energy_fn = meter.cumulative_kwh
 
     pool = None if args.no_drive_pod else KnativePool(service=args.service, namespace=args.namespace)
     try:
         base = _run_policy(
             console, "always-on", ckpt_path="./artifacts/deferral_base_ckpt.pt",
-            energy_fn=energy_fn, schedule=schedule, threshold=math.inf,
+            meter=meter, bg_model=bg_model, schedule=schedule, threshold=math.inf,
             total_iters=args.total_iters, tick_seconds=args.tick_seconds,
             pool=pool, max_ticks=args.max_ticks,
         )
         aware = _run_policy(
             console, "carbon-aware", ckpt_path="./artifacts/deferral_aware_ckpt.pt",
-            energy_fn=energy_fn, schedule=schedule, threshold=args.threshold,
+            meter=meter, bg_model=bg_model, schedule=schedule, threshold=args.threshold,
             total_iters=args.total_iters, tick_seconds=args.tick_seconds,
             pool=pool, max_ticks=args.max_ticks,
         )
     finally:
         meter.stop()
 
+    # Re-integrate each ledger against the time-varying background (drift-corrected).
+    trace = meter.power_trace()
+    base["report"] = base["ledger"].report_from_trace(trace, bg_model, t_end=base["end_s"])
+    aware["report"] = aware["ledger"].report_from_trace(trace, bg_model, t_end=aware["end_s"])
+    console.print(
+        f"[bold]Background drift[/] across the session: {bg_model.drift_w:.1f} W "
+        f"(mean {bg_model.mean_w:.1f} W, {len(bg_model.anchors)} anchors)"
+    )
+
     active_w = _phase_power_w(base["report"], PHASE_ACTIVE)
+    # Consistency check: energy-per-iteration must agree across policies (same
+    # work), up to carbon-aware's per-resume warmup overhead. (Average active
+    # *power* differs only because carbon-aware's active phase also spans
+    # checkpoint/teardown wall-clock — that does not affect energy or carbon.)
+    base_jpi = base["report"].active_energy_kwh * 3_600_000.0 / max(1, base["iters"])
+    aware_jpi = aware["report"].active_energy_kwh * 3_600_000.0 / max(1, aware["iters"])
+    console.print(
+        f"[bold]Energy per iteration[/]: always-on {base_jpi:.3f} J/iter vs "
+        f"carbon-aware {aware_jpi:.3f} J/iter "
+        f"(+{100.0*(aware_jpi-base_jpi)/base_jpi:.0f}% resume/warmup overhead)"
+    )
     resume_kwh = aware["report"].resume_energy_kwh
 
     console.print("\n[bold]Equal-work carbon vs makespan, by freed-GPU regime[/]:")
@@ -216,14 +277,19 @@ def run(args: argparse.Namespace) -> int:
             "total_iters": args.total_iters,
             "tick_seconds": args.tick_seconds,
             "trace_source": "synthetic-parametric",
-            "energy_source": "nvml-measured-marginal",
-            "background_w_mean": bg_mean,
-            "background_w_sd": bg_sd,
-            "active_marginal_power_w": active_w,
+            "energy_source": "nvml-measured-marginal-drift-corrected",
+            "background_w_calibration": bg_cal,
+            "background_w_calibration_sd": bg_sd,
+            "background_w_drift": bg_model.drift_w,
+            "background_w_mean": bg_model.mean_w,
+            "background_anchors": len(bg_model.anchors),
+            "active_marginal_power_w_alwayson": active_w,
+            "active_j_per_iter_alwayson": base_jpi,
+            "active_j_per_iter_aware": aware_jpi,
             "resume_energy_wh": resume_kwh * 1000.0,
             "dedicated_idle_w_assumed": args.dedicated_idle_w,
-            "always_on": {k: v for k, v in base.items() if k != "report"},
-            "carbon_aware": {k: v for k, v in aware.items() if k != "report"},
+            "always_on": _policy_json(base),
+            "carbon_aware": _policy_json(aware),
             "makespan_cost_s": makespan_cost,
             "regimes": regimes_out,
         }, indent=2))
