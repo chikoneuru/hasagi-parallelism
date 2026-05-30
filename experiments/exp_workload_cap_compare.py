@@ -68,19 +68,20 @@ def _local_elasticity(profile: PowerCapProfile, c_lo: float, c_hi: float, attr: 
 
 
 def _optimality_check(profile: PowerCapProfile) -> dict:
-    """First-order optimality consistency check on the MEASURED U-curve.
+    """INTERIOR-MINIMUM check on the measured U-curve (NOT an independent law).
 
-    Minimising E/iter(c) = P(c)/t(c) gives ``d log P/d log c = d log t/d log c`` at
-    the optimum. We compare the THROUGHPUT elasticity against the LOCAL POWER
-    elasticity on the same below/above cap segments — NOT against the global
-    power-law fit ``alpha`` (measured avg-power-vs-cap is not a clean power law,
-    so the local power elasticity varies and is the correct comparison). Below the
-    optimum throughput grows faster than power (t-elasticity > p-elasticity →
-    raising the cap lowers energy/iter); above it power grows faster
-    (t-elasticity < p-elasticity → the extra power is wasted). The optimum
-    "brackets" when the throughput elasticity crosses the power elasticity between
-    the two segments — the discrete-grid signature of the condition. The optimal
-    cap is workload-dependent purely through the throughput-saturation shape.
+    Honesty note: because energy-per-iter is stored as ``E/iter = avg_power/throughput``
+    exactly, comparing the throughput elasticity to the local power elasticity on
+    the below/above segments is mathematically IDENTICAL to checking that the
+    recorded energy-optimal cap is lower than both its grid neighbours, i.e. that
+    the minimum is interior to the swept caps. (On an ascending segment,
+    ``t_elast >= p_elast`` iff ``E_lo >= E_hi``.) So ``optimum_is_interior`` is a
+    restatement of "the argmin is not at a grid boundary", not corroboration of a
+    first-order optimality law — it can only fail when the optimum sits at the
+    lowest or highest swept cap. The elasticities are reported as descriptive
+    detail; do not read them as an independent validation. The genuine
+    workload-dependent finding is the throughput-saturation shape that moves the
+    U-curve minimum, not this check.
     """
     caps = profile.caps
     eo = profile.energy_optimal_cap
@@ -97,7 +98,7 @@ def _optimality_check(profile: PowerCapProfile) -> dict:
         "throughput_elasticity_above_opt": t_above,
         "power_elasticity_below_opt": p_below,
         "power_elasticity_above_opt": p_above,
-        "brackets_at_opt": brackets,
+        "optimum_is_interior": brackets,
     }
 
 
@@ -149,40 +150,43 @@ def run(args: argparse.Namespace) -> int:
         )
     console.print(table)
 
-    # First-order optimality CONSISTENCY check on the measured curve: at the
-    # optimum the throughput elasticity meets the LOCAL power elasticity.
-    opt_cond = Table(title="First-order optimality consistency check (throughput vs LOCAL power elasticity at the optimum)")
+    # Interior-minimum check: is the measured energy optimum interior to the swept
+    # caps? Because E/iter = avg_power/throughput exactly, the elasticity bracket is
+    # mathematically identical to "argmin is not at a grid boundary" — NOT an
+    # independent optimality law. Elasticities shown as descriptive detail only.
+    opt_cond = Table(title="Interior-minimum check (is the measured optimum inside the swept caps? — elasticities are descriptive only)")
     opt_cond.add_column("workload")
     opt_cond.add_column("t-elast below/above", justify="right")
     opt_cond.add_column("P-elast below/above", justify="right")
-    opt_cond.add_column("brackets?", justify="right")
+    opt_cond.add_column("interior?", justify="right")
     for name, prof in profiles.items():
         chk = _optimality_check(prof)
-        summary[name]["optimality_check"] = chk
+        summary[name]["interior_minimum_check"] = chk
         opt_cond.add_row(
             name,
             f"{chk['throughput_elasticity_below_opt']:.2f}/{chk['throughput_elasticity_above_opt']:.2f}",
             f"{chk['power_elasticity_below_opt']:.2f}/{chk['power_elasticity_above_opt']:.2f}",
-            "yes" if chk["brackets_at_opt"] else "no",
+            "yes" if chk["optimum_is_interior"] else "no",
         )
     console.print(opt_cond)
     console.print(
-        "[dim]Reading: at the optimum d log t/d log c = d log P/d log c. Below the optimum throughput "
-        "grows faster than power (raising the cap pays); above it power grows faster (extra power wasted). "
-        "Compared against the LOCAL power elasticity, not the global power-law fit (avg power vs cap is not "
-        "a clean power law). Single sweep, no repeats — a consistency check, not a fitted law.[/]"
+        "[dim]Reading: 'interior' means the measured energy-per-iter minimum is below both its grid "
+        "neighbours, so a denser sweep cannot move it outside the bracketing caps. Since E/iter = "
+        "power/throughput exactly, this elasticity bracket is identically the interior-argmin test — it "
+        "is NOT independent corroboration of an optimality law, only that the optimum is not clipped at a "
+        "grid edge.[/]"
     )
 
     caps = {n: s["energy_optimal_cap_w"] for n, s in summary.items()}
     distinct = len(set(caps.values())) > 1
-    alpha_spread = max(s["alpha_binding_fit"] for s in summary.values()) - min(s["alpha_binding_fit"] for s in summary.values())
     console.print(
         f"[bold]Energy-optimal cap is {'WORKLOAD-DEPENDENT' if distinct else 'the same'}[/] across these "
-        f"single-GPU microbenchmarks: "
+        f"two single-GPU microbenchmarks: "
         + ", ".join(f"{n} {c:.0f} W (plateau {s['energy_optimal_plateau_w'][0]:.0f}-{s['energy_optimal_plateau_w'][1]:.0f})"
                     for (n, c), s in zip(caps.items(), summary.values(), strict=True))
-        + f". alpha (global fit) is near-linear and similar (spread {alpha_spread:.2f}), as expected for "
-        "hard-capped power-bound jobs; the optimum moves through the throughput-saturation shape."
+        + ". The optimum moves through each workload's throughput-saturation shape. (The power-vs-cap "
+        "slope is ~1 by construction in the cap-binding regime — power tracks the cap — so it carries no "
+        "cross-workload information and is not part of this claim.)"
     )
 
     # Cross-application penalty: run workload A at workload B's optimal cap.
@@ -211,11 +215,11 @@ def run(args: argparse.Namespace) -> int:
     console.print(cross)
     console.print(
         "[dim]A carbon-throttle that fixes one workload's energy-optimal cap pays the penalty above on "
-        "the other. The forward penalty (forcing the transformer DOWN to the ResNet cap) is large and "
-        "noise-robust (the gap is ~16x the measured run-to-run noise); the reverse penalty is small and "
-        "depends on which point of the flat transformer plateau is taken, so treat it as a lower bound. "
-        "Co-design takeaway: the throttle cap should come from the per-workload measured U-curve (or be "
-        "co-optimised with the partition), not a hardcoded constant.[/]"
+        "the other. The forward penalty (forcing the transformer DOWN to the ResNet cap) is large — "
+        "~9x the reverse penalty — while the reverse is small and depends on which point of the flat "
+        "transformer plateau is taken, so treat it as a lower bound. Both are single-sweep, no repeats: "
+        "directional. Co-design takeaway: the throttle cap should come from the per-workload measured "
+        "U-curve (or be co-optimised with the partition), not a hardcoded constant.[/]"
     )
 
     if args.out:

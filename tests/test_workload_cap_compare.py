@@ -1,6 +1,7 @@
-"""Tests for the workload-dependent-cap comparison: energy lookup, the optimality
-condition (throughput elasticity brackets alpha at the optimum), and the
-cross-application penalty arithmetic."""
+"""Tests for the workload-dependent-cap comparison: energy lookup, the
+interior-minimum check (the measured optimum is inside the swept caps — which,
+since E/iter = power/throughput, is identical to the elasticity bracket and is
+NOT an independent optimality law), and the cross-application penalty arithmetic."""
 from __future__ import annotations
 
 import pytest
@@ -40,25 +41,31 @@ def test_energy_optimal_cap_is_the_ucurve_min() -> None:
     assert _PROFILE.energy_optimal_cap == 200.0
 
 
-def test_optimality_brackets_against_local_power_elasticity() -> None:
-    """At the optimum the throughput elasticity meets the LOCAL power elasticity.
-    Below: throughput grows faster than power (t-el > P-el → raising the cap pays).
-    Above: power grows faster (t-el < P-el → wasted). So the optimum brackets."""
+def test_interior_minimum_check_equals_argmin_interior() -> None:
+    """The elasticity bracket is identical to "the energy argmin is interior" (since
+    E/iter = power/throughput exactly). For this profile the min is at the middle
+    cap, so it is interior; the elasticities are reported as descriptive detail."""
     chk = _optimality_check(_PROFILE)
+    # descriptive: below the optimum throughput outgrows power, above power outgrows throughput
     assert chk["throughput_elasticity_below_opt"] > chk["power_elasticity_below_opt"]
     assert chk["throughput_elasticity_above_opt"] < chk["power_elasticity_above_opt"]
-    assert chk["brackets_at_opt"] is True
+    assert chk["optimum_is_interior"] is True
+    # the check is exactly the interior-argmin condition on the stored E/iter
+    e = {c: _PROFILE.point(c).energy_per_iter_kwh for c in _PROFILE.caps}
+    eo = _PROFILE.energy_optimal_cap
+    interior = e[eo] < min(e[c] for c in _PROFILE.caps if c != eo)
+    assert chk["optimum_is_interior"] == interior
 
 
-def test_optimality_does_not_bracket_when_optimum_at_endpoint() -> None:
+def test_not_interior_when_optimum_at_endpoint() -> None:
     """If energy keeps falling to the top cap, the optimum sits at the last grid
-    point; the above-segment is undefined so it does not bracket."""
+    point; the above-segment is undefined so it is not interior."""
     prof = PowerCapProfile(
         gpu_name="x",
         points={100.0: _cp(100.0, 10.0, 100.0), 200.0: _cp(200.0, 30.0, 190.0)},  # min at 200 (top)
     )
     chk = _optimality_check(prof)
-    assert chk["brackets_at_opt"] is False
+    assert chk["optimum_is_interior"] is False
 
 
 def test_plateau_reports_flat_bottom() -> None:
