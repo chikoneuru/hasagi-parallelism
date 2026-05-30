@@ -1,5 +1,13 @@
 """H5-C policy comparison on REAL (downloaded) carbon-intensity traces.
 
+SCOPE / SUPERSEDED: like ``exp_h5c_vs_green.py``, this is the earlier
+DECISION-RULE micro-study (median-threshold vs percentile, both PAUSE) on a flat
+per-tick energy model with a single deterministic trace per zone. For carbon
+HEADLINE claims use ``exp_realtrace_pareto`` (measured power-cap energy model,
+throttle-vs-pause on a shared substrate, GREEN across its full capability range,
+diurnal-offset replication, zone-clustered CIs). "HASAGI-online" here is a
+pause-threshold rule, not the throttle mechanism.
+
 Mirror of ``exp_h5c_vs_green.py`` (which uses the 16-zone parametric
 trace), but routes every policy through a CSV trace loaded via
 ``load_electricitymaps_csv``. The CSV schema matches the

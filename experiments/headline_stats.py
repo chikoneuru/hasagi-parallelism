@@ -10,7 +10,12 @@ Coverage (each is one comparison family with its own Holm-Bonferroni
 adjustment):
 
   - **H5-C**: per-zone savings gap ``HASAGI-online − GREEN-online`` across
-    3 seeds × 16 zones. Holm across 16 zones.
+    3 seeds × 16 zones. Holm across 16 zones. NOTE: this is the earlier
+    decision-rule micro-study (both sides PAUSE; flat per-tick energy model;
+    seed replication). The carbon/energy headline now comes from
+    ``exp_realtrace_pareto`` (real traces, measured power-cap model,
+    throttle-vs-pause, GREEN full capability range, zone-clustered CIs); cite
+    that for carbon claims, not this gap.
   - **Scheduler head-to-head**: ``HASAGI EB − each baseline`` on energy, 10
     seeds. Holm across 5 baselines.
   - **HASAGI EB tight-budget**: ``HASAGI EB − PowerFlow`` on energy at each

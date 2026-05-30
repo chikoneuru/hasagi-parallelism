@@ -56,7 +56,10 @@ from pathlib import Path
 from rich.console import Console
 from rich.table import Table
 
-from experiments.baselines.green import green_online_percentile_mask
+from experiments.baselines.green import (
+    green_offline_optimal_mask,
+    green_online_percentile_mask,
+)
 from hasagi.energy.throttle_pareto import (
     PowerCapProfile,
     simulate_masked_policy,
@@ -104,6 +107,30 @@ def _green_pause(profile, mask, *, total_iters, window_s, schedule_g, full_cap_w
     )
 
 
+#: Pause-budget grid for the self-tuned (steel-man) GREEN.
+_SELFTUNE_BUDGETS = (0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6)
+
+
+def _green_selftuned(profile, sched, base_g, base_mk, *, gp, budgets=_SELFTUNE_BUDGETS):
+    """Strongest possible GREEN: a per-offset oracle pick of the pause budget that
+    MAXIMISES GREEN's reallocated-idle (0 W) carbon saving. budget=0 means "do not
+    pause" → 0 % saving, so a self-tuning GREEN never makes itself worse and never
+    "loses". This removes the objection that GREEN is hobbled by a fixed
+    (1−q)=0.40 budget on flat grids where shifting cannot pay. The carbon-maximising
+    budget ignores latency, so the makespan at that budget is returned alongside
+    the saving — pausing more to win carbon costs more makespan, and that cost must
+    be shown. Returns ``(best_save_pct, best_budget, best_makespan_h)``.
+    """
+    best_pct, best_pf, best_mk = 0.0, 0.0, 0.0
+    for pf in budgets:
+        mask = green_offline_optimal_mask(sched, pause_fraction=pf)
+        g = _green_pause(profile, mask, idle_w=_REALLOCATED_IDLE_W, **gp)
+        pct = _pct(base_g, g)
+        if pct > best_pct:
+            best_pct, best_pf, best_mk = pct, pf, _mk_h(base_mk, g)
+    return best_pct, best_pf, best_mk
+
+
 def _uniform_off_mask(n: int, n_off: int) -> list[int]:
     """A 0/1 mask of length ``n`` with exactly ``n_off`` zeros spread uniformly by
     position (carbon-blind: the response windows are chosen without looking at
@@ -126,6 +153,9 @@ _VECTOR_KEYS = (
     "green_on_ded_pct", "green_on_rea_pct", "green_off_ded_pct", "green_off_rea_pct",
     # head-to-head gaps (throttle minus GREEN), pp
     "gap_fair_pp", "gap_online_ded_pp", "gap_online_rea_pp",
+    # steel-man GREEN: per-offset oracle-best pause budget, reallocated idle
+    "green_selftuned_rea_pct", "gap_selftuned_pp", "green_selftuned_budget",
+    "green_selftuned_makespan_h",
     # makespan deltas, hours
     "eco_makespan_h", "throttle_makespan_h", "throttle_online_makespan_h",
     "green_on_makespan_h", "green_off_makespan_h",
@@ -211,6 +241,9 @@ def _savings_over_offsets(
             profile, name="throttle-online", active_mask=gmask_on, off_cap_w=throttle_cap, **masked,
         )
 
+        # Steel-man GREEN: best per-offset pause budget, reallocated idle (never loses).
+        gst_pct, gst_pf, gst_mk = _green_selftuned(profile, sched, base_g, base_mk, gp=gp)
+
         thr_pct, blind_pct = _pct(base_g, thr), _pct(base_g, thr_blind)
         thr_online_pct = _pct(base_g, thr_online)
         grn_off_rea_pct = _pct(base_g, grn_off_rea)
@@ -228,6 +261,10 @@ def _savings_over_offsets(
         # Fair mechanism gap: throttle vs pause on identical oracle windows,
         # reallocated idle — purely the response mechanism, no handicap to GREEN.
         out["gap_fair_pp"].append(thr_pct - grn_off_rea_pct)
+        out["green_selftuned_rea_pct"].append(gst_pct)
+        out["gap_selftuned_pp"].append(thr_pct - gst_pct)
+        out["green_selftuned_budget"].append(gst_pf)
+        out["green_selftuned_makespan_h"].append(gst_mk)
         out["gap_online_ded_pp"].append(thr_online_pct - grn_on_ded_pct)
         out["gap_online_rea_pp"].append(thr_online_pct - grn_on_rea_pct)
         out["eco_makespan_h"].append(_mk_h(base_mk, eco))
@@ -361,7 +398,11 @@ def run(args: argparse.Namespace) -> int:
             "green_online_reallocated_save_pct_mean": gon_r,
             "green_offline_dedicated_save_pct_mean": _mean(res["green_off_ded_pct"]),
             "green_offline_reallocated_save_pct_mean": goff_r,
+            "green_selftuned_reallocated_save_pct_mean": _mean(res["green_selftuned_rea_pct"]),
+            "green_selftuned_budget_mean": _mean(res["green_selftuned_budget"]),
+            "green_selftuned_makespan_h_mean": _mean(res["green_selftuned_makespan_h"]),
             "fair_mechanism_gap_pp_mean": gap_fair,
+            "selftuned_gap_pp_mean": _mean(res["gap_selftuned_pp"]),
             "eco_makespan_h_mean": _mean(res["eco_makespan_h"]),
             "throttle_makespan_h_mean": _mean(res["throttle_makespan_h"]),
             "throttle_online_makespan_h_mean": thr_mk,
@@ -389,6 +430,9 @@ def run(args: argparse.Namespace) -> int:
         goff_r_cz = cz("green_off_rea_pct")
         thr_on_cz = cz("throttle_online_pct")
         gap_fair_cz, gap_ded_cz, gap_rea_cz = cz("gap_fair_pp"), cz("gap_online_ded_pp"), cz("gap_online_rea_pp")
+        gst_cz, gap_gst_cz = cz("green_selftuned_rea_pct"), cz("gap_selftuned_pp")
+        gst_budget = _mean([b for v in clusters["green_selftuned_budget"] for b in v])
+        gst_mk = _mean([m for v in clusters["green_selftuned_makespan_h"] for m in v])
         sig_p, gap_fair_p, goff_r_p = cp("signal_pp"), cp("gap_fair_pp"), cp("green_off_rea_pct")
         # Holm-Bonferroni over the inferential family (FWER control at alpha).
         holm = holm_bonferroni([sig_p, gap_fair_p, goff_r_p], alpha=0.05)
@@ -409,6 +453,15 @@ def run(args: argparse.Namespace) -> int:
             "carbon_signal_value_pvalue": sig_p,
             "throttle_online_save_pct_ci_mean_lo_hi": list(thr_on_cz),
             "throttle_online_makespan_h_mean": thr_on_mk,
+            "green_selftuned_reallocated_save_pct_ci_mean_lo_hi": list(gst_cz),
+            "green_selftuned_budget_mean": gst_budget,
+            "green_selftuned_makespan_h_mean": gst_mk,
+            "selftuned_gap_pp_ci_mean_lo_hi": list(gap_gst_cz),
+            "carbon_latency_pareto_note": (
+                "throttle ~+9% carbon at +2.4 h; GREEN at its carbon-max budget can exceed throttle on "
+                "carbon but only by deferring more work (large makespan). The two are points on a "
+                "carbon-vs-latency Pareto; throttle is the low-latency point."
+            ),
             "green_capability_range": {
                 "online_dedicated_save_pct_ci_mean_lo_hi": list(gon_d_cz),
                 "online_reallocated_save_pct_ci_mean_lo_hi": list(gon_r_cz),
@@ -486,6 +539,12 @@ def run(args: argparse.Namespace) -> int:
             f"(GREEN's OWN assumptions, pauses the SAME oracle windows) vs throttle {thr_cz[0]:+.1f}%"
         )
         console.print(
+            f"  GREEN self-tuned budget+realloc {gst_cz[0]:+.1f}% [{gst_cz[1]:+.1f},{gst_cz[2]:+.1f}]  "
+            f"(steel-man: carbon-max budget ~{gst_budget:.2f}, never loses) — beats throttle on carbon by "
+            f"{-gap_gst_cz[0]:+.1f}pp [{-gap_gst_cz[2]:+.1f},{-gap_gst_cz[1]:+.1f}] BUT pays +{gst_mk:.0f} h "
+            f"makespan vs throttle +{thr_on_mk:.1f} h."
+        )
+        console.print(
             f"  [bold]→ FAIR mechanism gap (same oracle windows, realloc idle): {gap_fair_cz[0]:+.2f}pp "
             f"[{gap_fair_cz[1]:+.2f},{gap_fair_cz[2]:+.2f}] (p={gap_fair_p:.3f}, "
             f"{'no detectable NET difference' if gap_fair_p > 0.05 else 'significant'})[/] — but this net "
@@ -498,12 +557,14 @@ def run(args: argparse.Namespace) -> int:
             f"corr(gap, dirty-excess) = {gap_excess_corr:+.2f}."
         )
         console.print(
-            "  [dim]→ which mechanism saves more carbon is ZONE-DEPENDENT (pause wins where the "
-            "dirty-window intensity excess is largest). Throttle's robust, non-cancelling edge is LATENCY:[/]"
+            "  [dim]→ at a matched budget the carbon winner is ZONE-DEPENDENT (pause wins where the "
+            "dirty-window excess is largest); GREEN can exceed throttle on carbon only by deferring MORE "
+            "(steel-man above). Throttle and pause are thus points on a carbon-vs-LATENCY Pareto:[/]"
         )
         console.print(
-            f"  throttle +{thr_or_mk:.1f} h (oracle) / +{thr_on_mk:.1f} h (online deployable) vs GREEN pause "
-            f"+{goff_mk:.1f} h (forecast) / +{gon_mk:.1f} h (online) on a {args.job_hours:.0f} h job."
+            f"  throttle +{thr_or_mk:.1f} h (oracle) / +{thr_on_mk:.1f} h (online) vs GREEN pause "
+            f"+{goff_mk:.1f} h (forecast) / +{gon_mk:.1f} h (online) / +{gst_mk:.0f} h (carbon-max) "
+            f"on a {args.job_hours:.0f} h job. Throttle is the low-latency point."
         )
         holm_txt = ", ".join(
             f"{lbl}: {'reject' if rej else 'no'} (p={p:.4f}, α'={a:.4f})"

@@ -70,6 +70,17 @@ def test_pause_defers_more_makespan_than_throttle() -> None:
         assert res["green_on_makespan_h"][i] >= res["throttle_online_makespan_h"][i]
 
 
+def test_selftuned_green_never_loses_and_budget_bounded() -> None:
+    """The steel-man GREEN picks the carbon-max pause budget with a 0 floor, so its
+    saving is never negative and its chosen budget stays within the sweep grid;
+    pausing more to win carbon never reduces its makespan below zero."""
+    res = _run()
+    for i in range(res["n_offsets"]):
+        assert res["green_selftuned_rea_pct"][i] >= -1e-9         # 0 floor (decline to pause)
+        assert 0.0 <= res["green_selftuned_budget"][i] <= 0.6     # within the sweep grid
+        assert res["green_selftuned_makespan_h"][i] >= -1e-9      # pausing only adds makespan
+
+
 def test_dedicated_idle_never_helps_pause() -> None:
     """Billing a dedicated idle floor can only reduce (or leave equal) GREEN's
     carbon saving versus the reallocated (0 W idle) regime."""

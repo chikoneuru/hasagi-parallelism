@@ -1,5 +1,16 @@
 """H5-C policy comparison: HASAGI-threshold vs GREEN-temporal (NSDI'25).
 
+SCOPE / SUPERSEDED: this is the earlier DECISION-RULE comparison — both sides
+PAUSE, and it only asks whose rule (median-threshold vs rolling percentile) picks
+better hours to pause. It runs on a flat per-tick energy model (constant active
+power) with seed-based replication over the parametric trace, so its per-zone
+"HASAGI-online" is a pause-threshold policy, NOT the throttle mechanism, and its
+small gap shares the effective-N collapse the seeds suffer. For carbon/energy
+HEADLINE claims use ``exp_realtrace_pareto`` instead: real traces, the measured
+power-cap energy model, throttle-vs-pause on a shared substrate, GREEN across its
+full online/offline x idle-regime range, diurnal-offset replication, and
+zone-clustered CIs. Treat the numbers here as a decision-rule micro-study only.
+
 Apples-to-apples comparison of carbon-aware temporal-shift policies on the
 parametric 16-zone trace. Four policies are evaluated per zone and seed:
 
