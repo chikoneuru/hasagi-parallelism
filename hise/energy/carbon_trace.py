@@ -13,11 +13,13 @@ Three ways to build a ``CarbonTrace``:
   ``Datetime (UTC)`` / ``Carbon Intensity gCO₂eq/kWh (LCA)`` column names by default and
   ships per-zone per-year. Falls back to ``load_csv_trace`` for plain-schema files.
 * ``synthetic_solar_trace`` — deterministic 24h cycle for offline experiments / unit tests.
-* ``published_grid_trace`` — parametric multi-harmonic model whose mean / daily-swing /
-  weekly-swing parameters are fit to ElectricityMaps Data Portal annual statistics for
-  16 zones spanning a ~34× intensity range (``NO`` → ``ZA``). Useful when an
-  auth-tokened CSV download is not available; reviewer-defensible because every
-  parameter is documented + sourced.
+* ``published_grid_trace`` — SYNTHETIC parametric multi-harmonic model whose mean /
+  daily-swing / weekly-swing parameters are loosely modelled on published per-zone
+  intensity ranges for 16 zones (~34× span, ``NO`` → ``ZA``). The parameters are NOT
+  fitted to source data by any code in this repo and are NOT validated against real
+  traces; the diurnal phase is identical across all zones. Treat outputs as stress-test
+  grid SHAPES, not real measurements, and label any result computed on them as synthetic.
+  For real data use ``load_electricitymaps_csv`` (DE and NO have real fixtures in-repo).
 
 For paper-grade reporting, evaluate **all three** of ElectricityMaps, WattTime, and the
 IEA static grid-mix table in parallel — disagreement >20% between sources should be
@@ -185,10 +187,11 @@ def load_electricitymaps_csv(path: str | Path) -> CarbonTrace:
     )
 
 
-# Parameters fit to ElectricityMaps Data Portal annual aggregate statistics
-# (publicly visible on https://app.electricitymaps.com per-zone dashboards).
-# Source year: 2024. Means and swings are documented in the paper §V Methodology
-# alongside this table; every value is verifiable against the portal.
+# Hand-set parameters loosely modelled on publicly visible per-zone intensity
+# ranges (https://app.electricitymaps.com dashboards, ~2024). They are NOT the
+# output of any fitting procedure in this repo and have NOT been validated cell-
+# by-cell against downloaded traces; the diurnal phase below is shared by every
+# zone. Outputs are synthetic stress-test shapes, not real measurements.
 #
 #   zone        : ElectricityMaps zone code
 #   mean_g      : annual mean LCA gCO2/kWh

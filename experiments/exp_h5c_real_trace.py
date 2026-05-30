@@ -1,28 +1,34 @@
-"""H5-C — carbon-aware scale-to-zero shift over a real-shape ElectricityMaps trace.
+"""H5-C — carbon-aware scale-to-zero shift over a grid carbon-intensity trace.
 
-Replaces the synthetic-solar driver in ``exp_h5c_carbon_shift.py`` with a
-parametric trace fit to ElectricityMaps Data Portal annual statistics for
-``{DE, US-CA, FR, PL}`` (see ``hise.energy.carbon_trace.published_grid_trace``
-for the parameter table). The harness is *pure simulation* — it does not poke
-Knative — so the carbon-shift wiring can be exercised across multiple
-regions and threshold settings without paying the K8s reconfig cost.
+Two trace sources, recorded per run in the ``trace_source`` field:
 
-For each (zone, threshold-multiplier) cell we report:
-    - total energy (kWh) — same Zeus reference power model as the K8s variant
-    - total emissions (gCO2) — energy × intensity_at_tick
-    - pause fraction — fraction of ticks the policy targets zero replicas
-    - savings vs the constant-N=1 baseline (energy %, emissions %)
+  - ``synthetic-parametric`` (DEFAULT, no ``--csv``): a SYNTHETIC multi-harmonic
+    trace from ``hise.energy.carbon_trace.published_grid_trace``. Its per-zone
+    mean/amplitude parameters are loosely modelled on published annual grid
+    statistics, but the diurnal phase is identical across all zones and the fit
+    is NOT validated against source data. Treat these zones as stress-test grid
+    SHAPES, not as real measurements.
+  - ``real-csv`` (with ``--csv``): a real ElectricityMaps/Energy-Charts CSV
+    export. Only DE and NO currently have real CSV fixtures in the repo, so the
+    real-trace claim is restricted to those two zones.
 
-This is the *real-trace* version of the wire-validated H5-C result. The
-K8s-attached version (``exp_h5c_carbon_shift.py``) measures the orchestrator
-loop end-to-end on Kind, but its carbon magnitude is muddied by the Knative
-revision-proliferation issue (documented in [docs/testbed-constraints.md]).
-Running the policy in pure simulation over the real trace is the
-reviewer-defensible carbon claim for the submission.
+The harness is *pure simulation* — it does not poke Knative — so the
+carbon-shift wiring can be exercised across regions/thresholds without the K8s
+reconfig cost.
+
+For each (zone, threshold-multiplier) cell we report total energy (kWh, Zeus
+reference power model), total emissions (gCO2 = energy x intensity_at_tick),
+pause fraction, and savings vs the constant-N=1 baseline.
+
+IMPORTANT: artifacts written without ``--csv`` are synthetic and must be
+labelled as such in any table or prose; do not present them as real-trace
+results. The genuinely real-trace result lives in the single-pair DE+NO run.
 
 Usage::
 
+    # SYNTHETIC stress-test shapes (label as synthetic):
     python -m experiments.exp_h5c_real_trace --zones DE US-CA FR PL --days 7
+    # REAL trace (DE or NO only):
     python -m experiments.exp_h5c_real_trace --zones DE --csv /path/to/em_export.csv
 """
 from __future__ import annotations
@@ -59,6 +65,9 @@ class PolicyRun:
     emissions_g: float
     pause_minutes: float
     cold_starts: int
+    # "synthetic-parametric" or "real-csv:<path>" — provenance of the carbon
+    # trace this run was computed on. Never drop this from emitted artifacts.
+    trace_source: str = "synthetic-parametric"
 
 
 def _simulate(
@@ -68,6 +77,7 @@ def _simulate(
     name: str,
     zone: str,
     threshold: float,
+    trace_source: str = "synthetic-parametric",
 ) -> PolicyRun:
     """Pure-Python replay of the carbon-aware policy over a trace.
 
@@ -110,6 +120,7 @@ def _simulate(
         emissions_g=emissions_g,
         pause_minutes=pause_ticks * sample_minutes,
         cold_starts=cold_starts,
+        trace_source=trace_source,
     )
 
 
@@ -117,22 +128,25 @@ def _carbon_aware_target(intensity: float, threshold: float) -> int:
     return 0 if intensity > threshold else 1
 
 
-def _load_or_generate(args: argparse.Namespace, zone: str) -> tuple[CarbonTrace, float]:
+def _load_or_generate(
+    args: argparse.Namespace, zone: str,
+) -> tuple[CarbonTrace, float, str]:
     """Either load the user-supplied CSV or generate the parametric trace.
 
-    Returns ``(trace, sample_minutes)`` — sample_minutes is taken from
-    ``--sample-minutes`` when generating, or inferred from the CSV cadence.
+    Returns ``(trace, sample_minutes, trace_source)``. ``trace_source`` is
+    ``"real-csv:<path>"`` when a CSV is supplied, else ``"synthetic-parametric"``.
     """
     if args.csv:
         trace = load_electricitymaps_csv(args.csv)
+        source = f"real-csv:{args.csv}"
         if len(trace.timestamps) < 2:
-            return trace, args.sample_minutes
+            return trace, args.sample_minutes, source
         gap_s = (trace.timestamps[1] - trace.timestamps[0]).total_seconds()
-        return trace, gap_s / 60.0
+        return trace, gap_s / 60.0, source
     trace = published_grid_trace(
         zone, days=args.days, sample_minutes=args.sample_minutes, seed=args.seed,
     )
-    return trace, args.sample_minutes
+    return trace, args.sample_minutes, "synthetic-parametric"
 
 
 def run(args: argparse.Namespace) -> int:
@@ -140,24 +154,36 @@ def run(args: argparse.Namespace) -> int:
     zones = args.zones or ["DE"]
     all_runs: list[PolicyRun] = []
 
+    real_zones = {"DE", "NO"}
     for zone in zones:
-        trace, sample_minutes = _load_or_generate(args, zone)
+        trace, sample_minutes, trace_source = _load_or_generate(args, zone)
+        if trace_source == "synthetic-parametric":
+            console.print(
+                f"[yellow]NOTE[/] zone {zone}: SYNTHETIC parametric trace "
+                f"(not real grid data); label any result as synthetic."
+            )
+        elif zone not in real_zones:
+            console.print(
+                f"[yellow]WARN[/] zone {zone}: real-CSV trace supplied but only "
+                f"{sorted(real_zones)} have validated real fixtures in-repo."
+            )
         median_intensity = statistics.median(trace.intensities)
         threshold = median_intensity * args.threshold_multiplier
         console.print(
             f"[bold]{zone}[/] — {len(trace.intensities)} samples × "
             f"{sample_minutes:g} min, median={median_intensity:.0f} g, "
-            f"threshold={threshold:.0f} g (median × {args.threshold_multiplier})"
+            f"threshold={threshold:.0f} g (median × {args.threshold_multiplier}) "
+            f"[{trace_source}]"
         )
         aware = _simulate(
             trace, sample_minutes,
             lambda intensity, th=threshold: _carbon_aware_target(intensity, th),
-            f"{zone}/carbon-aware", zone, threshold,
+            f"{zone}/carbon-aware", zone, threshold, trace_source,
         )
         baseline = _simulate(
             trace, sample_minutes,
             lambda intensity: 1,
-            f"{zone}/constant-N", zone, float("nan"),
+            f"{zone}/constant-N", zone, float("nan"), trace_source,
         )
         all_runs.extend([aware, baseline])
 

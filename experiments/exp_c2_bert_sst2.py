@@ -73,6 +73,7 @@ class RunResult:
     threshold_multiplier: float
     throttle_threshold_multiplier: float
     deadline_multiplier: float
+    throttle_cap_w: int
     final_top1: float
     total_energy_joules: float
     total_carbon_grams: float
@@ -114,7 +115,9 @@ def _build_sst2_loaders(tokenizer, data_cache_dir: Path):
     from torch.utils.data import DataLoader
 
     data_cache_dir.mkdir(parents=True, exist_ok=True)
-    raw = load_dataset("glue", "sst2", cache_dir=str(data_cache_dir))
+    # datasets >= 4.0 requires a namespaced repo id; "glue" alone fails with
+    # HfUriError. nyu-mll/glue is the canonical HF mirror.
+    raw = load_dataset("nyu-mll/glue", "sst2", cache_dir=str(data_cache_dir))
 
     def encode(batch):
         out = tokenizer(
@@ -184,6 +187,7 @@ def run_training(
     throttle_threshold_multiplier: float,
     deadline_multiplier: float,
     data_cache_dir: Path,
+    throttle_cap_w: int = OPTIMAL_CAP_W,
 ) -> RunResult:
     import torch
     from transformers import get_linear_schedule_with_warmup
@@ -195,6 +199,11 @@ def run_training(
     median = statistics.median(intensities)
     n_hours = len(intensities)
     deadline_hour_budget = int(round(epochs_target * deadline_multiplier))
+    # Spread seeds across the 24h-periodic trace so each samples a different
+    # daily-cycle phase (~8h apart). Without this, all seeds start at hour 0
+    # and only ever see the first deadline_hour_budget hours of the trace,
+    # which on synthetic DE is below the throttle threshold.
+    start_hour = (seed * 8 + 5) % max(1, n_hours - deadline_hour_budget)
 
     model, tokenizer = _build_bert_sst2()
     model = model.to(device)
@@ -220,13 +229,14 @@ def run_training(
 
     records: list[HourRecord] = []
     epoch_idx = 0
-    hour = 0
+    hour = start_hour
     deferred = 0
     throttle_hrs = 0
     max_hrs = 0
     last_top1 = 0.0
+    deadline_hour_limit = start_hour + deadline_hour_budget
 
-    while epoch_idx < epochs_target and hour < min(n_hours, deadline_hour_budget):
+    while epoch_idx < epochs_target and hour < min(n_hours, deadline_hour_limit):
         intensity = intensities[hour]
         deadline_slack = deadline_hour_budget - hour
         epochs_remaining = epochs_target - epoch_idx
@@ -247,7 +257,7 @@ def run_training(
             hour += 1
             continue
 
-        cap = MAX_CAP_W if action == "train_at_max" else OPTIMAL_CAP_W
+        cap = MAX_CAP_W if action == "train_at_max" else throttle_cap_w
         set_power_cap(cap)
         if action == "train_at_optimal":
             throttle_hrs += 1
@@ -276,7 +286,7 @@ def run_training(
         (r.energy_joules / 3_600_000.0) * r.intensity_g_per_kwh
         for r in records if r.action != "defer"
     )
-    jct_penalty_pct = 100.0 * (hour - epochs_target) / epochs_target
+    jct_penalty_pct = 100.0 * ((hour - start_hour) - epochs_target) / epochs_target
 
     return RunResult(
         policy=policy, seed=seed, zone=zone, workload="bert-base-sst2",
@@ -284,10 +294,11 @@ def run_training(
         threshold_multiplier=threshold_multiplier,
         throttle_threshold_multiplier=throttle_threshold_multiplier,
         deadline_multiplier=deadline_multiplier,
+        throttle_cap_w=throttle_cap_w,
         final_top1=last_top1,
         total_energy_joules=total_energy,
         total_carbon_grams=total_carbon_g,
-        total_simulated_hours=hour,
+        total_simulated_hours=hour - start_hour,
         epochs_completed=epoch_idx,
         deferred_hours=deferred,
         throttle_hours=throttle_hrs,
@@ -314,6 +325,12 @@ def main() -> int:
                         default=[0.95])
     parser.add_argument("--deadline-multipliers", nargs="+", type=float, default=[10.0])
     parser.add_argument("--data-cache-dir", default="data_cache/glue_sst2")
+    parser.add_argument(
+        "--throttle-cap", type=int, default=OPTIMAL_CAP_W,
+        help="Power cap (W) used when the policy throttles. The energy-optimal "
+             "cap is workload-dependent; for BERT-base SST-2 it is ~250 W, "
+             "whereas the CV harness uses 200 W.",
+    )
     parser.add_argument("--out", default="artifacts/c2_bert_sst2")
     args = parser.parse_args()
 
@@ -337,6 +354,7 @@ def main() -> int:
             throttle_threshold_multiplier=throttle_mult,
             deadline_multiplier=ddl_mult,
             data_cache_dir=Path(args.data_cache_dir),
+            throttle_cap_w=args.throttle_cap,
         )
         all_results.append(result)
         path = out_dir / f"{cell_name}.json"
