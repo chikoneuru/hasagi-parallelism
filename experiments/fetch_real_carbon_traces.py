@@ -37,6 +37,12 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 ENERGY_CHARTS_URL = "https://api.energy-charts.info/co2eq"
+# GB left the ENTSO-E transparency platform after Brexit, so Energy-Charts no
+# longer serves its co2eq. GB has its own free, no-auth official API instead.
+# Note: this endpoint reports *operational* carbon intensity (gCO2/kWh), a
+# slightly different basis from Energy-Charts' LCA co2eq; both are gCO2/kWh and
+# fine for the relative carbon-shift analysis, but the basis is not identical.
+UK_CARBON_INTENSITY_URL = "https://api.carbonintensity.org.uk/intensity"
 
 # Energy-Charts uses lower-case ISO 3166-1 alpha-2 country codes; the
 # value-add here is a stable mapping back to the ElectricityMaps zone
@@ -71,6 +77,51 @@ def fetch_energy_charts(zone_em: str, start: datetime, end: datetime) -> tuple[l
     data = json.loads(payload)
     ts = [datetime.fromtimestamp(s, tz=UTC) for s in data["unix_seconds"]]
     return ts, data["co2eq"]
+
+
+def fetch_uk_carbon_intensity(zone_em: str, start: datetime, end: datetime) -> tuple[list[datetime], list[float]]:
+    """Return (timestamps, gCO2/kWh) for GB from the UK Carbon Intensity API.
+
+    The ``/intensity/{from}/{to}`` endpoint caps the range per request, so the
+    window is fetched in 7-day chunks and concatenated. Uses the measured
+    ``actual`` intensity, falling back to ``forecast`` for any half-hour the
+    settlement run had not yet finalised.
+    """
+    import json
+    from datetime import timedelta
+
+    if zone_em != "GB":
+        raise ValueError(f"UK Carbon Intensity API serves GB only, not {zone_em!r}")
+    ts_all: list[datetime] = []
+    val_all: list[float] = []
+    cur = start
+    while cur < end:
+        nxt = min(cur + timedelta(days=7), end)
+        frm = cur.strftime("%Y-%m-%dT%H:%MZ")
+        to = nxt.strftime("%Y-%m-%dT%H:%MZ")
+        url = f"{UK_CARBON_INTENSITY_URL}/{frm}/{to}"
+        with urllib.request.urlopen(url, timeout=60) as response:
+            data = json.loads(response.read())
+        for row in data.get("data", []):
+            inten = row.get("intensity") or {}
+            v = inten.get("actual")
+            if v is None:
+                v = inten.get("forecast")
+            raw_t = row.get("from")
+            if v is None or raw_t is None:
+                continue
+            t = datetime.fromisoformat(raw_t.replace("Z", "+00:00")).astimezone(UTC)
+            ts_all.append(t)
+            val_all.append(float(v))
+        cur = nxt
+    return ts_all, val_all
+
+
+def fetch_zone(zone_em: str, start: datetime, end: datetime) -> tuple[list[datetime], list[float]]:
+    """Dispatch to the right free source for a zone (GB → UK API; else Energy-Charts)."""
+    if zone_em == "GB":
+        return fetch_uk_carbon_intensity(zone_em, start, end)
+    return fetch_energy_charts(zone_em, start, end)
 
 
 def resample_to_hourly(
@@ -141,7 +192,7 @@ def main() -> int:
             time.sleep(args.rate_limit_sleep_s)
         print(f"  {zone}: …", end="", flush=True)
         try:
-            ts, vals = fetch_energy_charts(zone, start, end)
+            ts, vals = fetch_zone(zone, start, end)
         except urllib.error.HTTPError as e:
             print(f" FAIL ({e.code}); skipping")
             continue
