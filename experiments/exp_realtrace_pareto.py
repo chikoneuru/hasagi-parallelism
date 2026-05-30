@@ -196,7 +196,7 @@ def main() -> int:
     p.add_argument("--stride-hours", type=int, default=12,
                    help="Spacing between diurnal start offsets (replication samples).")
     p.add_argument("--resume-energy-wh", type=float, default=0.07)
-    p.add_argument("--dedicated-idle-w", type=float, default=30.0)
+    p.add_argument("--dedicated-idle-w", type=float, default=26.0)
     p.add_argument("--seed", type=int, default=0)
     p.add_argument("--out", default=None)
     return run(p.parse_args())

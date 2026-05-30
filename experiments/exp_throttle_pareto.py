@@ -122,7 +122,7 @@ def main() -> int:
                    help="Dirty-window cap; default = profile's energy-optimal cap.")
     p.add_argument("--resume-energy-wh", type=float, default=0.07,
                    help="Per-wakeup resume energy (checkpoint reload + warmup), Wh.")
-    p.add_argument("--dedicated-idle-w", type=float, default=30.0)
+    p.add_argument("--dedicated-idle-w", type=float, default=26.0)
     p.add_argument("--out", default=None)
     return run(p.parse_args())
 

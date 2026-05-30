@@ -222,6 +222,17 @@ def run(args: argparse.Namespace) -> int:
     )
 
     active_w = _phase_power_w(base["report"], PHASE_ACTIVE)
+    # Confidence gate: if the background moved by a large fraction of our own
+    # active draw, a co-tenant came and went during the run and the marginal
+    # attribution cannot be trusted (the rise inside an active window is not
+    # captured by the pause/bracket anchors). Flag the run rather than quote it.
+    drift_contaminated = bg_model.drift_w > max(15.0, 0.25 * active_w)
+    if drift_contaminated:
+        console.print(
+            f"[bold red]LOW CONFIDENCE[/]: background drift {bg_model.drift_w:.0f} W exceeds "
+            f"{max(15.0, 0.25 * active_w):.0f} W gate (a bursty co-tenant overlapped the run). "
+            f"Magnitudes are not paper-grade; re-run on an exclusive GPU."
+        )
     # Consistency check: energy-per-iteration must agree across policies (same
     # work), up to carbon-aware's per-resume warmup overhead. (Average active
     # *power* differs only because carbon-aware's active phase also spans
@@ -283,6 +294,7 @@ def run(args: argparse.Namespace) -> int:
             "background_w_drift": bg_model.drift_w,
             "background_w_mean": bg_model.mean_w,
             "background_anchors": len(bg_model.anchors),
+            "drift_contaminated": drift_contaminated,
             "active_marginal_power_w_alwayson": active_w,
             "active_j_per_iter_alwayson": base_jpi,
             "active_j_per_iter_aware": aware_jpi,
@@ -312,7 +324,7 @@ def main() -> int:
     p.add_argument("--max-ticks", type=int, default=400,
                    help="Safety cap so an over-aggressive threshold cannot loop forever.")
     p.add_argument("--calibrate-s", type=float, default=6.0)
-    p.add_argument("--dedicated-idle-w", type=float, default=30.0,
+    p.add_argument("--dedicated-idle-w", type=float, default=26.0,
                    help="Idle floor charged in the dedicated regime; measure on a clean GPU.")
     p.add_argument("--out", default=None)
     return run(p.parse_args())

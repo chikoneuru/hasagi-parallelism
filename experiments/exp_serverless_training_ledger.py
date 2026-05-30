@@ -275,7 +275,7 @@ def main() -> int:
         help="Seconds to sample the background draw (our job absent) before metering.",
     )
     p.add_argument(
-        "--dedicated-idle-w", type=float, default=30.0,
+        "--dedicated-idle-w", type=float, default=26.0,
         help="Idle-floor power charged in the dedicated regime; measure on a clean GPU "
              "for paper-grade numbers (default is an observed-idle estimate).",
     )
