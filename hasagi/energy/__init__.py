@@ -9,6 +9,7 @@ from hasagi.energy.carbon_sources import (
     WattTimeClient,
 )
 from hasagi.energy.carbon_trace import CarbonTrace, load_csv_trace, synthetic_solar_trace
+from hasagi.energy.marginal_meter import MarginalEnergyMeter
 from hasagi.energy.pod_ledger import (
     PHASE_ACTIVE,
     PHASE_COLD_START,
@@ -24,6 +25,13 @@ from hasagi.energy.policy import (
     OnlinePrimalDualPolicy,
     PowerAwareRulePolicy,
     RuleBasedPolicy,
+)
+from hasagi.energy.regime import (
+    GpuRegime,
+    RegimeCarbon,
+    break_even_window_s,
+    regime_breakdown,
+    regime_carbon,
 )
 from hasagi.energy.rl_policy import (
     OBSERVATION_DIM,
@@ -56,9 +64,11 @@ __all__ = [
     "EnergyDecision",
     "FakeTelemetrySource",
     "FakeWorker",
+    "GpuRegime",
     "IEAStaticSource",
     "LedgerReport",
     "MPCPolicy",
+    "MarginalEnergyMeter",
     "MultiSourceCarbonAggregator",
     "NvmlTelemetrySource",
     "OnlinePrimalDualPolicy",
@@ -67,6 +77,7 @@ __all__ = [
     "PHASE_IDLE",
     "PhaseInterval",
     "PodEnergyLedger",
+    "RegimeCarbon",
     "PPOAction",
     "PPOObservation",
     "PPOScalingPolicy",
@@ -77,10 +88,13 @@ __all__ = [
     "TelemetrySource",
     "WattTimeClient",
     "WorkerTelemetry",
+    "break_even_window_s",
     "build_observation",
     "compute_reward",
     "discrete_action_space_size",
     "load_csv_trace",
     "nvml_cumulative_kwh_fn",
+    "regime_breakdown",
+    "regime_carbon",
     "synthetic_solar_trace",
 ]

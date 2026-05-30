@@ -43,15 +43,15 @@ from pathlib import Path
 
 from rich.console import Console
 
+from hasagi.energy.marginal_meter import MarginalEnergyMeter
 from hasagi.energy.pod_ledger import (
     PHASE_ACTIVE,
     PHASE_COLD_START,
     PHASE_IDLE,
     LedgerReport,
     PodEnergyLedger,
-    nvml_cumulative_kwh_fn,
 )
-from hasagi.energy.telemetry import NvmlTelemetrySource
+from hasagi.energy.regime import GpuRegime, break_even_window_s
 from hasagi.pool.knative_pool import KnativePool
 
 
@@ -286,9 +286,16 @@ def run(args: argparse.Namespace) -> int:
         f"pause above {threshold:.0f} gCO2/kWh; schedule={intensities}"
     )
 
-    src = NvmlTelemetrySource([(args.device, "gpu0", 0, args.gpu_type)], poll_interval_ms=100)
-    src.start()
-    energy_fn = nvml_cumulative_kwh_fn(src)
+    # Calibrate the background draw (co-tenant + display) with our job absent,
+    # then meter only our marginal energy. A low sd means the subtraction is clean.
+    meter = MarginalEnergyMeter(device_index=args.device, poll_interval_ms=100)
+    bg_mean, bg_sd = meter.calibrate(seconds=args.calibrate_s)
+    console.print(
+        f"[bold]Background[/]: {bg_mean:.1f} W (sd {bg_sd:.1f} W) subtracted as co-tenant/display; "
+        f"metering marginal energy only."
+    )
+    meter.start()
+    energy_fn = meter.cumulative_kwh
     try:
         aware_pool = KnativePool(service=args.service, namespace=args.namespace)
         aware = _carbon_aware_run(
@@ -300,17 +307,43 @@ def run(args: argparse.Namespace) -> int:
             console, base_pool, energy_fn, intensities, args.train_burst_s,
         )
     finally:
-        src.stop()
+        meter.stop()
 
-    aware_d = _summarise(console, "carbon-aware", aware)
-    base_d = _summarise(console, "always-on", base)
-    delta_g = aware_d["total_carbon_g"] - base_d["total_carbon_g"]
-    rel = (100.0 * delta_g / base_d["total_carbon_g"]) if base_d["total_carbon_g"] else 0.0
-    verdict = "SAVES" if delta_g < 0 else "LOSES"
+    aware_d = _summarise(console, "carbon-aware (marginal)", aware)
+    base_d = _summarise(console, "always-on (marginal)", base)
+
+    # The rigorous metric is the EQUAL-WORK break-even per regime: how long a
+    # dirty window must be before pausing+deferring the same work beats riding
+    # through it. (The two runs above do UNEQUAL work — carbon-aware drops the
+    # dirty-tick work rather than deferring it — so their head-to-head totals are
+    # only a measurement sanity check, not the verdict. A fixed-work deferral
+    # harness is the next step.) Inputs are measured marginal quantities.
+    dirty = max(intensities)
+    clean = min(intensities)
+    active_w = _phase_power_w(base, PHASE_ACTIVE)   # measured active marginal power
+    resume_kwh = aware.resume_energy_kwh
     console.print(
-        f"[bold]Net carbon delta[/]: {delta_g:+.3f} gCO2 ({rel:+.1f}%) — "
-        f"carbon-aware pause {verdict} vs always-on after charging real resume cost."
+        f"[bold]Measured (marginal)[/]: active ≈ {active_w:.0f} W; "
+        f"resume cost ≈ {resume_kwh*1000:.3f} Wh; dirty/clean = {dirty:.0f}/{clean:.0f} gCO2/kWh"
     )
+    console.print("[bold]Equal-work break-even by freed-GPU regime[/]:")
+    regimes_out: dict[str, dict] = {}
+    for regime in GpuRegime:
+        idle_w = args.dedicated_idle_w if regime is GpuRegime.DEDICATED else 0.0
+        t_star = break_even_window_s(
+            active_power_w=active_w, intensity_dirty=dirty, intensity_clean=clean,
+            resume_energy_kwh=resume_kwh, idle_power_w=idle_w,
+        )
+        if t_star == float("inf"):
+            verdict = f"pause NEVER saves (idle {idle_w:.0f} W outweighs the arbitrage)"
+        else:
+            verdict = f"pause saves for dirty windows longer than {t_star:.1f} s"
+        console.print(f"  [{regime.value:12s}] idle {idle_w:4.0f} W → {verdict}")
+        regimes_out[regime.value] = {
+            "break_even_window_s": None if t_star == float("inf") else t_star,
+            "idle_power_w_assumed": idle_w,
+            "saves": t_star != float("inf"),
+        }
 
     if args.out:
         out = Path(args.out)
@@ -319,14 +352,27 @@ def run(args: argparse.Namespace) -> int:
             "schedule_g_per_kwh": intensities,
             "threshold_g_per_kwh": threshold,
             "trace_source": "synthetic-parametric",
-            "energy_source": "nvml-measured",
+            "energy_source": "nvml-measured-marginal",
+            "background_w_mean": bg_mean,
+            "background_w_sd": bg_sd,
+            "active_marginal_power_w": active_w,
+            "resume_energy_wh": resume_kwh * 1000.0,
+            "dedicated_idle_w_assumed": args.dedicated_idle_w,
             "carbon_aware": aware_d,
             "always_on": base_d,
-            "net_carbon_delta_g": delta_g,
-            "net_carbon_delta_pct": rel,
+            "regimes": regimes_out,
         }, indent=2))
         console.print(f"[dim]wrote {out}[/]")
     return 0
+
+
+def _phase_power_w(rep: LedgerReport, phase: str) -> float:
+    """Average marginal power (W) over a phase = energy / duration."""
+    e_kwh = rep.energy_by_phase_kwh.get(phase, 0.0)
+    dur_s = rep.duration_by_phase_s.get(phase, 0.0)
+    if dur_s <= 0.0:
+        return 0.0
+    return e_kwh * 3_600_000.0 / dur_s
 
 
 def main() -> int:
@@ -343,6 +389,15 @@ def main() -> int:
     p.add_argument("--train-burst-s", type=float, default=4.0)
     p.add_argument("--pause-window-s", type=float, default=35.0)
     p.add_argument("--drain-wait-s", type=float, default=45.0)
+    p.add_argument(
+        "--calibrate-s", type=float, default=6.0,
+        help="Seconds to sample the background draw (our job absent) before metering.",
+    )
+    p.add_argument(
+        "--dedicated-idle-w", type=float, default=30.0,
+        help="Idle-floor power charged in the dedicated regime; measure on a clean GPU "
+             "for paper-grade numbers (default is an observed-idle estimate).",
+    )
     p.add_argument("--out", default=None)
     return run(p.parse_args())
 
