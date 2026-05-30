@@ -40,7 +40,7 @@ from dataclasses import dataclass
 from rich.console import Console
 from rich.table import Table
 
-from hise.energy.carbon_trace import synthetic_solar_trace
+from hasagi.energy.carbon_trace import synthetic_solar_trace
 
 # ---------------------------------------------------------------------------
 # Trace construction

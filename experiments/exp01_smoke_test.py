@@ -11,13 +11,13 @@ from __future__ import annotations
 from rich.console import Console
 from rich.table import Table
 
-from hise.admission.mss import ScalingCurve
-from hise.energy.carbon_trace import synthetic_solar_trace
-from hise.energy.policy import RuleBasedPolicy
-from hise.orchestrator.control_loop import ControlLoop, admit_or_drop
-from hise.orchestrator.job import Job, JobState, JobStore
-from hise.parallel.planner import SimpleRuntimeModel
-from hise.pool.local_pool import SimulatedPool
+from hasagi.admission.mss import ScalingCurve
+from hasagi.energy.carbon_trace import synthetic_solar_trace
+from hasagi.energy.policy import RuleBasedPolicy
+from hasagi.orchestrator.control_loop import ControlLoop, admit_or_drop
+from hasagi.orchestrator.job import Job, JobState, JobStore
+from hasagi.parallel.planner import SimpleRuntimeModel
+from hasagi.pool.local_pool import SimulatedPool
 
 
 def main() -> None:
@@ -62,7 +62,7 @@ def main() -> None:
         pool_scale_fn=lambda jid, target: pool.scale(jid, target),
     )
 
-    table = Table(title="HISE smoke test — 24h synthetic solar trace")
+    table = Table(title="HASAGI smoke test — 24h synthetic solar trace")
     table.add_column("hour")
     table.add_column("intensity\n(gCO2/kWh)", justify="right")
     table.add_column("gpus", justify="right")

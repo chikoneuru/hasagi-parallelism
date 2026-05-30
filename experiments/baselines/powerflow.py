@@ -8,10 +8,10 @@ energy budget. The priority each iteration is
 i.e. *relative job-completion-time reduction per relative energy increase* — the
 allocator hands the next GPU to the job whose next GPU yields the largest such
 ratio. PowerFlow also varies DVFS frequency; this port omits the freq knob and
-keeps only the GPU-count one so the comparison vs HISE EB-MSS is apples-to-apples
-(HISE controls the NVML power cap externally and does not modulate freq directly).
+keeps only the GPU-count one so the comparison vs HASAGI EB-MSS is apples-to-apples
+(HASAGI controls the NVML power cap externally and does not modulate freq directly).
 
-Inputs use HISE's ``EnergyProfile`` so per-iter throughput and energy come from the
+Inputs use HASAGI's ``EnergyProfile`` so per-iter throughput and energy come from the
 same fitted curve EB-MSS sees. Output is ``dict[job_id, allocated_gpus]``.
 
 Reference:
@@ -23,7 +23,7 @@ from __future__ import annotations
 import math
 from collections.abc import Sequence
 
-from hise.admission.energy_profile import EnergyProfile
+from hasagi.admission.energy_profile import EnergyProfile
 
 
 def _jct_and_energy(profile: EnergyProfile, gpus: int, iterations: int) -> tuple[float, float]:

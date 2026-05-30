@@ -48,7 +48,7 @@ from experiments.exp_online_deadline import (
     offline_lp_solve,
     online_primal_dual,
 )
-from hise.energy.carbon_trace import load_electricitymaps_csv
+from hasagi.energy.carbon_trace import load_electricitymaps_csv
 
 N_BOOT = 4_000
 RNG_SEED = 0

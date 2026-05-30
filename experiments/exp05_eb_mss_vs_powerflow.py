@@ -1,20 +1,20 @@
-"""Head-to-head: PowerFlow allocator vs HISE marginal-energy greedy allocator.
+"""Head-to-head: PowerFlow allocator vs HASAGI marginal-energy greedy allocator.
 
 Both consume the same ``EnergyProfile`` per job and the same GPU/energy budgets.
 They differ in *what* they minimise and *how* they rank candidates:
 
     PowerFlow   greedy by (ΔJCT_relative / ΔE_relative)   — JCT-first under E budget
-    HISE EB     greedy by  ΔE_absolute / Δiter            — energy-first, Pareto-optimal
+    HASAGI EB     greedy by  ΔE_absolute / Δiter            — energy-first, Pareto-optimal
                                                             under convex E·T profile
 
 Under the duality of the two priorities, both lie on the same Pareto frontier
 when the per-job iter counts are identical. When iter counts differ, the
-*absolute* HISE priority responds to scale while PowerFlow's *relative* priority
+*absolute* HASAGI priority responds to scale while PowerFlow's *relative* priority
 cancels it — that asymmetry is exactly the C3 Δ1/Δ2 differentiator.
 
 The script reports three scenarios:
     A. Identical jobs, generous budget — sanity, both should converge.
-    B. Heterogeneous iter counts under tight budget — PowerFlow vs HISE diverge.
+    B. Heterogeneous iter counts under tight budget — PowerFlow vs HASAGI diverge.
     C. Heterogeneous EnergyProfile (one efficient, one inefficient worker mix)
        under tight energy budget — explicit Pareto comparison.
 
@@ -31,17 +31,17 @@ from rich.console import Console
 from rich.table import Table
 
 from experiments.baselines.powerflow import powerflow_allocate
-from hise.admission.energy_profile import EnergyProfile, linear_profile
-from hise.admission.mss import greedy_marginal_energy_allocation
+from hasagi.admission.energy_profile import EnergyProfile, linear_profile
+from hasagi.admission.mss import greedy_marginal_energy_allocation
 
 
-def hise_eb_allocate(
+def hasagi_eb_allocate(
     jobs: list[tuple[str, EnergyProfile, int]],
     available_gpus: int,
     *,
     energy_budget_kwh: float = float("inf"),
 ) -> dict[str, int]:
-    """HISE marginal-energy greedy with a cluster-wide energy budget back-off.
+    """HASAGI marginal-energy greedy with a cluster-wide energy budget back-off.
 
     ``greedy_marginal_energy_allocation`` enforces only the GPU budget; for a
     fair head-to-head with PowerFlow (which has a cluster-wide energy budget)
@@ -137,13 +137,13 @@ def run_scenario(scenario: Scenario, console: Console) -> None:
         available_gpus=scenario.available_gpus,
         energy_budget_kwh=scenario.energy_budget_kwh,
     )
-    alloc_hise = hise_eb_allocate(
+    alloc_hasagi = hasagi_eb_allocate(
         jobs=scenario.jobs,
         available_gpus=scenario.available_gpus,
         energy_budget_kwh=scenario.energy_budget_kwh,
     )
     pf_summary = summarise_alloc("PowerFlow", alloc_pf, scenario.jobs)
-    hi_summary = summarise_alloc("HISE EB", alloc_hise, scenario.jobs)
+    hi_summary = summarise_alloc("HASAGI EB", alloc_hasagi, scenario.jobs)
 
     table = Table(title=scenario.name)
     table.add_column("policy")
@@ -174,7 +174,7 @@ def run_scenario(scenario: Scenario, console: Console) -> None:
         if pf_summary["max_jct_s"] not in (0.0, float("inf")) else 0.0
     )
     console.print(
-        f"[dim]Δ HISE − PowerFlow: energy {e_delta:+.4f} kWh ({e_delta_pct:+.1f}%), "
+        f"[dim]Δ HASAGI − PowerFlow: energy {e_delta:+.4f} kWh ({e_delta_pct:+.1f}%), "
         f"max JCT {j_delta:+.1f} s ({j_delta_pct:+.1f}%)[/]"
     )
 
@@ -246,10 +246,10 @@ def main() -> None:
 
     console.print(
         "\n[dim]Both allocators consume the same EnergyProfile per job. PowerFlow ranks "
-        "by relative-(ΔJCT/ΔE); HISE EB ranks by absolute ΔE/Δiter. The two priorities "
+        "by relative-(ΔJCT/ΔE); HASAGI EB ranks by absolute ΔE/Δiter. The two priorities "
         "are dual on a convex E·T profile (see validate_power_convexity); the scenarios "
         "above empirically confirm both walk to the same Pareto-optimal allocation. "
-        "HISE's contribution is therefore not a new allocator algorithm — it is the "
+        "HASAGI's contribution is therefore not a new allocator algorithm — it is the "
         "formal convex-profile optimality theorem plus the system integration around "
         "the allocator (deadline-first admission, pipeline-aware partitioning, "
         "iter-per-joule micro-batch routing, multi-source carbon proxy).[/]"

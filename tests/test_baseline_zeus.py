@@ -6,7 +6,7 @@ import math
 import pytest
 
 from experiments.baselines.zeus import zeus_optimize_one_job, zeus_schedule
-from hise.admission.energy_profile import linear_profile
+from hasagi.admission.energy_profile import linear_profile
 
 # --- zeus_optimize_one_job ---
 

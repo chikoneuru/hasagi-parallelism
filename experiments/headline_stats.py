@@ -1,7 +1,7 @@
 """Compute paired-bootstrap CI + Cohen's d + Holm-Bonferroni for every headline.
 
 Ingests the existing artifact JSONs from ``artifacts/`` and produces a single
-unified statistical report so every headline table in ``paper/hise/`` can cite
+unified statistical report so every headline table in ``paper/hasagi/`` can cite
 the same confidence intervals, effect sizes, and family-wise-corrected
 significance flags. No experiment is re-run — this only re-reads the stored
 per-seed measurements.
@@ -9,11 +9,11 @@ per-seed measurements.
 Coverage (each is one comparison family with its own Holm-Bonferroni
 adjustment):
 
-  - **H5-C**: per-zone savings gap ``HISE-online − GREEN-online`` across
+  - **H5-C**: per-zone savings gap ``HASAGI-online − GREEN-online`` across
     3 seeds × 16 zones. Holm across 16 zones.
-  - **Scheduler head-to-head**: ``HISE EB − each baseline`` on energy, 10
+  - **Scheduler head-to-head**: ``HASAGI EB − each baseline`` on energy, 10
     seeds. Holm across 5 baselines.
-  - **HISE EB tight-budget**: ``HISE EB − PowerFlow`` on energy at each
+  - **HASAGI EB tight-budget**: ``HASAGI EB − PowerFlow`` on energy at each
     multiplier × 10 seeds. Holm across 7 multipliers.
   - **H2 end-to-end**: ``dvfs/preempt/combined − static`` on energy and on
     top-1, 3 seeds. Holm across 6 contrasts (3 conditions × 2 metrics).
@@ -26,7 +26,7 @@ Usage::
     python -m experiments.headline_stats \\
         --h5c artifacts/h5c_vs_green_3seed.json \\
         --schedh2h artifacts/scheduler_head_to_head_asymmetric.json \\
-        --tightbudget artifacts/hise_eb_tight_budget.json \\
+        --tightbudget artifacts/hasagi_eb_tight_budget.json \\
         --h2endtoend-dir artifacts/h2_endtoend \\
         --out artifacts/headline_stats.json
 """
@@ -42,7 +42,7 @@ from typing import Any
 from rich.console import Console
 from rich.table import Table
 
-from hise.stats import (
+from hasagi.stats import (
     cluster_means,
     clustered_bootstrap_ci,
     clustered_permutation_pvalue,
@@ -67,7 +67,7 @@ def _ci_str(mean: float, lo: float, hi: float, fmt: str = "{:+.4f}") -> str:
 
 
 def _analyse_h5c(path: Path) -> dict[str, Any]:
-    """Per-zone paired-bootstrap CI on (HISE-online − GREEN-online) savings.
+    """Per-zone paired-bootstrap CI on (HASAGI-online − GREEN-online) savings.
 
     The raw artifact stores per-seed savings *relative to constant-N=1* in
     ``per_zone_fair_pp_gap_per_seed``: that is already
@@ -114,7 +114,7 @@ def _analyse_h5c(path: Path) -> dict[str, Any]:
     fmean, flo, fhi = paired_bootstrap_ci(all_gaps, n_boot=N_BOOT, rng=rng)
 
     return {
-        "name": "H5-C HISE-online vs GREEN-online (pp gap, per zone)",
+        "name": "H5-C HASAGI-online vs GREEN-online (pp gap, per zone)",
         "alpha": ALPHA,
         "inference_note": (
             "Headline is the zone-clustered estimate; per-zone p uses exact "
@@ -140,28 +140,28 @@ def _analyse_h5c(path: Path) -> dict[str, Any]:
 
 
 def _analyse_scheduler_head_to_head(path: Path) -> dict[str, Any]:
-    """HISE EB vs each baseline on energy. Paired bootstrap on (HISE − baseline) per seed."""
+    """HASAGI EB vs each baseline on energy. Paired bootstrap on (HASAGI − baseline) per seed."""
     data = json.loads(path.read_text())
     by_alloc: dict[str, dict[int, float]] = defaultdict(dict)
     for r in data["results"]:
         by_alloc[r["allocator"]][r["seed"]] = r["total_energy_kwh"]
-    if "HISE EB" not in by_alloc:
-        raise SystemExit("expected 'HISE EB' allocator in scheduler head-to-head artifact")
-    hise_by_seed = by_alloc["HISE EB"]
-    seeds = sorted(hise_by_seed.keys())
+    if "HASAGI EB" not in by_alloc:
+        raise SystemExit("expected 'HASAGI EB' allocator in scheduler head-to-head artifact")
+    hasagi_by_seed = by_alloc["HASAGI EB"]
+    seeds = sorted(hasagi_by_seed.keys())
 
     rng = random.Random(RNG_SEED)
     rows: list[dict[str, Any]] = []
     pvalues: list[float] = []
     for name in sorted(by_alloc.keys()):
-        if name == "HISE EB":
+        if name == "HASAGI EB":
             continue
-        diffs = [hise_by_seed[s] - by_alloc[name][s] for s in seeds]
-        hise_e = [hise_by_seed[s] for s in seeds]
+        diffs = [hasagi_by_seed[s] - by_alloc[name][s] for s in seeds]
+        hasagi_e = [hasagi_by_seed[s] for s in seeds]
         base_e = [by_alloc[name][s] for s in seeds]
         mean, lo, hi = paired_bootstrap_ci(diffs, n_boot=N_BOOT, rng=rng)
-        d = cohens_d(hise_e, base_e)
-        p = paired_permutation_pvalue(hise_e, base_e, n_perm=N_PERM, rng=rng)
+        d = cohens_d(hasagi_e, base_e)
+        p = paired_permutation_pvalue(hasagi_e, base_e, n_perm=N_PERM, rng=rng)
         rows.append({
             "baseline": name,
             "n_seeds": len(seeds),
@@ -180,14 +180,14 @@ def _analyse_scheduler_head_to_head(path: Path) -> dict[str, Any]:
         row["holm_alpha"] = adj
 
     return {
-        "name": "Scheduler head-to-head: HISE EB vs each baseline on energy",
+        "name": "Scheduler head-to-head: HASAGI EB vs each baseline on energy",
         "alpha": ALPHA,
         "rows": rows,
     }
 
 
 def _analyse_tight_budget(path: Path) -> dict[str, Any]:
-    """HISE EB vs PowerFlow at each multiplier; family-wise across the sweep."""
+    """HASAGI EB vs PowerFlow at each multiplier; family-wise across the sweep."""
     data = json.loads(path.read_text())
     by_key: dict[tuple[float, str], dict[int, dict[str, float]]] = defaultdict(dict)
     for t in data["trials"]:
@@ -203,18 +203,18 @@ def _analyse_tight_budget(path: Path) -> dict[str, Any]:
     rows: list[dict[str, Any]] = []
     pvalues: list[float] = []
     for mult in multipliers:
-        hise = by_key[(mult, "HISE EB")]
+        hasagi = by_key[(mult, "HASAGI EB")]
         pf = by_key[(mult, "PowerFlow")]
-        e_diffs = [hise[s]["energy_kwh"] - pf[s]["energy_kwh"] for s in seeds]
-        met_diffs = [hise[s]["deadlines_met"] - pf[s]["deadlines_met"] for s in seeds]
+        e_diffs = [hasagi[s]["energy_kwh"] - pf[s]["energy_kwh"] for s in seeds]
+        met_diffs = [hasagi[s]["deadlines_met"] - pf[s]["deadlines_met"] for s in seeds]
         mean_e, lo_e, hi_e = paired_bootstrap_ci(e_diffs, n_boot=N_BOOT, rng=rng)
         mean_m, lo_m, hi_m = paired_bootstrap_ci(met_diffs, n_boot=N_BOOT, rng=rng)
         d = cohens_d(
-            [hise[s]["energy_kwh"] for s in seeds],
+            [hasagi[s]["energy_kwh"] for s in seeds],
             [pf[s]["energy_kwh"] for s in seeds],
         )
         p = paired_permutation_pvalue(
-            [hise[s]["energy_kwh"] for s in seeds],
+            [hasagi[s]["energy_kwh"] for s in seeds],
             [pf[s]["energy_kwh"] for s in seeds],
             n_perm=N_PERM, rng=rng,
         )
@@ -239,7 +239,7 @@ def _analyse_tight_budget(path: Path) -> dict[str, Any]:
         row["holm_alpha"] = adj
 
     return {
-        "name": "Tight-budget sweep: HISE EB vs PowerFlow on energy per multiplier",
+        "name": "Tight-budget sweep: HASAGI EB vs PowerFlow on energy per multiplier",
         "alpha": ALPHA,
         "rows": rows,
     }
@@ -360,7 +360,7 @@ def main() -> int:
     )
     parser.add_argument(
         "--tightbudget", type=Path,
-        default=Path("artifacts/hise_eb_tight_budget.json"),
+        default=Path("artifacts/hasagi_eb_tight_budget.json"),
     )
     parser.add_argument(
         "--h2endtoend-dir", type=Path,

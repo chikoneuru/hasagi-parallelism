@@ -17,8 +17,8 @@ from pathlib import Path
 
 import pytest
 
-from hise.parallel.joint_partitioner import ThrottleCurve, joint_partition
-from hise.parallel.partitioner import LayerProfile, LinkSpec, StageSpec
+from hasagi.parallel.joint_partitioner import ThrottleCurve, joint_partition
+from hasagi.parallel.partitioner import LayerProfile, LinkSpec, StageSpec
 
 # --- Constructor validation ---
 

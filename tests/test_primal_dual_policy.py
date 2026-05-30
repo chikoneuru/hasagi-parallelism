@@ -6,12 +6,12 @@ import time
 
 import pytest
 
-from hise.admission.mss import ScalingCurve
-from hise.energy.policy import OnlinePrimalDualPolicy
-from hise.orchestrator.deadline_selector import DeadlineFloorSelector
-from hise.orchestrator.energy_aware_control_loop import EnergyAwareControlLoop
-from hise.orchestrator.job import Job, JobState, JobStore
-from hise.parallel.planner import SimpleRuntimeModel
+from hasagi.admission.mss import ScalingCurve
+from hasagi.energy.policy import OnlinePrimalDualPolicy
+from hasagi.orchestrator.deadline_selector import DeadlineFloorSelector
+from hasagi.orchestrator.energy_aware_control_loop import EnergyAwareControlLoop
+from hasagi.orchestrator.job import Job, JobState, JobStore
+from hasagi.parallel.planner import SimpleRuntimeModel
 
 # Pareto action set in (energy_per_iter J/iter, throughput iter/s):
 # 1 GPU → (40, 1), 2 GPUs → (50, 2), 3 GPUs → (70, 4), 4 GPUs → (110, 8).

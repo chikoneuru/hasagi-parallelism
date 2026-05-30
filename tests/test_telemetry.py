@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import pytest
 
-from hise.energy.telemetry import (
+from hasagi.energy.telemetry import (
     FakeTelemetrySource,
     FakeWorker,
     NvmlTelemetrySource,

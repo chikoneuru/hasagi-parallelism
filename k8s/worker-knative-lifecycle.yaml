@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: hise-validation
+  name: hasagi-validation
 ---
 apiVersion: serving.knative.dev/v1
 kind: Service
 metadata:
-  name: hise-worker-lifecycle
-  namespace: hise-validation
+  name: hasagi-worker-lifecycle
+  namespace: hasagi-validation
 spec:
   template:
     metadata:
@@ -25,13 +25,13 @@ spec:
       timeoutSeconds: 600
       containers:
         - name: worker
-          image: dev.local/hise-worker-knative:dev
+          image: dev.local/hasagi-worker-knative:dev
           imagePullPolicy: Never
           ports:
             - containerPort: 8080
           env:
-            - {name: HISE_MOCK_CUDA_INIT_S, value: "3.0"}
-            - {name: HISE_MOCK_WORK_ITER_S, value: "0.05"}
+            - {name: HASAGI_MOCK_CUDA_INIT_S, value: "3.0"}
+            - {name: HASAGI_MOCK_WORK_ITER_S, value: "0.05"}
           readinessProbe:
             httpGet:
               path: /healthz

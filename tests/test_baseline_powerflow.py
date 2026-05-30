@@ -12,7 +12,7 @@ from experiments.baselines.powerflow import (
     _relative_priority,
     powerflow_allocate,
 )
-from hise.admission.energy_profile import EnergyProfile, linear_profile
+from hasagi.admission.energy_profile import EnergyProfile, linear_profile
 
 # --- _jct_and_energy ---
 

@@ -23,7 +23,7 @@ from pathlib import Path
 from rich.console import Console
 from rich.table import Table
 
-from hise.stats import (
+from hasagi.stats import (
     cluster_means,
     clustered_bootstrap_ci,
     clustered_permutation_pvalue,

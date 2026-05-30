@@ -1,4 +1,4 @@
-# HISE testbed convenience targets
+# HASAGI testbed convenience targets
 #
 # All targets auto-use .venv if it exists. Bootstrap with `make venv`.
 
@@ -23,7 +23,7 @@ test:
 	$(PY) -m pytest -ra
 
 lint:
-	$(PY) -m ruff check hise tests experiments
+	$(PY) -m ruff check hasagi tests experiments
 
 smoke:
 	$(PY) experiments/exp01_smoke_test.py

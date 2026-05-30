@@ -31,12 +31,12 @@ from dataclasses import dataclass
 from rich.console import Console
 from rich.table import Table
 
-from hise.parallel.joint_partitioner import (
+from hasagi.parallel.joint_partitioner import (
     ThrottleCurve,
     _build_throttle_set,
     joint_partition,
 )
-from hise.parallel.partitioner import (
+from hasagi.parallel.partitioner import (
     LayerProfile,
     LinkSpec,
     Partition,

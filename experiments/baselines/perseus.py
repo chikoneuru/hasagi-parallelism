@@ -19,8 +19,8 @@ at some baseline idle power ``P_idle_s``:
 
     E_s_per_iter_bloated = P_s · T_s + P_idle_s · (T_max - T_s)
 
-The port operates over a HISE ``Partition`` + ``StageSpec`` set so it can be
-applied to any partition produced by ``hise.parallel.partition_pipeline``.
+The port operates over a HASAGI ``Partition`` + ``StageSpec`` set so it can be
+applied to any partition produced by ``hasagi.parallel.partition_pipeline``.
 
 Reference:
     Chung, Lyu, Choi, Park, Kim, Yang, Chowdhury, "Perseus: Reducing Energy
@@ -32,7 +32,7 @@ import math
 from collections.abc import Sequence
 from dataclasses import dataclass
 
-from hise.parallel.partitioner import Partition, StageSpec
+from hasagi.parallel.partitioner import Partition, StageSpec
 
 
 @dataclass(frozen=True)
@@ -57,7 +57,7 @@ def perseus_throttle(
     """Compute the Perseus throttling plan for a pipeline partition.
 
     Args:
-        partition: ``Partition`` from ``hise.parallel.partition_pipeline``.
+        partition: ``Partition`` from ``hasagi.parallel.partition_pipeline``.
         stages: ``StageSpec`` per stage (must align by ``stage_id`` with ``partition``).
         voltage_alpha: power-frequency scaling exponent. 2.0 ≈ quadratic (V²
             constant); 3.0 ≈ cubic (V² scales with f). Real NVIDIA DVFS is in

@@ -43,14 +43,14 @@ from experiments.exp_joint_real_workloads import (
     HARDWARE_PROFILES,
     MODELS,
 )
-from hise.parallel.joint_partitioner import JointPlan, joint_partition
-from hise.parallel.partitioner import (
+from hasagi.parallel.joint_partitioner import JointPlan, joint_partition
+from hasagi.parallel.partitioner import (
     LayerProfile,
     LinkSpec,
     StageSpec,
     partition_pipeline,
 )
-from hise.parallel.stochastic_joint_partitioner import stochastic_joint_partition
+from hasagi.parallel.stochastic_joint_partitioner import stochastic_joint_partition
 
 # ---------------------------------------------------------------------------
 # Sampling + violation checks

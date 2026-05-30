@@ -43,7 +43,7 @@ from experiments.exp_endtoend_full_stack import (
     _decide,
     set_power_cap,
 )
-from hise.energy.carbon_trace import published_grid_trace
+from hasagi.energy.carbon_trace import published_grid_trace
 
 MAX_SEQ_LEN = 128
 BATCH_SIZE = 32

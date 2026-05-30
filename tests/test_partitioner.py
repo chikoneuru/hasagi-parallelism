@@ -5,7 +5,7 @@ import math
 
 import pytest
 
-from hise.parallel.partitioner import (
+from hasagi.parallel.partitioner import (
     LayerProfile,
     LinkSpec,
     Partition,
@@ -163,7 +163,7 @@ def test_incremental_rebuilds_prev_against_current_layers() -> None:
 
     # stage_exec_time must be recomputed against new_layers, not copied from prev.
     # Verify by reconstructing from incr.cuts and confirming match.
-    from hise.parallel.partitioner import _build_partition
+    from hasagi.parallel.partitioner import _build_partition
     link_map = {lk.src_stage: lk for lk in _links_k3()}
     rebuilt = _build_partition(new_layers, _stages_k3(), link_map, incr.cuts, 3, 1)
     for s in range(3):
@@ -402,7 +402,7 @@ def test_incremental_skips_infeasible_candidates() -> None:
 def test_feasibility_helper_returns_diagnostic_strings() -> None:
     """_segment_feasible reports a non-empty reason on rejection so RuntimeError
     messages stay informative."""
-    from hise.parallel.partitioner import _segment_feasible
+    from hasagi.parallel.partitioner import _segment_feasible
     layers = _heavy_layers(4, activation_bytes=1_000_000)
     stage_mem_bad = StageSpec(stage_id=0, throughput_flops=1e12, memory_bytes=1_000_000)
     ok, reason = _segment_feasible(layers, stage_mem_bad, 0, 3)

@@ -1,4 +1,4 @@
-"""Tests for `hise.parallel.stochastic_joint_partitioner`.
+"""Tests for `hasagi.parallel.stochastic_joint_partitioner`.
 
 Covers nine test classes:
 
@@ -19,16 +19,16 @@ import random
 
 import pytest
 
-from hise.parallel.joint_partitioner import (
+from hasagi.parallel.joint_partitioner import (
     JointPlan,
     joint_partition,
 )
-from hise.parallel.partitioner import (
+from hasagi.parallel.partitioner import (
     LayerProfile,
     LinkSpec,
     StageSpec,
 )
-from hise.parallel.stochastic_joint_partitioner import (
+from hasagi.parallel.stochastic_joint_partitioner import (
     StochasticJointPlan,
     _normal_cvar_coefficient,
     stochastic_joint_partition,

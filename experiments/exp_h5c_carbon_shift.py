@@ -34,8 +34,8 @@ from dataclasses import asdict, dataclass
 from rich.console import Console
 from rich.table import Table
 
-from hise.energy.carbon_trace import synthetic_solar_trace
-from hise.pool.knative_pool import KnativePool
+from hasagi.energy.carbon_trace import synthetic_solar_trace
+from hasagi.pool.knative_pool import KnativePool
 
 # Power model — Zeus reference (V100 single-GPU).
 ACTIVE_POWER_W = 210.0
@@ -236,8 +236,8 @@ def run(args: argparse.Namespace) -> int:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--service", default="hise-worker-lifecycle")
-    parser.add_argument("--namespace", default="hise-validation")
+    parser.add_argument("--service", default="hasagi-worker-lifecycle")
+    parser.add_argument("--namespace", default="hasagi-validation")
     parser.add_argument("--duration-minutes", type=int, default=30)
     parser.add_argument("--sample-minutes", type=int, default=5)
     parser.add_argument(

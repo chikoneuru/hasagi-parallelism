@@ -19,7 +19,7 @@ import time
 from rich.console import Console
 from rich.table import Table
 
-from hise.parallel.partitioner import (
+from hasagi.parallel.partitioner import (
     LayerProfile,
     LinkSpec,
     Partition,
@@ -53,7 +53,7 @@ def main() -> None:
         LinkSpec(src_stage=1, dst_stage=2, bandwidth_bps=10e9, latency_s=0.0005),
     ]
 
-    table = Table(title="HISE exp03 — pipeline partition latency (k=3)")
+    table = Table(title="HASAGI exp03 — pipeline partition latency (k=3)")
     table.add_column("n_layers", justify="right")
     table.add_column("full DP (ms)", justify="right")
     table.add_column("incremental (ms)", justify="right")

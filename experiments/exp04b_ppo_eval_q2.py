@@ -30,9 +30,9 @@ from pathlib import Path
 from rich.console import Console
 from rich.table import Table
 
-from hise.energy.carbon_trace import CarbonTrace, load_csv_trace, synthetic_solar_trace
-from hise.energy.policy import MPCPolicy, RuleBasedPolicy
-from hise.energy.rl_env import EnvConfig, HiseCarbonEnv
+from hasagi.energy.carbon_trace import CarbonTrace, load_csv_trace, synthetic_solar_trace
+from hasagi.energy.policy import MPCPolicy, RuleBasedPolicy
+from hasagi.energy.rl_env import EnvConfig, HasagiCarbonEnv
 
 
 @dataclass
@@ -76,7 +76,7 @@ def train_one_seed(
 
     vec_env = DummyVecEnv(
         [
-            lambda i=i: Monitor(HiseCarbonEnv(cfg, trace=trace, seed=seed * 100 + i))
+            lambda i=i: Monitor(HasagiCarbonEnv(cfg, trace=trace, seed=seed * 100 + i))
             for i in range(n_envs)
         ]
     )
@@ -103,7 +103,7 @@ def rollout(
     name: str,
     decide_fn,
 ) -> TrialResult:
-    env = HiseCarbonEnv(cfg, trace=trace, seed=seed)
+    env = HasagiCarbonEnv(cfg, trace=trace, seed=seed)
     obs, _ = env.reset()
     cur = cfg.min_gpus
     sim_t = 0.0

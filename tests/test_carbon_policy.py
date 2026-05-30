@@ -3,8 +3,8 @@ from __future__ import annotations
 
 import pytest
 
-from hise.energy.carbon_trace import synthetic_solar_trace
-from hise.energy.policy import MPCPolicy, RuleBasedPolicy
+from hasagi.energy.carbon_trace import synthetic_solar_trace
+from hasagi.energy.policy import MPCPolicy, RuleBasedPolicy
 
 
 def test_synthetic_trace_has_24h_period() -> None:

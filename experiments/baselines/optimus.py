@@ -24,7 +24,7 @@ Differences from neighbouring baselines:
     - Pollux: marginal priority is goodput (throughput × statistical efficiency);
       Optimus uses raw throughput.
 
-Port operates over HISE's ``EnergyProfile`` so the energy *consequence* of the
+Port operates over HASAGI's ``EnergyProfile`` so the energy *consequence* of the
 Optimus allocation can be compared against energy-aware baselines on a level
 playing field.
 
@@ -37,7 +37,7 @@ from __future__ import annotations
 import math
 from collections.abc import Sequence
 
-from hise.admission.energy_profile import EnergyProfile
+from hasagi.admission.energy_profile import EnergyProfile
 
 
 def remaining_time_s(profile: EnergyProfile, iterations: int, gpus: int) -> float:

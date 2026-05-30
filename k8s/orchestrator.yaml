@@ -1,41 +1,41 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: hise
+  name: hasagi
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: hise-orchestrator
-  namespace: hise
+  name: hasagi-orchestrator
+  namespace: hasagi
 spec:
   replicas: 1
   selector:
-    matchLabels: {app: hise-orchestrator}
+    matchLabels: {app: hasagi-orchestrator}
   template:
     metadata:
-      labels: {app: hise-orchestrator}
+      labels: {app: hasagi-orchestrator}
     spec:
       containers:
         - name: orchestrator
-          image: hise-orchestrator:dev
+          image: hasagi-orchestrator:dev
           ports: [{containerPort: 8000}]
           env:
-            - {name: HISE_REDIS_URL, value: redis://hise-redis:6379/0}
-            - {name: HISE_CARBON_TRACE, value: /traces/synthetic_solar.csv}
-            - {name: HISE_TICK_SECONDS, value: "30"}
+            - {name: HASAGI_REDIS_URL, value: redis://hasagi-redis:6379/0}
+            - {name: HASAGI_CARBON_TRACE, value: /traces/synthetic_solar.csv}
+            - {name: HASAGI_TICK_SECONDS, value: "30"}
           volumeMounts:
             - {name: traces, mountPath: /traces, readOnly: true}
       volumes:
         - name: traces
-          configMap: {name: hise-traces}
+          configMap: {name: hasagi-traces}
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: hise-orchestrator
-  namespace: hise
+  name: hasagi-orchestrator
+  namespace: hasagi
 spec:
-  selector: {app: hise-orchestrator}
+  selector: {app: hasagi-orchestrator}
   ports:
     - {port: 8000, targetPort: 8000}

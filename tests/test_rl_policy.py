@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import pytest
 
-from hise.energy.rl_policy import (
+from hasagi.energy.rl_policy import (
     OBSERVATION_DIM,
     PPOAction,
     PPOObservation,

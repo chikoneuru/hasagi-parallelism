@@ -3,8 +3,8 @@ from __future__ import annotations
 
 import pytest
 
-from hise.energy.policy import PowerAwareRulePolicy
-from hise.energy.telemetry import WorkerTelemetry
+from hasagi.energy.policy import PowerAwareRulePolicy
+from hasagi.energy.telemetry import WorkerTelemetry
 
 
 def _telem(worker_id: str, power_w: float, throughput: float) -> WorkerTelemetry:

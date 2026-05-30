@@ -1,11 +1,11 @@
-"""H5-C policy comparison: HISE-threshold vs GREEN-temporal (NSDI'25).
+"""H5-C policy comparison: HASAGI-threshold vs GREEN-temporal (NSDI'25).
 
 Apples-to-apples comparison of carbon-aware temporal-shift policies on the
 parametric 16-zone trace. Four policies are evaluated per zone and seed:
 
-  - **HISE-offline** — full-trace median as the reference threshold.
+  - **HASAGI-offline** — full-trace median as the reference threshold.
     Requires offline knowledge; only fair against ``green-offline``.
-  - **HISE-online** — rolling 24 h median as the reference threshold.
+  - **HASAGI-online** — rolling 24 h median as the reference threshold.
     Same information set as ``green-online``; the headline fairness fix.
   - **GREEN-offline** (oracle) — knows the full trace and pauses the
     top-K highest-intensity ticks at the matched pause fraction.
@@ -13,8 +13,8 @@ parametric 16-zone trace. Four policies are evaluated per zone and seed:
     the matched pause fraction.
 
 To make the comparison fair, the two GREEN flavours are run with a pause
-budget matched to the pause fraction the corresponding HISE flavour
-*emerges with* on each zone. The headline gap is **HISE-online minus
+budget matched to the pause fraction the corresponding HASAGI flavour
+*emerges with* on each zone. The headline gap is **HASAGI-online minus
 GREEN-online**: both see the same rolling 24 h window with no offline
 lookahead, so any savings difference reflects the policy decision rule
 (median-threshold vs percentile-pause) rather than information advantage.
@@ -44,11 +44,11 @@ from rich.table import Table
 from experiments.baselines.green import (
     green_offline_optimal_mask,
     green_online_percentile_mask,
-    hise_threshold_mask,
-    hise_threshold_online_mask,
+    hasagi_threshold_mask,
+    hasagi_threshold_online_mask,
     pause_fraction,
 )
-from hise.energy.carbon_trace import published_grid_trace
+from hasagi.energy.carbon_trace import published_grid_trace
 
 # Zeus reference single-GPU power model (V100), matches exp_h5c_real_trace.py.
 ACTIVE_POWER_W = 210.0
@@ -87,7 +87,7 @@ def run_zone_seed(
     seed: int,
     days: int,
     sample_minutes: int,
-    hise_threshold_multiplier: float,
+    hasagi_threshold_multiplier: float,
 ) -> list[PolicyResult]:
     trace = published_grid_trace(zone, days=days, sample_minutes=sample_minutes, seed=seed)
     intensities = list(trace.intensities)
@@ -98,35 +98,35 @@ def run_zone_seed(
     const_mask = (1,) * n
     const_e, const_em = _evaluate_mask(const_mask, intensities, sample_minutes)
 
-    # HISE-offline: full-trace median threshold. Offline information.
-    hise_off_mask = hise_threshold_mask(intensities, hise_threshold_multiplier)
-    hise_off_pf = pause_fraction(hise_off_mask)
-    hise_off_e, hise_off_em = _evaluate_mask(hise_off_mask, intensities, sample_minutes)
+    # HASAGI-offline: full-trace median threshold. Offline information.
+    hasagi_off_mask = hasagi_threshold_mask(intensities, hasagi_threshold_multiplier)
+    hasagi_off_pf = pause_fraction(hasagi_off_mask)
+    hasagi_off_e, hasagi_off_em = _evaluate_mask(hasagi_off_mask, intensities, sample_minutes)
 
-    # HISE-online: rolling 24 h median threshold. Same horizon as GREEN-online.
-    hise_on_mask = hise_threshold_online_mask(
-        intensities, hise_threshold_multiplier, window_size=window_ticks,
+    # HASAGI-online: rolling 24 h median threshold. Same horizon as GREEN-online.
+    hasagi_on_mask = hasagi_threshold_online_mask(
+        intensities, hasagi_threshold_multiplier, window_size=window_ticks,
     )
-    hise_on_pf = pause_fraction(hise_on_mask)
-    hise_on_e, hise_on_em = _evaluate_mask(hise_on_mask, intensities, sample_minutes)
+    hasagi_on_pf = pause_fraction(hasagi_on_mask)
+    hasagi_on_e, hasagi_on_em = _evaluate_mask(hasagi_on_mask, intensities, sample_minutes)
 
-    # GREEN-offline at HISE-offline's pause budget (legacy reference; expected
-    # to be byte-identical to HISE-offline by construction).
-    green_off_mask = green_offline_optimal_mask(intensities, pause_fraction=hise_off_pf)
+    # GREEN-offline at HASAGI-offline's pause budget (legacy reference; expected
+    # to be byte-identical to HASAGI-offline by construction).
+    green_off_mask = green_offline_optimal_mask(intensities, pause_fraction=hasagi_off_pf)
     green_off_e, green_off_em = _evaluate_mask(green_off_mask, intensities, sample_minutes)
 
-    # GREEN-online at HISE-online's emergent pause budget. The fair head-to-head.
+    # GREEN-online at HASAGI-online's emergent pause budget. The fair head-to-head.
     green_on_mask = green_online_percentile_mask(
-        intensities, pause_fraction=hise_on_pf, window_size=window_ticks,
+        intensities, pause_fraction=hasagi_on_pf, window_size=window_ticks,
     )
     green_on_e, green_on_em = _evaluate_mask(green_on_mask, intensities, sample_minutes)
 
     return [
         PolicyResult(zone, seed, "constant-N", n, 0.0, const_e, const_em),
-        PolicyResult(zone, seed, "hise-offline", sum(hise_off_mask), hise_off_pf,
-                     hise_off_e, hise_off_em),
-        PolicyResult(zone, seed, "hise-online", sum(hise_on_mask), hise_on_pf,
-                     hise_on_e, hise_on_em),
+        PolicyResult(zone, seed, "hasagi-offline", sum(hasagi_off_mask), hasagi_off_pf,
+                     hasagi_off_e, hasagi_off_em),
+        PolicyResult(zone, seed, "hasagi-online", sum(hasagi_on_mask), hasagi_on_pf,
+                     hasagi_on_e, hasagi_on_em),
         PolicyResult(zone, seed, "green-offline", sum(green_off_mask),
                      pause_fraction(green_off_mask), green_off_e, green_off_em),
         PolicyResult(zone, seed, "green-online", sum(green_on_mask),
@@ -150,7 +150,7 @@ def main() -> int:
     parser.add_argument("--days", type=int, default=14)
     parser.add_argument("--sample-minutes", type=int, default=60)
     parser.add_argument("--seeds", type=int, nargs="+", default=[0, 1, 2])
-    parser.add_argument("--hise-threshold-multiplier", type=float, default=1.10)
+    parser.add_argument("--hasagi-threshold-multiplier", type=float, default=1.10)
     parser.add_argument("--out", default="artifacts/h5c_vs_green.json")
     args = parser.parse_args()
 
@@ -158,7 +158,7 @@ def main() -> int:
     console.print(
         f"[bold]H5-C policy comparison[/]: {len(args.zones)} zones × "
         f"{len(args.seeds)} seeds × {args.days} days × {args.sample_minutes}-min cadence; "
-        f"HISE threshold = median × {args.hise_threshold_multiplier}"
+        f"HASAGI threshold = median × {args.hasagi_threshold_multiplier}"
     )
 
     all_results: list[PolicyResult] = []
@@ -166,7 +166,7 @@ def main() -> int:
         for seed in args.seeds:
             all_results.extend(run_zone_seed(
                 zone, seed, args.days, args.sample_minutes,
-                args.hise_threshold_multiplier,
+                args.hasagi_threshold_multiplier,
             ))
 
     # Aggregate per (zone, policy): mean savings across seeds.
@@ -183,22 +183,22 @@ def main() -> int:
             for s in args.seeds
         ]
 
-    # Fair head-to-head: HISE-online vs GREEN-online.
-    table = Table(title="Per-zone savings vs constant-N=1 (3 seeds; HISE-online vs GREEN-online is the fair head-to-head)")
+    # Fair head-to-head: HASAGI-online vs GREEN-online.
+    table = Table(title="Per-zone savings vs constant-N=1 (3 seeds; HASAGI-online vs GREEN-online is the fair head-to-head)")
     table.add_column("zone")
-    table.add_column("HISE-on pause%", justify="right")
-    table.add_column("HISE-on Δ% (μ±σ)", justify="right")
+    table.add_column("HASAGI-on pause%", justify="right")
+    table.add_column("HASAGI-on Δ% (μ±σ)", justify="right")
     table.add_column("GREEN-on Δ% (μ±σ)", justify="right")
-    table.add_column("HISE-off Δ% (μ)", justify="right")
+    table.add_column("HASAGI-off Δ% (μ)", justify="right")
     table.add_column("GREEN-off Δ% (μ)", justify="right")
-    table.add_column("HISE-on − GREEN-on (pp, μ)", justify="right")
+    table.add_column("HASAGI-on − GREEN-on (pp, μ)", justify="right")
 
     fair_pp_deltas: list[float] = []
     fair_wins = 0
     for zone in args.zones:
-        h_on = saves_for(zone, "hise-online")
+        h_on = saves_for(zone, "hasagi-online")
         g_on = saves_for(zone, "green-online")
-        h_off = saves_for(zone, "hise-offline")
+        h_off = saves_for(zone, "hasagi-offline")
         g_off = saves_for(zone, "green-offline")
         pp = [h - g for h, g in zip(h_on, g_on, strict=True)]
         mean_pp = statistics.mean(pp)
@@ -206,7 +206,7 @@ def main() -> int:
         if mean_pp >= 0:
             fair_wins += 1
         pause_pcts = [
-            by_zone_policy_seed[(zone, "hise-online", s)].pause_fraction * 100
+            by_zone_policy_seed[(zone, "hasagi-online", s)].pause_fraction * 100
             for s in args.seeds
         ]
 
@@ -228,7 +228,7 @@ def main() -> int:
         )
     console.print(table)
 
-    summary = Table(title="Aggregate across zones (fair head-to-head: HISE-online vs GREEN-online)")
+    summary = Table(title="Aggregate across zones (fair head-to-head: HASAGI-online vs GREEN-online)")
     summary.add_column("metric")
     summary.add_column("value", justify="right")
 
@@ -238,16 +238,16 @@ def main() -> int:
         )
 
     grand_pp = statistics.mean(fair_pp_deltas)
-    summary.add_row("HISE-online mean savings", f"{grand_mean('hise-online'):+.2f}%")
+    summary.add_row("HASAGI-online mean savings", f"{grand_mean('hasagi-online'):+.2f}%")
     summary.add_row("GREEN-online mean savings", f"{grand_mean('green-online'):+.2f}%")
-    summary.add_row("HISE-offline (uses full trace) mean savings",
-                    f"{grand_mean('hise-offline'):+.2f}%")
+    summary.add_row("HASAGI-offline (uses full trace) mean savings",
+                    f"{grand_mean('hasagi-offline'):+.2f}%")
     summary.add_row("GREEN-offline (oracle) mean savings",
                     f"{grand_mean('green-offline'):+.2f}%")
-    summary.add_row("HISE-online − GREEN-online gap (pp)", f"{grand_pp:+.2f}")
-    summary.add_row("zones where HISE-online ≥ GREEN-online",
+    summary.add_row("HASAGI-online − GREEN-online gap (pp)", f"{grand_pp:+.2f}")
+    summary.add_row("zones where HASAGI-online ≥ GREEN-online",
                     f"{fair_wins}/{len(args.zones)}")
-    summary.add_row("HISE-offline ≡ GREEN-offline (by construction)",
+    summary.add_row("HASAGI-offline ≡ GREEN-offline (by construction)",
                     "yes — same matched-budget set")
     console.print(summary)
 
@@ -256,7 +256,7 @@ def main() -> int:
     for zone in args.zones:
         for s in args.seeds:
             h = _pct_savings(
-                by_zone_policy_seed[(zone, "hise-online", s)].emissions_g,
+                by_zone_policy_seed[(zone, "hasagi-online", s)].emissions_g,
                 by_zone_policy_seed[(zone, "constant-N", s)].emissions_g,
             )
             g = _pct_savings(

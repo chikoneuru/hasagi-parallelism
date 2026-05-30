@@ -6,8 +6,8 @@ context and depends entirely on which grid trace you load.
 
 Compared across:
     - Static-max (no scaling, max GPUs always)
-    - Rule-based HISE
-    - MPC HISE
+    - Rule-based HASAGI
+    - MPC HASAGI
 
 Usage:
     python experiments/exp02_carbon_replay.py --trace traces/synthetic_solar.csv --hours 24
@@ -20,8 +20,8 @@ from dataclasses import dataclass
 from rich.console import Console
 from rich.table import Table
 
-from hise.energy.carbon_trace import load_csv_trace
-from hise.energy.policy import MPCPolicy, RuleBasedPolicy
+from hasagi.energy.carbon_trace import load_csv_trace
+from hasagi.energy.policy import MPCPolicy, RuleBasedPolicy
 
 
 @dataclass
@@ -107,7 +107,7 @@ def main() -> None:
     ]
 
     console = Console()
-    table = Table(title=f"HISE exp02 — energy + carbon-proxy replay ({args.trace})")
+    table = Table(title=f"HASAGI exp02 — energy + carbon-proxy replay ({args.trace})")
     table.add_column("policy")
     table.add_column("energy (kWh)\n[primary]", justify="right")
     table.add_column("Δ vs static", justify="right")

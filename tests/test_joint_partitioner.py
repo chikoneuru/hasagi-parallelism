@@ -1,4 +1,4 @@
-"""Tests for `hise.parallel.joint_partitioner`.
+"""Tests for `hasagi.parallel.joint_partitioner`.
 
 Covers seven test classes:
 
@@ -18,12 +18,12 @@ import random
 
 import pytest
 
-from hise.parallel.joint_partitioner import (
+from hasagi.parallel.joint_partitioner import (
     JointPlan,
     _build_throttle_set,
     joint_partition,
 )
-from hise.parallel.partitioner import (
+from hasagi.parallel.partitioner import (
     LayerProfile,
     LinkSpec,
     Partition,

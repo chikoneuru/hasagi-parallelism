@@ -1,8 +1,8 @@
-"""Zeus η-sweep Pareto frontier vs HISE EB single operating point.
+"""Zeus η-sweep Pareto frontier vs HASAGI EB single operating point.
 
 Zeus selects one (energy, time) operating point per job by minimising a convex
 combination weighted by η ∈ [0, 1]. Sweeping η traces the Pareto frontier on the
-(Σ energy, max JCT) plane. HISE EB returns a single operating point determined
+(Σ energy, max JCT) plane. HASAGI EB returns a single operating point determined
 by the deadline + energy budget combination — the comparison places that point
 on the Pareto plot and shows how far inside / outside Zeus's frontier it lies.
 
@@ -21,8 +21,8 @@ from rich.console import Console
 from rich.table import Table
 
 from experiments.baselines.zeus import zeus_schedule
-from hise.admission.energy_profile import EnergyProfile, linear_profile
-from hise.admission.mss import (
+from hasagi.admission.energy_profile import EnergyProfile, linear_profile
+from hasagi.admission.mss import (
     EnergyBudgetMSS,
     ScalingCurve,
     greedy_marginal_energy_allocation,
@@ -59,7 +59,7 @@ def _summary(alloc: dict[str, int], jobs: list[Job]) -> tuple[float, float, int]
     return energy, max_jct, met
 
 
-def schedule_hise_eb(jobs: list[Job], available_gpus: int) -> dict[str, int]:
+def schedule_hasagi_eb(jobs: list[Job], available_gpus: int) -> dict[str, int]:
     admitted: list[tuple[str, EnergyProfile, int]] = []
     for job in jobs:
         eb = EnergyBudgetMSS(
@@ -106,11 +106,11 @@ def run(jobs: list[Job], available_gpus: int, console: Console) -> None:
         )
     console.print(table)
 
-    hise_alloc = schedule_hise_eb(jobs, available_gpus)
-    he, hjct, hmet = _summary(hise_alloc, jobs)
+    hasagi_alloc = schedule_hasagi_eb(jobs, available_gpus)
+    he, hjct, hmet = _summary(hasagi_alloc, jobs)
     console.print(
-        f"\n[bold]HISE EB operating point[/]: "
-        f"alloc={hise_alloc}, Σ kWh={he:.4f}, max JCT={hjct:.1f}s, "
+        f"\n[bold]HASAGI EB operating point[/]: "
+        f"alloc={hasagi_alloc}, Σ kWh={he:.4f}, max JCT={hjct:.1f}s, "
         f"deadlines met={hmet}/{len(jobs)}"
     )
 
@@ -139,16 +139,16 @@ def run(jobs: list[Job], available_gpus: int, console: Console) -> None:
         )
     if dominated_by:
         console.print(
-            f"[yellow]HISE EB is dominated by Zeus at: {', '.join(dominated_by)} "
+            f"[yellow]HASAGI EB is dominated by Zeus at: {', '.join(dominated_by)} "
             "(among the deadline-meeting points).[/]"
         )
     elif dominates:
         console.print(
-            f"[green]HISE EB Pareto-dominates Zeus at: {', '.join(dominates)}[/]"
+            f"[green]HASAGI EB Pareto-dominates Zeus at: {', '.join(dominates)}[/]"
         )
     else:
         console.print(
-            "[dim]Among the deadline-meeting Zeus points, HISE EB neither "
+            "[dim]Among the deadline-meeting Zeus points, HASAGI EB neither "
             "dominates nor is dominated — it lies on the same Pareto frontier.[/]"
         )
 
@@ -179,10 +179,10 @@ def main() -> None:
 
     console.print(
         "\n[dim]Zeus traces a (Σ energy, max JCT) Pareto frontier as η sweeps "
-        "from 0 (energy-min) to 1 (time-min). HISE EnergyBudgetMSS, given a "
+        "from 0 (energy-min) to 1 (time-min). HASAGI EnergyBudgetMSS, given a "
         "specific deadline + energy budget, returns a single operating point. "
-        "If HISE lies on Zeus's frontier, both schemes agree on the Pareto "
-        "trade-off; if HISE Pareto-dominates a Zeus point, the deadline-first "
+        "If HASAGI lies on Zeus's frontier, both schemes agree on the Pareto "
+        "trade-off; if HASAGI Pareto-dominates a Zeus point, the deadline-first "
         "formulation has found a strict improvement over η-driven balancing.[/]"
     )
 

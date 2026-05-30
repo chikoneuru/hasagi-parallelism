@@ -1,21 +1,21 @@
-"""Head-to-head: ElasticFlow scheduler vs HISE EnergyBudgetMSS.
+"""Head-to-head: ElasticFlow scheduler vs HASAGI EnergyBudgetMSS.
 
 Both admit jobs under deadlines and distribute leftover GPUs across the cluster.
 They differ in what they optimise once admission is settled:
 
     ElasticFlow         max throughput  (no energy notion)
-    HISE EnergyBudgetMSS  min energy      (deadline + energy budget)
+    HASAGI EnergyBudgetMSS  min energy      (deadline + energy budget)
 
 The two are duals on the throughput-energy Pareto frontier. With the same job
-set, ElasticFlow walks toward the high-throughput / high-energy end; HISE EB
+set, ElasticFlow walks toward the high-throughput / high-energy end; HASAGI EB
 walks toward the low-energy / longer-runtime end (still meeting deadlines).
 
 Scenarios:
-    A. Generous energy budget — both should accept the same jobs; HISE should
+    A. Generous energy budget — both should accept the same jobs; HASAGI should
        allocate strictly fewer GPUs (saving energy) at the cost of higher JCT.
-    B. Tight energy budget — ElasticFlow ignores energy (over-budget); HISE EB
+    B. Tight energy budget — ElasticFlow ignores energy (over-budget); HASAGI EB
        respects it, possibly rejecting jobs that ElasticFlow accepts.
-    C. Heterogeneous EnergyProfiles — efficient jobs get more GPUs under HISE,
+    C. Heterogeneous EnergyProfiles — efficient jobs get more GPUs under HASAGI,
        inefficient jobs are de-prioritised; ElasticFlow ignores efficiency.
 
 Usage:
@@ -35,8 +35,8 @@ from experiments.baselines.elasticflow import (
     elasticflow_schedule,
     project_energy_kwh,
 )
-from hise.admission.energy_profile import EnergyProfile, linear_profile
-from hise.admission.mss import (
+from hasagi.admission.energy_profile import EnergyProfile, linear_profile
+from hasagi.admission.mss import (
     EnergyBudgetMSS,
     ScalingCurve,
     greedy_marginal_energy_allocation,
@@ -59,8 +59,8 @@ def _profile_to_curve(profile: EnergyProfile) -> ScalingCurve:
     return ScalingCurve(throughput_per_gpu_count=tuple(profile.throughput_iters_per_s))
 
 
-def schedule_hise_eb(jobs: list[Job], available_gpus: int) -> tuple[dict[str, int], tuple[str, ...]]:
-    """HISE EB scheduler: per-job EnergyBudgetMSS admission, then marginal-energy distribution."""
+def schedule_hasagi_eb(jobs: list[Job], available_gpus: int) -> tuple[dict[str, int], tuple[str, ...]]:
+    """HASAGI EB scheduler: per-job EnergyBudgetMSS admission, then marginal-energy distribution."""
     admitted: list[tuple[str, EnergyProfile, int]] = []
     rejected: list[str] = []
     for job in jobs:
@@ -92,7 +92,7 @@ def schedule_hise_eb(jobs: list[Job], available_gpus: int) -> tuple[dict[str, in
     return final, tuple(rejected)
 
 
-def _hise_energy_kwh(profile: EnergyProfile, gpus: int, iters: int) -> float:
+def _hasagi_energy_kwh(profile: EnergyProfile, gpus: int, iters: int) -> float:
     if gpus <= 0 or iters <= 0:
         return 0.0
     return profile.energy_per_iter(gpus) * iters
@@ -121,7 +121,7 @@ def summarise(
     jobs: list[Job],
 ) -> dict:
     """Compute BOTH energy estimates for the same allocation. The linear estimate
-    is what ElasticFlow / Zeus would report; the profile estimate is what HISE's
+    is what ElasticFlow / Zeus would report; the profile estimate is what HASAGI's
     Zeus-style EnergyProfile reports (and what the hardware would actually draw).
     Both numbers describe the SAME physical configuration."""
     linear_total = 0.0
@@ -134,7 +134,7 @@ def summarise(
             jcts.append(math.inf)
             continue
         linear_total += _linear_energy_kwh(job.profile, g, job.iterations_remaining)
-        profile_total += _hise_energy_kwh(job.profile, g, job.iterations_remaining)
+        profile_total += _hasagi_energy_kwh(job.profile, g, job.iterations_remaining)
         jct = _jct(job.profile, g, job.iterations_remaining)
         jcts.append(jct)
         if jct <= job.deadline_seconds:
@@ -171,10 +171,10 @@ def run_scenario(name: str, jobs: list[Job], available_gpus: int, console: Conso
         ) for j in jobs
     ]
     ef_result = elasticflow_schedule(ef_jobs, available_gpus)
-    hise_alloc, hise_rejected = schedule_hise_eb(jobs, available_gpus)
+    hasagi_alloc, hasagi_rejected = schedule_hasagi_eb(jobs, available_gpus)
 
     summary_ef = summarise("ElasticFlow", ef_result.allocation, ef_result.rejected, jobs)
-    summary_hi = summarise("HISE EB", hise_alloc, hise_rejected, jobs)
+    summary_hi = summarise("HASAGI EB", hasagi_alloc, hasagi_rejected, jobs)
 
     table = Table(title=name)
     table.add_column("policy")
@@ -208,7 +208,7 @@ def run_scenario(name: str, jobs: list[Job], available_gpus: int, console: Conso
     diff_alloc = summary_ef["alloc"] != summary_hi["alloc"]
     if diff_alloc:
         diff_msg = (
-            f"Allocations differ — HISE picked {summary_hi['alloc']}, "
+            f"Allocations differ — HASAGI picked {summary_hi['alloc']}, "
             f"ElasticFlow picked {summary_ef['alloc']}. "
             "Use the Zeus-profile column for the true energy comparison."
         )
@@ -230,7 +230,7 @@ def scenario_a() -> tuple[str, list[Job], int]:
             energy_budget_kwh=10.0)         # generous
         for i in range(2)
     ]
-    return ("A. Generous energy budget — HISE should use fewer GPUs", jobs, 12)
+    return ("A. Generous energy budget — HASAGI should use fewer GPUs", jobs, 12)
 
 
 def scenario_b() -> tuple[str, list[Job], int]:
@@ -240,7 +240,7 @@ def scenario_b() -> tuple[str, list[Job], int]:
             energy_budget_kwh=0.02)         # very tight per-job budget
         for i in range(2)
     ]
-    return ("B. Tight energy budget — HISE rejects, ElasticFlow ignores", jobs, 12)
+    return ("B. Tight energy budget — HASAGI rejects, ElasticFlow ignores", jobs, 12)
 
 
 def scenario_c() -> tuple[str, list[Job], int]:
@@ -281,7 +281,7 @@ def main() -> None:
         "gap is the additional energy the linear estimate misses — it is independent "
         "of which allocator made the decision.\n"
         "Where the two allocators picked different allocations (none of the scenarios "
-        "above, because the workloads are symmetric enough to converge), HISE EB sits "
+        "above, because the workloads are symmetric enough to converge), HASAGI EB sits "
         "on the energy-min end of the Pareto frontier and ElasticFlow on the "
         "throughput-max end (see exp09 asymmetric divergence).[/]"
     )

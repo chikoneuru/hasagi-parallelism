@@ -59,7 +59,7 @@ import statistics
 from pathlib import Path
 
 from experiments.exp_endtoend_full_stack import _decide
-from hise.energy.carbon_trace import published_grid_trace
+from hasagi.energy.carbon_trace import published_grid_trace
 
 MAX_CAP_W = 350
 

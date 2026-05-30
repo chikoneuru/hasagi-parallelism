@@ -1,7 +1,7 @@
-"""Multi-seed head-to-head: HISE EnergyBudgetMSS vs PowerFlow, ElasticFlow, Zeus.
+"""Multi-seed head-to-head: HASAGI EnergyBudgetMSS vs PowerFlow, ElasticFlow, Zeus.
 
 Claim under test: on workloads with asymmetric EnergyProfiles and a hard
-cluster-wide energy budget, HISE EB sits on or below the energy frontier
+cluster-wide energy budget, HASAGI EB sits on or below the energy frontier
 traced by prior allocators, with a deadline-meeting rate at least
 matching the throughput-max family.
 
@@ -9,7 +9,7 @@ Each seed draws a fresh workload (per-job iter count + per-job
 EnergyProfile shape parameters) from the same distribution, runs each
 allocator on the same draw, and records (energy, max JCT, deadlines met).
 The aggregator then reports mean ± stddev per allocator, plus Cohen's d
-of HISE EB vs each baseline on the energy axis with a Bonferroni-
+of HASAGI EB vs each baseline on the energy axis with a Bonferroni-
 corrected significance threshold.
 
 Usage:
@@ -33,8 +33,8 @@ from rich.table import Table
 from experiments.baselines.elasticflow import ElasticFlowJob, elasticflow_schedule
 from experiments.baselines.powerflow import powerflow_allocate
 from experiments.baselines.zeus import zeus_schedule
-from hise.admission.energy_profile import EnergyProfile, linear_profile
-from hise.admission.mss import (
+from hasagi.admission.energy_profile import EnergyProfile, linear_profile
+from hasagi.admission.mss import (
     EnergyBudgetMSS,
     ScalingCurve,
     greedy_marginal_energy_allocation,
@@ -117,7 +117,7 @@ def draw_workload(rng: random.Random, n_jobs: int, asymmetric: bool) -> list[Wor
     return jobs
 
 
-def run_hise_eb(jobs: list[WorkloadJob], available_gpus: int) -> dict[str, int]:
+def run_hasagi_eb(jobs: list[WorkloadJob], available_gpus: int) -> dict[str, int]:
     admitted: list[tuple[str, EnergyProfile, int]] = []
     for j in jobs:
         eb = EnergyBudgetMSS(
@@ -201,7 +201,7 @@ def main() -> None:
         ("PowerFlow", run_powerflow),
         ("ElasticFlow", run_elasticflow),
         ("Zeus(η=0.5)", lambda jobs, g: run_zeus(jobs, g, eta=0.5)),
-        ("HISE EB", run_hise_eb),
+        ("HASAGI EB", run_hasagi_eb),
     ]
 
     for seed in range(args.seeds):
@@ -240,23 +240,23 @@ def main() -> None:
         )
     console.print(table)
 
-    # Cohen's d: HISE EB vs each other allocator on the energy axis.
-    hise = [r.total_energy_kwh for r in by_alloc["HISE EB"]]
-    bonferroni_alpha = 0.05 / max(1, len([a for a in allocators if a[0] != "HISE EB"]))
-    pairwise = Table(title=f"HISE EB vs baselines — Cohen's d on energy "
+    # Cohen's d: HASAGI EB vs each other allocator on the energy axis.
+    hasagi = [r.total_energy_kwh for r in by_alloc["HASAGI EB"]]
+    bonferroni_alpha = 0.05 / max(1, len([a for a in allocators if a[0] != "HASAGI EB"]))
+    pairwise = Table(title=f"HASAGI EB vs baselines — Cohen's d on energy "
                             f"(Bonferroni α = {bonferroni_alpha:.4f})")
     pairwise.add_column("baseline")
-    pairwise.add_column("Δ HISE − baseline (kWh)", justify="right")
+    pairwise.add_column("Δ HASAGI − baseline (kWh)", justify="right")
     pairwise.add_column("Δ %", justify="right")
     pairwise.add_column("Cohen's d", justify="right")
     pairwise.add_column("effect size", justify="center")
     for name in [a[0] for a in allocators]:
-        if name == "HISE EB":
+        if name == "HASAGI EB":
             continue
         other = [r.total_energy_kwh for r in by_alloc[name]]
-        delta_abs = statistics.mean(hise) - statistics.mean(other)
+        delta_abs = statistics.mean(hasagi) - statistics.mean(other)
         delta_pct = 100.0 * delta_abs / max(statistics.mean(other), 1e-9)
-        d = cohens_d(hise, other)
+        d = cohens_d(hasagi, other)
         if math.isnan(d):
             tag = "n/a"
         elif abs(d) < 0.2:

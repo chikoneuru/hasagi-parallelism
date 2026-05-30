@@ -1,4 +1,4 @@
-"""Decomposition ablation — attribute the HISE energy gap to its three mechanisms.
+"""Decomposition ablation — attribute the HASAGI energy gap to its three mechanisms.
 
 The joint partition-and-throttle plan combines two decisions:
 
@@ -50,8 +50,8 @@ from experiments.exp_joint_real_workloads import (
     MODELS,
 )
 from experiments.exp_joint_vs_stacked import evaluate_workload
-from hise.parallel.joint_partitioner import ThrottleCurve
-from hise.parallel.partitioner import LinkSpec, partition_pipeline
+from hasagi.parallel.joint_partitioner import ThrottleCurve
+from hasagi.parallel.partitioner import LinkSpec, partition_pipeline
 
 
 @dataclass(frozen=True)

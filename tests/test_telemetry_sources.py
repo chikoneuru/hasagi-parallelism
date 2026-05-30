@@ -10,7 +10,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from hise.energy.telemetry import (
+from hasagi.energy.telemetry import (
     AggregateTelemetrySource,
     FakeTelemetrySource,
     FakeWorker,
@@ -275,7 +275,7 @@ def test_prometheus_pusher_update_metrics_populates_gauges() -> None:
 
     # Sample a metric value via the registry for w0.
     sample = registry.get_sample_value(
-        "hise_power_draw_w",
+        "hasagi_power_draw_w",
         labels={"worker": "w0", "stage": "0", "gpu_type": "A100"},
     )
     assert sample is not None

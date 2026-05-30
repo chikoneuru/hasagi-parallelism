@@ -6,8 +6,8 @@ import pytest
 from experiments.baselines.green import (
     green_offline_optimal_mask,
     green_online_percentile_mask,
-    hise_threshold_mask,
-    hise_threshold_online_mask,
+    hasagi_threshold_mask,
+    hasagi_threshold_online_mask,
     pause_fraction,
 )
 
@@ -97,54 +97,54 @@ def test_online_percentile_empty_intensities() -> None:
     assert green_online_percentile_mask([], pause_fraction=0.5) == ()
 
 
-# --- hise_threshold_mask ---
+# --- hasagi_threshold_mask ---
 
 
-def test_hise_threshold_pauses_above_threshold() -> None:
+def test_hasagi_threshold_pauses_above_threshold() -> None:
     intensities = [100, 200, 300, 400, 500]
     # median=300; threshold=300*1.10=330; pause when >330 → indices 3,4.
-    mask = hise_threshold_mask(intensities, threshold_multiplier=1.10)
+    mask = hasagi_threshold_mask(intensities, threshold_multiplier=1.10)
     assert mask == (1, 1, 1, 0, 0)
 
 
-def test_hise_threshold_empty_intensities() -> None:
-    assert hise_threshold_mask([]) == ()
+def test_hasagi_threshold_empty_intensities() -> None:
+    assert hasagi_threshold_mask([]) == ()
 
 
-def test_hise_threshold_uniform_intensities_never_pause() -> None:
+def test_hasagi_threshold_uniform_intensities_never_pause() -> None:
     """If every value equals the median, nothing exceeds median × 1.10 → no pauses."""
-    mask = hise_threshold_mask([100] * 10, threshold_multiplier=1.10)
+    mask = hasagi_threshold_mask([100] * 10, threshold_multiplier=1.10)
     assert mask == (1,) * 10
 
 
-# --- hise_threshold_online_mask ---
+# --- hasagi_threshold_online_mask ---
 
 
-def test_hise_online_bootstrap_default_active() -> None:
+def test_hasagi_online_bootstrap_default_active() -> None:
     """First tick has no past window; default to active."""
-    mask = hise_threshold_online_mask([200], threshold_multiplier=1.10, window_size=24)
+    mask = hasagi_threshold_online_mask([200], threshold_multiplier=1.10, window_size=24)
     assert mask == (1,)
 
 
-def test_hise_online_empty_intensities() -> None:
-    assert hise_threshold_online_mask([]) == ()
+def test_hasagi_online_empty_intensities() -> None:
+    assert hasagi_threshold_online_mask([]) == ()
 
 
-def test_hise_online_rejects_bad_window() -> None:
+def test_hasagi_online_rejects_bad_window() -> None:
     with pytest.raises(ValueError, match="window_size"):
-        hise_threshold_online_mask([100, 200], threshold_multiplier=1.10, window_size=0)
+        hasagi_threshold_online_mask([100, 200], threshold_multiplier=1.10, window_size=0)
 
 
-def test_hise_online_constant_trace_never_pauses() -> None:
+def test_hasagi_online_constant_trace_never_pauses() -> None:
     """A flat trace yields median == current; current ≤ median × 1.10 → never pause."""
-    mask = hise_threshold_online_mask([100] * 10, threshold_multiplier=1.10, window_size=5)
+    mask = hasagi_threshold_online_mask([100] * 10, threshold_multiplier=1.10, window_size=5)
     assert mask == (1,) * 10
 
 
-def test_hise_online_pauses_only_above_rolling_threshold() -> None:
+def test_hasagi_online_pauses_only_above_rolling_threshold() -> None:
     """At window=3, threshold at tick 5 is median({100,200,300}) × 1.10 = 220; 300 > 220 → pause."""
     intensities = [1000, 1000, 1000, 100, 200, 300]
-    mask = hise_threshold_online_mask(intensities, threshold_multiplier=1.10, window_size=3)
+    mask = hasagi_threshold_online_mask(intensities, threshold_multiplier=1.10, window_size=3)
     # Tick 0: bootstrap (1).
     # Ticks 1-4: window has flat 1000 or {1000,1000,100,...} so current ≤ median*1.10.
     # Tick 5: window {100, 200, 300} → threshold 220; 300 > 220 → pause.
@@ -152,23 +152,23 @@ def test_hise_online_pauses_only_above_rolling_threshold() -> None:
     assert mask[-1] == 0
 
 
-def test_hise_online_window_size_limits_history() -> None:
+def test_hasagi_online_window_size_limits_history() -> None:
     """A long-past spike should fall out of the rolling window."""
     # Spike at tick 0; flat thereafter. Window=3 means by tick 3 the spike is gone.
     intensities = [10_000, 100, 100, 100, 100]
-    mask = hise_threshold_online_mask(intensities, threshold_multiplier=1.10, window_size=3)
+    mask = hasagi_threshold_online_mask(intensities, threshold_multiplier=1.10, window_size=3)
     # Tick 0: bootstrap.
     # Tick 4: window {100, 100, 100} → threshold 110; 100 < 110 → active.
     assert mask[-1] == 1
 
 
-def test_hise_online_differs_from_offline_when_trace_has_drift() -> None:
+def test_hasagi_online_differs_from_offline_when_trace_has_drift() -> None:
     """The whole point: rolling-window threshold ≠ full-trace median threshold."""
     # Linearly rising trace: late ticks are far above the full-trace median but
     # only slightly above their local rolling median.
     intensities = list(range(100, 200))
-    offline = hise_threshold_mask(intensities, threshold_multiplier=1.10)
-    online = hise_threshold_online_mask(intensities, threshold_multiplier=1.10, window_size=24)
+    offline = hasagi_threshold_mask(intensities, threshold_multiplier=1.10)
+    online = hasagi_threshold_online_mask(intensities, threshold_multiplier=1.10, window_size=24)
     assert offline != online
 
 

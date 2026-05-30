@@ -11,7 +11,7 @@ from pathlib import Path
 
 import pytest
 
-from hise.energy.carbon_trace import (
+from hasagi.energy.carbon_trace import (
     _GRID_ZONES,
     CarbonTrace,
     load_csv_trace,

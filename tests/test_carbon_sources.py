@@ -9,7 +9,7 @@ from dataclasses import dataclass
 
 import pytest
 
-from hise.energy.carbon_sources import (
+from hasagi.energy.carbon_sources import (
     AggregateCarbonReading,
     CarbonReading,
     ElectricityMapsClient,

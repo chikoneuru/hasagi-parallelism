@@ -3,7 +3,7 @@
 Two trace sources, recorded per run in the ``trace_source`` field:
 
   - ``synthetic-parametric`` (DEFAULT, no ``--csv``): a SYNTHETIC multi-harmonic
-    trace from ``hise.energy.carbon_trace.published_grid_trace``. Its per-zone
+    trace from ``hasagi.energy.carbon_trace.published_grid_trace``. Its per-zone
     mean/amplitude parameters are loosely modelled on published annual grid
     statistics, but the diurnal phase is identical across all zones and the fit
     is NOT validated against source data. Treat these zones as stress-test grid
@@ -41,7 +41,7 @@ from dataclasses import asdict, dataclass
 from rich.console import Console
 from rich.table import Table
 
-from hise.energy.carbon_trace import (
+from hasagi.energy.carbon_trace import (
     CarbonTrace,
     load_electricitymaps_csv,
     published_grid_trace,

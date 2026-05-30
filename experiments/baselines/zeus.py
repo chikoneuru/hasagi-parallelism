@@ -11,7 +11,7 @@ energy minimisation, η=1 is pure time minimisation.
 
 The port differs from the paper in one place: the original Zeus scans NVML
 power caps on a fixed GPU count; this port scans GPU counts under the same
-EnergyProfile abstraction HISE EB and PowerFlow consume. The trade-off curve
+EnergyProfile abstraction HASAGI EB and PowerFlow consume. The trade-off curve
 is preserved — adding GPUs trades energy (more parallel power draw + allreduce
 overhead) for time (lower JCT) — so the per-job optimiser remains a clean
 analog suitable for a head-to-head experiment.
@@ -26,7 +26,7 @@ import math
 from collections.abc import Sequence
 from dataclasses import dataclass
 
-from hise.admission.energy_profile import EnergyProfile
+from hasagi.admission.energy_profile import EnergyProfile
 
 
 @dataclass(frozen=True)

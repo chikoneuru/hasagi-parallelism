@@ -10,7 +10,7 @@ ElasticFlow's two-stage scheduler:
        is exhausted or every admitted job has saturated.
 
 Both stages are already implemented as standalone primitives in
-``hise.admission.mss`` (`minimum_satisfactory_share`, `greedy_marginal_allocation`).
+``hasagi.admission.mss`` (`minimum_satisfactory_share`, `greedy_marginal_allocation`).
 This module composes them into the canonical ElasticFlow scheduler interface so
 it can be invoked side-by-side with the PowerFlow port for head-to-head experiments.
 
@@ -18,9 +18,9 @@ Reference:
     He, Choi, Mao, Mei, Stoica, "ElasticFlow: An Elastic Serverless Training
     Platform for Distributed Deep Learning," NSDI 2023.
 
-Compared to HISE EB:
+Compared to HASAGI EB:
     - ElasticFlow MAXIMISES throughput under deadline.
-    - HISE EB MINIMISES energy under deadline + energy budget.
+    - HASAGI EB MINIMISES energy under deadline + energy budget.
 
 The two are duals on the throughput–energy Pareto frontier, but with no shared
 energy budget ElasticFlow walks toward the high-throughput / high-energy end.
@@ -31,7 +31,7 @@ import math
 from collections.abc import Sequence
 from dataclasses import dataclass
 
-from hise.admission.mss import (
+from hasagi.admission.mss import (
     ScalingCurve,
     greedy_marginal_allocation,
     minimum_satisfactory_share,
@@ -124,8 +124,8 @@ def project_energy_kwh(
     """Linear power-model projection: ``P_per_gpu × gpus × iters / throughput / 3.6e6``.
 
     The ElasticFlow paper has no energy notion, so we measure the energy
-    *consequence* of its allocation under HISE's same linear power model — the
-    fair-comparison baseline against ``hise.admission.mss.EnergyBudgetMSS``.
+    *consequence* of its allocation under HASAGI's same linear power model — the
+    fair-comparison baseline against ``hasagi.admission.mss.EnergyBudgetMSS``.
     """
     if gpus <= 0 or iterations <= 0:
         return 0.0

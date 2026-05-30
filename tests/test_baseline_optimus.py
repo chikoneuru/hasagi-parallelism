@@ -15,7 +15,7 @@ from experiments.baselines.optimus import (
     project_total_energy_kwh,
     remaining_time_s,
 )
-from hise.admission.energy_profile import linear_profile
+from hasagi.admission.energy_profile import linear_profile
 
 # --- remaining_time_s ---
 

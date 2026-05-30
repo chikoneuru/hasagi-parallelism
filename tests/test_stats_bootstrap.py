@@ -1,4 +1,4 @@
-"""Tests for hise.stats — bootstrap CIs, Cohen's d, Holm-Bonferroni."""
+"""Tests for hasagi.stats — bootstrap CIs, Cohen's d, Holm-Bonferroni."""
 from __future__ import annotations
 
 import math
@@ -7,7 +7,7 @@ import statistics
 
 import pytest
 
-from hise.stats import (
+from hasagi.stats import (
     bootstrap_mean_ci,
     cluster_means,
     clustered_bootstrap_ci,

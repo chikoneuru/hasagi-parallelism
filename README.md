@@ -1,11 +1,11 @@
-# HISE Testbed
+# HASAGI Testbed
 
-Reference implementation for **HISE — Hybrid Parallelism Architecture for Energy-Aware Serverless AI Training**.
+Reference implementation for **HASAGI — Hybrid Parallelism Architecture for Energy-Aware Serverless AI Training**.
 
 ## Layout
 
 ```
-hise/                  Python package (the framework)
+hasagi/                  Python package (the framework)
 ├── orchestrator/      Job orchestrator + control loop (FastAPI)
 ├── parallel/          Hybrid parallel controller — HyPAS Algo 1+2, Hydrozoa-style planner
 ├── admission/         ElasticFlow MSS + Energy-Adjusted MSS
@@ -64,7 +64,7 @@ Manifests under `k8s/` are scaffolds — flesh out for your cluster:
 
 ```bash
 kubectl apply -f k8s/
-hise-cli submit --model resnet18 --dataset cifar10 \
+hasagi-cli submit --model resnet18 --dataset cifar10 \
                 --deadline 4h --carbon-budget 0.5kg
 ```
 
@@ -84,10 +84,10 @@ hise-cli submit --model resnet18 --dataset cifar10 \
 ## Development
 
 ```bash
-make lint               # ruff check hise tests experiments
+make lint               # ruff check hasagi tests experiments
 make test               # pytest -ra
 .venv/bin/pytest -x     # fast-fail mode
-.venv/bin/mypy hise/    # type check (informational)
+.venv/bin/mypy hasagi/    # type check (informational)
 ```
 
 CI runs the same lint + test + smoke-experiment sequence on every push to `main` and on every PR (see [`.github/workflows/test.yml`](.github/workflows/test.yml)).

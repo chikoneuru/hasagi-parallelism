@@ -39,7 +39,7 @@ from rich.table import Table
 
 from experiments.exp_online_deadline import Action
 from experiments.exp_online_primal_dual_sweep import run_trial
-from hise.stats import (
+from hasagi.stats import (
     bootstrap_mean_ci,
     cohens_d,
     effect_size_tag,

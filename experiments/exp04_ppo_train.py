@@ -1,10 +1,10 @@
-"""Train a PPO scaling policy against the carbon-aware HiseCarbonEnv.
+"""Train a PPO scaling policy against the carbon-aware HasagiCarbonEnv.
 
 Pipeline:
     1. Build a Gym env over the synthetic-solar trace (default) or a user-supplied
        CSV trace (e.g., ElectricityMaps export converted to ``intensity_g_per_kwh``).
     2. Train Stable-Baselines3 PPO for ``--timesteps`` env steps.
-    3. Save the trained model to ``artifacts/ppo_hise.zip`` (gitignored).
+    3. Save the trained model to ``artifacts/ppo_hasagi.zip`` (gitignored).
     4. Optionally evaluate against the MPC + rule-based baselines (``--eval``)
        and print an energy-delta table — this is the Q2 keep-or-drop datum.
 
@@ -28,13 +28,13 @@ import numpy as np
 from rich.console import Console
 from rich.table import Table
 
-from hise.energy.carbon_trace import CarbonTrace, load_csv_trace, synthetic_solar_trace
-from hise.energy.rl_env import EnvConfig, HiseCarbonEnv
+from hasagi.energy.carbon_trace import CarbonTrace, load_csv_trace, synthetic_solar_trace
+from hasagi.energy.rl_env import EnvConfig, HasagiCarbonEnv
 
 
 def make_env(cfg: EnvConfig, trace: CarbonTrace, seed: int = 0):
     def _thunk():
-        env = HiseCarbonEnv(cfg, trace=trace, seed=seed)
+        env = HasagiCarbonEnv(cfg, trace=trace, seed=seed)
         return env
     return _thunk
 
@@ -60,7 +60,7 @@ def train(args: argparse.Namespace) -> Path:
 
     n_envs = args.n_envs
     vec_env = DummyVecEnv(
-        [lambda i=i: Monitor(HiseCarbonEnv(cfg, trace=trace, seed=i)) for i in range(n_envs)]
+        [lambda i=i: Monitor(HasagiCarbonEnv(cfg, trace=trace, seed=i)) for i in range(n_envs)]
     )
 
     model = PPO(
@@ -103,7 +103,7 @@ def evaluate(args: argparse.Namespace, model_path: Path) -> None:
     """
     from stable_baselines3 import PPO
 
-    from hise.energy.policy import MPCPolicy, RuleBasedPolicy
+    from hasagi.energy.policy import MPCPolicy, RuleBasedPolicy
 
     console = Console()
     trace = (
@@ -136,7 +136,7 @@ def evaluate(args: argparse.Namespace, model_path: Path) -> None:
     results: list[tuple[str, float, int, float]] = []
 
     def _rollout(name: str, decide_fn) -> tuple[str, float, int, float]:
-        env = HiseCarbonEnv(cfg, trace=trace, seed=args.seed)
+        env = HasagiCarbonEnv(cfg, trace=trace, seed=args.seed)
         obs, _ = env.reset()
         cur = cfg.min_gpus
         sim_t = 0.0
@@ -210,7 +210,7 @@ def main() -> None:
     parser.add_argument("--min-gpus", type=int, default=1)
     parser.add_argument("--max-gpus", type=int, default=8)
     parser.add_argument("--seed", type=int, default=0)
-    parser.add_argument("--output", default="artifacts/ppo_hise.zip")
+    parser.add_argument("--output", default="artifacts/ppo_hasagi.zip")
     parser.add_argument("--verbose", action="store_true")
     parser.add_argument("--eval", action="store_true",
                         help="After training, evaluate vs rule-based + MPC")

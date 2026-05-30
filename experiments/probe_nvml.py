@@ -21,7 +21,7 @@ import pynvml
 from rich.console import Console
 from rich.table import Table
 
-from hise.energy.telemetry import FakeTelemetrySource, FakeWorker, WorkerTelemetry
+from hasagi.energy.telemetry import FakeTelemetrySource, FakeWorker, WorkerTelemetry
 
 
 def read_real(handle, worker_id: str, stage_id: int, t0: float, energy_kwh: float) -> WorkerTelemetry:

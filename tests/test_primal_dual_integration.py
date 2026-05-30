@@ -17,18 +17,18 @@ from __future__ import annotations
 
 import time
 
-from hise.admission.energy_profile import linear_profile
-from hise.admission.mss import EnergyBudgetMSS, ScalingCurve
-from hise.energy.policy import OnlinePrimalDualPolicy
-from hise.orchestrator.deadline_selector import DeadlineFloorSelector
-from hise.orchestrator.energy_aware_control_loop import (
+from hasagi.admission.energy_profile import linear_profile
+from hasagi.admission.mss import EnergyBudgetMSS, ScalingCurve
+from hasagi.energy.policy import OnlinePrimalDualPolicy
+from hasagi.orchestrator.deadline_selector import DeadlineFloorSelector
+from hasagi.orchestrator.energy_aware_control_loop import (
     EnergyAwareControlLoop,
     RepartitionContext,
     energy_admit_or_drop,
 )
-from hise.orchestrator.job import Job, JobState, JobStore
-from hise.parallel.partitioner import LayerProfile, LinkSpec, StageSpec
-from hise.parallel.planner import SimpleRuntimeModel
+from hasagi.orchestrator.job import Job, JobState, JobStore
+from hasagi.parallel.partitioner import LayerProfile, LinkSpec, StageSpec
+from hasagi.parallel.planner import SimpleRuntimeModel
 
 # Action set throughput in iter/s as a function of gpu count.
 # Pareto: more gpus → more throughput but with diminishing returns + rising power.

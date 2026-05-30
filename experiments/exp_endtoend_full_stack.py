@@ -31,7 +31,7 @@ Policy modes:
     grid hours.
   - ``carbon_joint``: defer if intensity > defer_threshold; throttle to
     energy-optimal if intensity > throttle_threshold; max otherwise.
-    Full-stack policy — the closest approximation to HISE's
+    Full-stack policy — the closest approximation to HASAGI's
     joint(defer, throttle) decision on a single-stage workload.
   - ``carbon_deadline_aware``: identical to ``carbon_defer`` but only
     defers when ``deadline_slack_hours >= remaining_epochs``. Bounds the
@@ -70,7 +70,7 @@ import time
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 
-from hise.energy.carbon_trace import published_grid_trace
+from hasagi.energy.carbon_trace import published_grid_trace
 
 # ResNet-18 Pareto curve — measured on RTX 3080 Ti via profile_resnet18_real.py
 # at 150 iters/cap (Ext 1). Cap (W) → energy-per-iter (J).

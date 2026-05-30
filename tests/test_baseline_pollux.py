@@ -15,7 +15,7 @@ from experiments.baselines.pollux import (
     project_energy_kwh,
     statistical_efficiency,
 )
-from hise.admission.energy_profile import linear_profile
+from hasagi.admission.energy_profile import linear_profile
 
 # --- statistical_efficiency ---
 

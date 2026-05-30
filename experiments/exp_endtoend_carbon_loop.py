@@ -4,7 +4,7 @@ Closes Extension 3 of the pre-paper review: prior H5-C experiments measure
 the policy in pure simulation (no actual training), and the H2 end-to-end
 training run tests DVFS + preempt proxies but is driven by a fixed schedule,
 not the carbon trace. This harness wires the *real* training loop to a real
-carbon trace and the HISE-threshold policy that decides per simulated-hour
+carbon trace and the HASAGI-threshold policy that decides per simulated-hour
 whether to train.
 
 Setup:
@@ -41,7 +41,7 @@ import time
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 
-from hise.energy.carbon_trace import published_grid_trace
+from hasagi.energy.carbon_trace import published_grid_trace
 
 ACTIVE_POWER_W = 210.0   # Zeus reference; only used when NVML unavailable
 

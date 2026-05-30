@@ -27,7 +27,7 @@ from dataclasses import dataclass
 from rich.console import Console
 from rich.table import Table
 
-from hise.parallel.partitioner import (
+from hasagi.parallel.partitioner import (
     LayerProfile,
     LinkSpec,
     StageSpec,

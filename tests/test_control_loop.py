@@ -1,13 +1,13 @@
 """Unit test the orchestrator control loop end-to-end (no FastAPI)."""
 from __future__ import annotations
 
-from hise.admission.mss import ScalingCurve
-from hise.energy.carbon_trace import synthetic_solar_trace
-from hise.energy.policy import RuleBasedPolicy
-from hise.orchestrator.control_loop import ControlLoop, admit_or_drop
-from hise.orchestrator.job import Job, JobState, JobStore
-from hise.parallel.planner import SimpleRuntimeModel
-from hise.pool.local_pool import SimulatedPool
+from hasagi.admission.mss import ScalingCurve
+from hasagi.energy.carbon_trace import synthetic_solar_trace
+from hasagi.energy.policy import RuleBasedPolicy
+from hasagi.orchestrator.control_loop import ControlLoop, admit_or_drop
+from hasagi.orchestrator.job import Job, JobState, JobStore
+from hasagi.parallel.planner import SimpleRuntimeModel
+from hasagi.pool.local_pool import SimulatedPool
 
 
 def test_smoke_run_records_scale_events() -> None:

@@ -3,9 +3,9 @@ requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "hise"
+name = "hasagi"
 version = "0.1.0"
-description = "HISE — Hybrid Parallelism Architecture for Energy-Aware Serverless AI Training"
+description = "HASAGI — Hybrid Parallelism Architecture for Energy-Aware Serverless AI Training"
 readme = "README.md"
 requires-python = ">=3.10"
 authors = [{name = "Nguyen Pham Trung Hieu"}]
@@ -42,13 +42,13 @@ dev = [
 ]
 
 [project.scripts]
-hise-orchestrator = "hise.orchestrator.api:run"
-hise-worker = "hise.worker.main:run"
-hise-cli = "hise.cli:app"
+hasagi-orchestrator = "hasagi.orchestrator.api:run"
+hasagi-worker = "hasagi.worker.main:run"
+hasagi-cli = "hasagi.cli:app"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["hise*"]
+include = ["hasagi*"]
 
 [tool.ruff]
 line-length = 100
@@ -60,9 +60,9 @@ ignore = ["E501"]
 
 [tool.ruff.lint.per-file-ignores]
 # Math/algorithm code follows literature naming (K stages from PipeDream, INF for math.inf).
-"hise/parallel/partitioner.py" = ["N803", "N806"]
-"hise/parallel/joint_partitioner.py" = ["N803", "N806"]
-"hise/parallel/stochastic_joint_partitioner.py" = ["N803", "N806"]
+"hasagi/parallel/partitioner.py" = ["N803", "N806"]
+"hasagi/parallel/joint_partitioner.py" = ["N803", "N806"]
+"hasagi/parallel/stochastic_joint_partitioner.py" = ["N803", "N806"]
 # Math-symbol identifiers from the proofs are preserved verbatim in tests.
 "tests/test_joint_partitioner.py" = ["N802", "N803", "N806"]
 "tests/test_stochastic_joint_partitioner.py" = ["N802", "N803", "N806"]

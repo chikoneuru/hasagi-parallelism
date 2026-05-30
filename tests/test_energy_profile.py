@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import pytest
 
-from hise.admission.energy_profile import EnergyProfile, linear_profile
+from hasagi.admission.energy_profile import EnergyProfile, linear_profile
 
 # --- Construction + validation ---
 
@@ -170,7 +170,7 @@ def test_validate_power_convexity_two_point_trivially_holds() -> None:
 
 def test_validate_power_convexity_linear_profile_holds() -> None:
     # linear_profile builds p(g) = P_gpu (g + α g²) / 3.6e6, quadratic-convex.
-    from hise.admission.energy_profile import linear_profile
+    from hasagi.admission.energy_profile import linear_profile
 
     profile = linear_profile(
         power_per_gpu_w=300.0,

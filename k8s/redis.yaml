@@ -1,15 +1,15 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: hise-redis
-  namespace: hise
+  name: hasagi-redis
+  namespace: hasagi
 spec:
   replicas: 1
   selector:
-    matchLabels: {app: hise-redis}
+    matchLabels: {app: hasagi-redis}
   template:
     metadata:
-      labels: {app: hise-redis}
+      labels: {app: hasagi-redis}
     spec:
       containers:
         - name: redis
@@ -19,9 +19,9 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: hise-redis
-  namespace: hise
+  name: hasagi-redis
+  namespace: hasagi
 spec:
-  selector: {app: hise-redis}
+  selector: {app: hasagi-redis}
   ports:
     - {port: 6379, targetPort: 6379}

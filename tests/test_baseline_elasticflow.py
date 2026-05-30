@@ -11,7 +11,7 @@ from experiments.baselines.elasticflow import (
     elasticflow_schedule,
     project_energy_kwh,
 )
-from hise.admission.mss import ScalingCurve
+from hasagi.admission.mss import ScalingCurve
 
 # --- Scheduling ---
 

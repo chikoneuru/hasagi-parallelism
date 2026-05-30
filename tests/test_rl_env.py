@@ -10,7 +10,7 @@ import numpy as np
 import pytest
 
 gym = pytest.importorskip("gymnasium")
-from hise.energy.rl_env import EnvConfig, HiseCarbonEnv  # noqa: E402
+from hasagi.energy.rl_env import EnvConfig, HasagiCarbonEnv  # noqa: E402
 
 # --- EnvConfig validation ---
 
@@ -34,7 +34,7 @@ def test_env_config_rejects_invalid_bounds() -> None:
 
 
 def test_reset_returns_8_dim_box_observation() -> None:
-    env = HiseCarbonEnv()
+    env = HasagiCarbonEnv()
     obs, info = env.reset()
     assert obs.shape == (8,)
     assert obs.dtype == np.float32
@@ -43,7 +43,7 @@ def test_reset_returns_8_dim_box_observation() -> None:
 
 
 def test_reset_starts_with_min_gpus() -> None:
-    env = HiseCarbonEnv(EnvConfig(min_gpus=2, max_gpus=8))
+    env = HasagiCarbonEnv(EnvConfig(min_gpus=2, max_gpus=8))
     env.reset()
     # gpu_fraction = current/max = 2/8 = 0.25.
     obs, _, _, _, _ = env.step(0)   # action 0 → min_gpus
@@ -54,7 +54,7 @@ def test_reset_starts_with_min_gpus() -> None:
 
 
 def test_step_returns_5_tuple() -> None:
-    env = HiseCarbonEnv()
+    env = HasagiCarbonEnv()
     env.reset()
     out = env.step(0)
     assert len(out) == 5
@@ -67,7 +67,7 @@ def test_step_returns_5_tuple() -> None:
 
 
 def test_step_observation_stays_in_box() -> None:
-    env = HiseCarbonEnv()
+    env = HasagiCarbonEnv()
     env.reset()
     for _ in range(20):
         a = env.action_space.sample()
@@ -79,7 +79,7 @@ def test_step_observation_stays_in_box() -> None:
 
 def test_step_advances_sim_time_by_tick() -> None:
     cfg = EnvConfig(tick_seconds=600)
-    env = HiseCarbonEnv(cfg)
+    env = HasagiCarbonEnv(cfg)
     env.reset()
     _, _, _, _, info = env.step(0)
     assert info["sim_t"] == 600
@@ -88,7 +88,7 @@ def test_step_advances_sim_time_by_tick() -> None:
 
 
 def test_step_reconfig_indicator_fires_on_gpu_change() -> None:
-    env = HiseCarbonEnv(EnvConfig(min_gpus=1, max_gpus=4))
+    env = HasagiCarbonEnv(EnvConfig(min_gpus=1, max_gpus=4))
     env.reset()
     # First step picks action=0 → min_gpus=1. Reset already set current_gpus=1
     # so the first step is a no-op (no reconfig).
@@ -100,7 +100,7 @@ def test_step_reconfig_indicator_fires_on_gpu_change() -> None:
 
 
 def test_step_clamps_action_to_max_gpus() -> None:
-    env = HiseCarbonEnv(EnvConfig(min_gpus=1, max_gpus=4))
+    env = HasagiCarbonEnv(EnvConfig(min_gpus=1, max_gpus=4))
     env.reset()
     # Action 99 should clamp to max_gpus=4. Discrete space rejects out-of-range
     # values, but the env internally also clamps for safety.
@@ -114,7 +114,7 @@ def test_step_clamps_action_to_max_gpus() -> None:
 def test_episode_terminates_when_target_iters_reached() -> None:
     """Tiny target → must complete within a few ticks."""
     cfg = EnvConfig(target_iters=100, max_gpus=8, tick_seconds=300)
-    env = HiseCarbonEnv(cfg)
+    env = HasagiCarbonEnv(cfg)
     env.reset()
     terminated = False
     for _ in range(50):
@@ -132,7 +132,7 @@ def test_episode_terminates_when_energy_budget_exhausted() -> None:
         energy_budget_kwh=0.05,         # ~5 ticks at 8 GPUs * 300W * 5min
         deadline_seconds=24 * 3600.0,
     )
-    env = HiseCarbonEnv(cfg)
+    env = HasagiCarbonEnv(cfg)
     env.reset()
     terminated = False
     for _ in range(100):
@@ -150,7 +150,7 @@ def test_episode_truncates_when_deadline_passes() -> None:
         energy_budget_kwh=1000.0,       # not the binding constraint
         tick_seconds=300,
     )
-    env = HiseCarbonEnv(cfg)
+    env = HasagiCarbonEnv(cfg)
     env.reset()
     truncated = False
     for _ in range(10):
@@ -166,7 +166,7 @@ def test_episode_truncates_when_deadline_passes() -> None:
 
 def test_step_reward_is_non_positive() -> None:
     """Reward is -ΔkWh - λ·lag - μ·reconfig — all non-negative components, so r ≤ 0."""
-    env = HiseCarbonEnv()
+    env = HasagiCarbonEnv()
     env.reset()
     for _ in range(20):
         _, reward, term, trunc, _ = env.step(env.action_space.sample())

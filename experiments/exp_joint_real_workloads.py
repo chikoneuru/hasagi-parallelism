@@ -26,8 +26,8 @@ from rich.console import Console
 from rich.table import Table
 
 from experiments.exp_joint_vs_stacked import evaluate_workload
-from hise.parallel.joint_partitioner import ThrottleCurve
-from hise.parallel.partitioner import (
+from hasagi.parallel.joint_partitioner import ThrottleCurve
+from hasagi.parallel.partitioner import (
     LayerProfile,
     LinkSpec,
     StageSpec,

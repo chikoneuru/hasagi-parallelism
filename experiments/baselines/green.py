@@ -5,7 +5,7 @@ during high-intensity windows and resume during low-intensity windows, subject
 to maintaining the total allocated resources within a daily flexibility window.
 This port captures the core scheduling decision as a per-tick (carbon-aware
 on/off) function, with two flavours suitable for an apples-to-apples comparison
-against HISE's threshold-pause policy:
+against HASAGI's threshold-pause policy:
 
   - **offline-optimal** — knows the full intensity trace; pauses the top-K
     highest-intensity ticks where K = pause_budget. Theoretical upper bound on
@@ -18,7 +18,7 @@ against HISE's threshold-pause policy:
     history.
 
 Both flavours respect a *resource conservation* constraint: total active
-ticks equals ``(1 - pause_fraction) × n_ticks``. HISE's simple
+ticks equals ``(1 - pause_fraction) × n_ticks``. HASAGI's simple
 ``pause if intensity > median × multiplier`` does NOT directly enforce this
 constraint; instead its pause fraction emerges from the trace + threshold
 combination. For the comparison, both policies are evaluated on the same
@@ -107,17 +107,17 @@ def green_online_percentile_mask(
     return tuple(mask)
 
 
-def hise_threshold_mask(
+def hasagi_threshold_mask(
     intensities: Sequence[float],
     threshold_multiplier: float = 1.10,
 ) -> tuple[int, ...]:
-    """HISE's offline-median carbon-aware policy: pause if intensity > median × multiplier.
+    """HASAGI's offline-median carbon-aware policy: pause if intensity > median × multiplier.
 
     Uses the median of the full ``intensities`` sequence as the reference
     threshold. This implies offline knowledge of the trace and is only fair
     against :func:`green_offline_optimal_mask`. For an apples-to-apples
     comparison against :func:`green_online_percentile_mask`, use
-    :func:`hise_threshold_online_mask` instead.
+    :func:`hasagi_threshold_online_mask` instead.
     """
     if not intensities:
         return ()
@@ -126,15 +126,15 @@ def hise_threshold_mask(
     return tuple(0 if v > threshold else 1 for v in intensities)
 
 
-def hise_threshold_online_mask(
+def hasagi_threshold_online_mask(
     intensities: Sequence[float],
     threshold_multiplier: float = 1.10,
     window_size: int = 24,
 ) -> tuple[int, ...]:
-    """Online rolling-median variant of :func:`hise_threshold_mask`.
+    """Online rolling-median variant of :func:`hasagi_threshold_mask`.
 
     Mirrors :func:`green_online_percentile_mask` in window cadence and
-    bootstrap behaviour, so HISE-threshold and GREEN-online are compared
+    bootstrap behaviour, so HASAGI-threshold and GREEN-online are compared
     on identical information sets (rolling ``window_size`` ticks, no
     lookahead). At each tick ``t`` the decision threshold is
     ``median(intensities[t - window_size + 1 : t + 1]) ×

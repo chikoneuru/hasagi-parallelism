@@ -1,4 +1,4 @@
-"""Six-allocator head-to-head: HISE EB vs PowerFlow, ElasticFlow, Zeus, Pollux, Optimus.
+"""Six-allocator head-to-head: HASAGI EB vs PowerFlow, ElasticFlow, Zeus, Pollux, Optimus.
 
 Adds the two scheduler-level closest-competitor baselines (Pollux OSDI'21
 goodput-max and Optimus EuroSys'18 remaining-time-min) to the prior four-way
@@ -14,7 +14,7 @@ Each seed:
 
 Aggregate output:
   - per-allocator mean ± sd on energy, max JCT, deadlines met
-  - Cohen's d of HISE EB vs each baseline on the energy axis with
+  - Cohen's d of HASAGI EB vs each baseline on the energy axis with
     Bonferroni-corrected significance threshold
 
 Usage:
@@ -40,8 +40,8 @@ from experiments.baselines.optimus import optimus_allocate
 from experiments.baselines.pollux import PolluxJob, pollux_allocate
 from experiments.baselines.powerflow import powerflow_allocate
 from experiments.baselines.zeus import zeus_schedule
-from hise.admission.energy_profile import EnergyProfile, linear_profile
-from hise.admission.mss import (
+from hasagi.admission.energy_profile import EnergyProfile, linear_profile
+from hasagi.admission.mss import (
     EnergyBudgetMSS,
     ScalingCurve,
     greedy_marginal_energy_allocation,
@@ -141,7 +141,7 @@ def draw_workload(rng: random.Random, n_jobs: int, asymmetric: bool) -> list[Wor
     return jobs
 
 
-def run_hise_eb(jobs: list[WorkloadJob], available_gpus: int) -> dict[str, int]:
+def run_hasagi_eb(jobs: list[WorkloadJob], available_gpus: int) -> dict[str, int]:
     admitted: list[tuple[str, EnergyProfile, int]] = []
     for j in jobs:
         eb = EnergyBudgetMSS(
@@ -261,7 +261,7 @@ def main() -> None:
         ("Zeus(η=0.5)", lambda jobs, g: run_zeus(jobs, g, eta=0.5)),
         ("Pollux", run_pollux),
         ("Optimus", run_optimus),
-        ("HISE EB", run_hise_eb),
+        ("HASAGI EB", run_hasagi_eb),
     ]
 
     for seed in range(args.seeds):
@@ -300,21 +300,21 @@ def main() -> None:
         )
     console.print(table)
 
-    hise = [r.total_energy_kwh for r in by_alloc["HISE EB"]]
-    others = [name for name, _ in allocators if name != "HISE EB"]
+    hasagi = [r.total_energy_kwh for r in by_alloc["HASAGI EB"]]
+    others = [name for name, _ in allocators if name != "HASAGI EB"]
     bonferroni_alpha = 0.05 / max(1, len(others))
-    pairwise = Table(title=f"HISE EB vs baselines — Cohen's d on energy "
+    pairwise = Table(title=f"HASAGI EB vs baselines — Cohen's d on energy "
                             f"(Bonferroni α = {bonferroni_alpha:.4f})")
     pairwise.add_column("baseline")
-    pairwise.add_column("Δ HISE − baseline (kWh)", justify="right")
+    pairwise.add_column("Δ HASAGI − baseline (kWh)", justify="right")
     pairwise.add_column("Δ %", justify="right")
     pairwise.add_column("Cohen's d", justify="right")
     pairwise.add_column("effect size", justify="center")
     for name in others:
         other = [r.total_energy_kwh for r in by_alloc[name]]
-        delta_abs = statistics.mean(hise) - statistics.mean(other)
+        delta_abs = statistics.mean(hasagi) - statistics.mean(other)
         delta_pct = 100.0 * delta_abs / max(statistics.mean(other), 1e-9)
-        d = cohens_d(hise, other)
+        d = cohens_d(hasagi, other)
         pairwise.add_row(
             name,
             f"{delta_abs:+.4f}",

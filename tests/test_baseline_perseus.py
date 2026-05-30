@@ -6,7 +6,7 @@ import math
 import pytest
 
 from experiments.baselines.perseus import perseus_throttle
-from hise.parallel.partitioner import (
+from hasagi.parallel.partitioner import (
     LayerProfile,
     LinkSpec,
     StageSpec,

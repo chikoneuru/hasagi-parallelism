@@ -2,7 +2,7 @@
 
 The PowerFlow and ElasticFlow head-to-head experiments (exp05, exp06) found that
 all three allocators (PowerFlow's relative-priority greedy, ElasticFlow's
-throughput-max greedy, HISE's energy-min greedy) converge to identical
+throughput-max greedy, HASAGI's energy-min greedy) converge to identical
 allocations on the synthetic linear-profile workloads used there. This
 experiment locates the regime where they diverge.
 
@@ -32,8 +32,8 @@ from rich.table import Table
 
 from experiments.baselines.elasticflow import ElasticFlowJob, elasticflow_schedule
 from experiments.baselines.powerflow import powerflow_allocate
-from hise.admission.energy_profile import EnergyProfile, linear_profile
-from hise.admission.mss import ScalingCurve, greedy_marginal_energy_allocation
+from hasagi.admission.energy_profile import EnergyProfile, linear_profile
+from hasagi.admission.mss import ScalingCurve, greedy_marginal_energy_allocation
 
 
 @dataclass
@@ -85,8 +85,8 @@ def run(jobs: list[JobSpec], available_gpus: int, console: Console) -> bool:
         available_gpus=available_gpus,
     )
 
-    # HISE EB (absolute marginal-energy greedy)
-    hise_alloc = greedy_marginal_energy_allocation(
+    # HASAGI EB (absolute marginal-energy greedy)
+    hasagi_alloc = greedy_marginal_energy_allocation(
         admitted=[(j.job_id, j.profile, 1) for j in jobs],
         available_gpus=available_gpus,
     )
@@ -101,7 +101,7 @@ def run(jobs: list[JobSpec], available_gpus: int, console: Console) -> bool:
     for name, alloc in [
         ("ElasticFlow (throughput-max)", ef_result.allocation),
         ("PowerFlow (relative-priority)", pf_alloc),
-        ("HISE EB (marginal-energy)", hise_alloc),
+        ("HASAGI EB (marginal-energy)", hasagi_alloc),
     ]:
         e, t, jct = _summarise(alloc, jobs)
         rows.append((name, alloc, e, t, jct))
@@ -215,8 +215,8 @@ def main() -> None:
         "head experiments was contingent on symmetric workloads. When the per-job "
         "throughput-curve shape diverges between jobs, the throughput-max and "
         "energy-min priorities order candidates differently and the resulting "
-        "allocations differ. HISE's contribution is the *energy-aware* end of "
-        "this spectrum: when the workload is asymmetric, HISE EB picks the "
+        "allocations differ. HASAGI's contribution is the *energy-aware* end of "
+        "this spectrum: when the workload is asymmetric, HASAGI EB picks the "
         "lower-energy allocation, paying a throughput cost in exchange.[/]"
     )
 

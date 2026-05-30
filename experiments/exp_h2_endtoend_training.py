@@ -1,7 +1,7 @@
-"""H2 end-to-end training — accuracy invariance under HISE elasticity proxies.
+"""H2 end-to-end training — accuracy invariance under HASAGI elasticity proxies.
 
 The H2 acceptance criterion is "final accuracy within ±1% of the non-elastic
-baseline" when HISE's elasticity mechanisms run during training. On a single
+baseline" when HASAGI's elasticity mechanisms run during training. On a single
 GPU we cannot honestly validate multi-GPU DP elasticity, but we *can* validate
 the elasticity proxies that the testbed reproduces faithfully:
 
@@ -144,7 +144,7 @@ DEFAULT_POWER_CAPS_W = (200.0, 300.0)  # alternates each cycle
 
 def set_power_cap(watts: int) -> None:
     """Issue ``sudo nvidia-smi -pl <W>``. Requires the passwordless-sudo entry
-    at /etc/sudoers.d/hise-nvidia-smi (set up at Tuần 31)."""
+    at /etc/sudoers.d/hasagi-nvidia-smi (set up at Tuần 31)."""
     try:
         subprocess.run(
             ["sudo", "-n", "nvidia-smi", "-pl", str(int(watts))],

@@ -1,4 +1,4 @@
-"""Perseus throttling vs HISE energy-objective partition — pipeline energy ablation.
+"""Perseus throttling vs HASAGI energy-objective partition — pipeline energy ablation.
 
 Two ways to reduce pipeline-energy bloat from imbalanced stages:
 
@@ -6,7 +6,7 @@ Two ways to reduce pipeline-energy bloat from imbalanced stages:
       (Perseus, NSDI'24). Same throughput, lower power on fast stages.
 
   P2. Re-partition with the energy objective so the stages are balanced in
-      ``Σ P_s · T_s`` rather than just in ``max T_s`` (HISE's existing
+      ``Σ P_s · T_s`` rather than just in ``max T_s`` (HASAGI's existing
       ``partition_pipeline(..., objective="energy")``).
 
 The two strategies are complementary, not competing:
@@ -37,7 +37,7 @@ from rich.console import Console
 from rich.table import Table
 
 from experiments.baselines.perseus import perseus_throttle
-from hise.parallel.partitioner import (
+from hasagi.parallel.partitioner import (
     LayerProfile,
     LinkSpec,
     Partition,
@@ -144,7 +144,7 @@ def run(args: argparse.Namespace) -> None:
                  idle_power_fraction=args.idle_power_fraction),
     ]
 
-    table = Table(title="Perseus vs HISE energy partition — pipeline-energy comparison")
+    table = Table(title="Perseus vs HASAGI energy partition — pipeline-energy comparison")
     table.add_column("config")
     table.add_column("pipeline (s)", justify="right")
     table.add_column("baseline kWh/iter", justify="right")
@@ -176,7 +176,7 @@ def run(args: argparse.Namespace) -> None:
 
     console.print(
         "\n[dim]Perseus (NSDI'24) post-hoc throttles fast stages to remove "
-        "slack-idle bloat at fixed cuts. HISE's energy-objective partitioner "
+        "slack-idle bloat at fixed cuts. HASAGI's energy-objective partitioner "
         "shifts the cuts so the slack is small to begin with. The two are "
         "complementary: stacking Perseus on the energy-optimal partition "
         "recovers any residual bloat — the empirical evidence above shows "

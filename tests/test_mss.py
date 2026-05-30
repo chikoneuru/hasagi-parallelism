@@ -1,8 +1,8 @@
-"""Unit tests for ElasticFlow MSS + HISE Energy-Budgeted MSS."""
+"""Unit tests for ElasticFlow MSS + HASAGI Energy-Budgeted MSS."""
 from __future__ import annotations
 
-from hise.admission.energy_profile import EnergyProfile, linear_profile
-from hise.admission.mss import (
+from hasagi.admission.energy_profile import EnergyProfile, linear_profile
+from hasagi.admission.mss import (
     EnergyBudgetMSS,
     ScalingCurve,
     greedy_marginal_allocation,

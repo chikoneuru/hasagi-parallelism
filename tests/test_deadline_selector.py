@@ -3,13 +3,13 @@ from __future__ import annotations
 
 import time
 
-from hise.admission.mss import ScalingCurve
-from hise.energy.policy import PowerAwareRulePolicy
-from hise.energy.telemetry import WorkerTelemetry
-from hise.orchestrator.deadline_selector import DeadlineFloor, DeadlineFloorSelector
-from hise.orchestrator.energy_aware_control_loop import EnergyAwareControlLoop
-from hise.orchestrator.job import Job, JobState, JobStore
-from hise.parallel.planner import SimpleRuntimeModel
+from hasagi.admission.mss import ScalingCurve
+from hasagi.energy.policy import PowerAwareRulePolicy
+from hasagi.energy.telemetry import WorkerTelemetry
+from hasagi.orchestrator.deadline_selector import DeadlineFloor, DeadlineFloorSelector
+from hasagi.orchestrator.energy_aware_control_loop import EnergyAwareControlLoop
+from hasagi.orchestrator.job import Job, JobState, JobStore
+from hasagi.parallel.planner import SimpleRuntimeModel
 
 # --- Helpers ---
 

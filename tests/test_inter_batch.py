@@ -5,8 +5,8 @@ import math
 
 import pytest
 
-from hise.energy.telemetry import WorkerTelemetry
-from hise.parallel.inter_batch import (
+from hasagi.energy.telemetry import WorkerTelemetry
+from hasagi.parallel.inter_batch import (
     EnergyAwareWRR,
     InterBatchScheduler,
     Node,

@@ -20,30 +20,30 @@ services:
     build:
       context: .
       dockerfile: docker/orchestrator.Dockerfile
-    image: hise-orchestrator:dev
+    image: hasagi-orchestrator:dev
     ports: ["8000:8000"]
     environment:
-      HISE_REDIS_URL: redis://redis:6379/0
-      HISE_CARBON_TRACE: /app/traces/synthetic_solar.csv
-      HISE_TICK_SECONDS: "30"
-      HISE_LOG_LEVEL: INFO
+      HASAGI_REDIS_URL: redis://redis:6379/0
+      HASAGI_CARBON_TRACE: /app/traces/synthetic_solar.csv
+      HASAGI_TICK_SECONDS: "30"
+      HASAGI_LOG_LEVEL: INFO
     depends_on:
       redis:
         condition: service_healthy
     volumes:
       - ./traces:/app/traces:ro
-      - ./hise:/app/hise:ro
+      - ./hasagi:/app/hasagi:ro
 
   worker-1:
     build:
       context: .
       dockerfile: docker/worker.Dockerfile
-    image: hise-worker:dev
+    image: hasagi-worker:dev
     environment:
-      HISE_WORKER_ID: worker-1
-      HISE_WORKER_TIER: cloud
-      HISE_ORCHESTRATOR_URL: http://orchestrator:8000
-      HISE_REDIS_URL: redis://redis:6379/0
+      HASAGI_WORKER_ID: worker-1
+      HASAGI_WORKER_TIER: cloud
+      HASAGI_ORCHESTRATOR_URL: http://orchestrator:8000
+      HASAGI_REDIS_URL: redis://redis:6379/0
     depends_on:
       orchestrator:
         condition: service_started
@@ -52,12 +52,12 @@ services:
     build:
       context: .
       dockerfile: docker/worker.Dockerfile
-    image: hise-worker:dev
+    image: hasagi-worker:dev
     environment:
-      HISE_WORKER_ID: worker-2
-      HISE_WORKER_TIER: edge
-      HISE_ORCHESTRATOR_URL: http://orchestrator:8000
-      HISE_REDIS_URL: redis://redis:6379/0
+      HASAGI_WORKER_ID: worker-2
+      HASAGI_WORKER_TIER: edge
+      HASAGI_ORCHESTRATOR_URL: http://orchestrator:8000
+      HASAGI_REDIS_URL: redis://redis:6379/0
     depends_on:
       orchestrator:
         condition: service_started

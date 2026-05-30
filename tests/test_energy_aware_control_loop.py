@@ -10,18 +10,18 @@ from __future__ import annotations
 
 import pytest
 
-from hise.admission.energy_profile import linear_profile
-from hise.admission.mss import EnergyBudgetMSS, ScalingCurve
-from hise.energy.policy import MPCPolicy, PowerAwareRulePolicy
-from hise.energy.telemetry import WorkerTelemetry
-from hise.orchestrator.energy_aware_control_loop import (
+from hasagi.admission.energy_profile import linear_profile
+from hasagi.admission.mss import EnergyBudgetMSS, ScalingCurve
+from hasagi.energy.policy import MPCPolicy, PowerAwareRulePolicy
+from hasagi.energy.telemetry import WorkerTelemetry
+from hasagi.orchestrator.energy_aware_control_loop import (
     EnergyAwareControlLoop,
     RepartitionContext,
     energy_admit_or_drop,
 )
-from hise.orchestrator.job import Job, JobState, JobStore
-from hise.parallel.partitioner import LayerProfile, LinkSpec, StageSpec
-from hise.parallel.planner import SimpleRuntimeModel
+from hasagi.orchestrator.job import Job, JobState, JobStore
+from hasagi.parallel.partitioner import LayerProfile, LinkSpec, StageSpec
+from hasagi.parallel.planner import SimpleRuntimeModel
 
 # --- Helpers ---
 

@@ -18,9 +18,9 @@ smaller ``ϕ`` (sharp landscapes, large LMs at small token counts) sees ε
 collapse quickly. The Pollux scheduler picks ``w`` per job to maximise
 cluster-wide ``Σ goodput_j``.
 
-Port shape: greedy marginal goodput allocator over an HISE ``EnergyProfile``
+Port shape: greedy marginal goodput allocator over an HASAGI ``EnergyProfile``
 so it can be compared side-by-side with PowerFlow, ElasticFlow, Zeus, and
-HISE EB-MSS. Energy is *not* in Pollux's objective; we report it as a
+HASAGI EB-MSS. Energy is *not* in Pollux's objective; we report it as a
 downstream consequence using the same profile, the same way the ElasticFlow
 port does.
 
@@ -35,7 +35,7 @@ import math
 from collections.abc import Sequence
 from dataclasses import dataclass
 
-from hise.admission.energy_profile import EnergyProfile
+from hasagi.admission.energy_profile import EnergyProfile
 
 
 @dataclass(frozen=True)

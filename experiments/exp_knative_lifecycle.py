@@ -27,7 +27,7 @@ import httpx
 from rich.console import Console
 from rich.table import Table
 
-from hise.pool.knative_pool import KnativePool
+from hasagi.pool.knative_pool import KnativePool
 
 
 @dataclass(frozen=True)
@@ -130,7 +130,7 @@ def _trigger_and_measure(
         resp = cli.post(
             url,
             json=payload,
-            headers={"Host": "hise-worker-lifecycle.hise-validation.example.com"},
+            headers={"Host": "hasagi-worker-lifecycle.hasagi-validation.example.com"},
         )
         end_to_end_wall = time.time() - trigger_unix
         worker = resp.json().get("lifecycle", {}) if resp.is_success else {}
@@ -240,8 +240,8 @@ def run(args: argparse.Namespace) -> int:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--service", default="hise-worker-lifecycle")
-    parser.add_argument("--namespace", default="hise-validation")
+    parser.add_argument("--service", default="hasagi-worker-lifecycle")
+    parser.add_argument("--namespace", default="hasagi-validation")
     parser.add_argument("--kourier-host", default="127.0.0.1")
     parser.add_argument("--kourier-port", type=int, default=31080)
     parser.add_argument("--replicates", type=int, default=5)

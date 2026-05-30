@@ -11,11 +11,11 @@ RUN pip install --no-cache-dir \
         "httpx>=0.27" \
         "pydantic>=2.6"
 
-COPY hise/worker/knative_main.py /app/hise/worker/knative_main.py
-COPY hise/worker/__init__.py     /app/hise/worker/__init__.py
-RUN mkdir -p /app/hise && touch /app/hise/__init__.py
+COPY hasagi/worker/knative_main.py /app/hasagi/worker/knative_main.py
+COPY hasagi/worker/__init__.py     /app/hasagi/worker/__init__.py
+RUN mkdir -p /app/hasagi && touch /app/hasagi/__init__.py
 
 ENV PYTHONPATH=/app
 EXPOSE 8080
 
-CMD ["python", "-m", "hise.worker.knative_main"]
+CMD ["python", "-m", "hasagi.worker.knative_main"]

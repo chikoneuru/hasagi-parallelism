@@ -34,7 +34,7 @@ from dataclasses import asdict, dataclass
 from rich.console import Console
 from rich.table import Table
 
-from hise.pool.knative_pool import KnativePool
+from hasagi.pool.knative_pool import KnativePool
 
 
 @dataclass(frozen=True)
@@ -293,8 +293,8 @@ def run(args: argparse.Namespace) -> int:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--service", default="hise-worker-lifecycle")
-    parser.add_argument("--namespace", default="hise-validation")
+    parser.add_argument("--service", default="hasagi-worker-lifecycle")
+    parser.add_argument("--namespace", default="hasagi-validation")
     parser.add_argument(
         "--steps",
         default="1->2,2->1,1->4,4->1,1->3,3->1",
