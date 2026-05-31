@@ -55,6 +55,20 @@ class SimpleRuntimeModel:
 
     Useful for unit tests and smoke runs. Real evaluation should fit (alpha, beta) via linear
     regression on profiling traces (Hydrozoa §3.4).
+
+    Two batch conventions, selected by ``global_batch_size``:
+
+    - ``global_batch_size is None`` (default): each replica processes a FIXED
+      ``microbatch_count`` per step (per-step latency). Data parallelism then adds
+      only all-reduce cost with no compute benefit, so the lowest-runtime strategy
+      degenerates to maximal model-parallel at every bandwidth — the planner is
+      bandwidth-insensitive in this mode. This is the legacy behaviour relied on by
+      the existing control-loop/admission callers and their tests.
+    - ``global_batch_size`` set: a fixed GLOBAL batch is split across the ``dp``
+      replicas (``samples_per_replica = global_batch_size / dp``), the standard
+      data-parallel framing (Megatron, Hydrozoa). Here dp reduces per-replica
+      compute at the cost of an all-reduce while mp reduces compute at the cost of a
+      pipeline bubble, so the optimal split is genuinely bandwidth-dependent.
     """
 
     per_sample_flops: float
@@ -63,10 +77,15 @@ class SimpleRuntimeModel:
     network_bandwidth_bps: float
     pipeline_alpha: float = 0.05   # bubble fraction per stage
     microbatch_count: int = 16
+    global_batch_size: int | None = None
 
     def __call__(self, dp: int, mp: int) -> float:
-        # Per-device compute time per minibatch — model-parallel splits the FLOPs.
-        comp = self.per_sample_flops * self.microbatch_count / max(self.device_throughput_flops * mp, 1.0)
+        # Samples processed per replica per step: a fixed global batch split across
+        # dp replicas (data-parallel framing), else a fixed per-replica microbatch.
+        samples_per_replica = (self.global_batch_size / max(dp, 1)
+                               if self.global_batch_size is not None else self.microbatch_count)
+        # Per-device compute time — model-parallel splits the FLOPs across mp stages.
+        comp = self.per_sample_flops * samples_per_replica / max(self.device_throughput_flops * mp, 1.0)
         # All-reduce over dp groups: 2 * (dp - 1) * shard_bytes / bw.
         shard_bytes = self.model_bytes / max(mp, 1)
         allreduce = 2.0 * max(dp - 1, 0) * shard_bytes * 8.0 / max(self.network_bandwidth_bps, 1.0)

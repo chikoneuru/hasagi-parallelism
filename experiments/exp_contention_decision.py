@@ -8,21 +8,29 @@ partitioner's decisions stay good when its per-stage throughput estimates are
 perturbed by contention, and whether the implemented incremental re-planner
 recovers the loss cheaply.
 
-Two regimes, isolating the effect with a communication-light link (small
-activations) so the result is about compute balance, not bandwidth — bandwidth
-sensitivity is the separate concern of ``exp_comm_sensitivity``:
+Three regimes:
 
-  1. UNIFORM contention. Every stage's effective throughput is scaled by the same
-     factor c. With negligible comm the bottleneck partition is scale-invariant —
-     argmin_s (flops_s / (c·thru)) = argmin_s (flops_s / thru) — so the optimal
-     cuts do NOT change and a contention-blind plan carries ~0 regret. The
-     partitioner correctly does nothing; this is the robustness boundary, and it
-     means uniform slowdown (e.g. a global power cap) needs no re-partition.
+  1. UNIFORM contention, NEGLIGIBLE comm. Every stage's effective throughput is
+     scaled by the same factor c, on a comm-light link. Then the bottleneck
+     partition is scale-invariant by a one-line MATH IDENTITY (not an empirical
+     finding): argmin_s (flops_s / (c·thru)) = argmin_s (flops_s / thru) since 1/c
+     is a positive monotone factor. So the optimal cuts do NOT change and a
+     contention-blind plan carries ~0 regret. This is the robustness boundary in
+     the compute-bound regime only.
 
-  2. ASYMMETRIC contention. A co-tenant degrades only a subset of stages, so the
+  2. UNIFORM contention, SIGNIFICANT comm. The same uniform slowdown on a slow link
+     is NOT scale-invariant: compute inflates by 1/c while the (bandwidth-bound)
+     comm term is unchanged, so the comp/comm balance shifts and the optimal cuts
+     move. The "uniform slowdown needs no re-partition" intuition holds only when
+     comm is negligible; with real interconnects even a global slowdown moves cuts.
+
+  3. ASYMMETRIC contention. A co-tenant degrades only a subset of stages, so the
      load balance shifts materially: the contended stages should hold fewer
-     layers. A contention-blind plan (cuts chosen on nominal throughput) leaves
-     real regret that grows with severity; a contention-aware re-plan recovers it.
+     layers. A contention-blind plan leaves regret that grows roughly as 1/c-1
+     (a slowed stage takes 1/c longer until rebalanced); a contention-aware re-plan
+     recovers it. That rebalancing is what any load balancer does — the point here
+     is to characterise the magnitude and confirm the incremental re-planner finds
+     it cheaply, not to claim the rebalancing itself is novel.
 
 For regime 2 we exercise the implemented online machinery: starting from the
 nominal-optimal cuts, repeatedly call ``incremental_partition`` (sliding cuts
@@ -61,6 +69,7 @@ from hasagi.parallel.partitioner import (
 
 _THRU = 3.5e13      # nominal aggregate stage throughput (FLOPS), ~3080 Ti-class
 _BW = 4.8e12        # NVLink-class link; with the small activations below, comm ~ 0
+_BW_SLOW = 1.0e10   # 10 GbE; comm is material, so uniform contention is no longer scale-invariant
 
 
 def _uniform_layers(n: int) -> list[LayerProfile]:
@@ -205,33 +214,46 @@ def run(args: argparse.Namespace) -> int:
     summary: dict = {"layers": args.layers, "stages": k, "objective": args.objective,
                      "c_grid": c_grid, "regimes": {}, "recovery": {}}
 
-    # --- Regime 1: uniform contention (scale-invariant) ---
+    # --- Regime 1: uniform contention, comm-negligible (scale-invariant by identity) ---
     rows1 = []
     for c in c_grid:
         factors = dict.fromkeys(range(k), c)
         r = _blind_vs_aware_regret(layers, stages, links, factors, args.objective)
         rows1.append({"c": c, **r})
-    _scenario_table(console, "Regime 1 — UNIFORM contention "
-                             "(expected: scale-invariant, ~0 regret)", rows1)
-    summary["regimes"]["uniform"] = rows1
+    _scenario_table(console, "Regime 1 — UNIFORM contention, comm-negligible "
+                             "(scale-invariant by math identity, ~0 regret)", rows1)
+    summary["regimes"]["uniform_fast"] = rows1
     console.print(f"  max regret across c: {max(r['regret'] for r in rows1) * 100:.3f}% "
-                  "— decision robust; uniform slowdown needs no re-partition.\n")
+                  "— a math identity (argmin invariant under uniform scaling), not a finding.\n")
 
-    # --- Regime 2: asymmetric contention (co-tenant on the first half of stages) ---
+    # --- Regime 2: uniform contention, comm-significant (NOT scale-invariant) ---
+    slow_links = _links(k, _BW_SLOW)
+    rows_slow = []
+    for c in c_grid:
+        factors = dict.fromkeys(range(k), c)
+        r = _blind_vs_aware_regret(layers, stages, slow_links, factors, args.objective)
+        rows_slow.append({"c": c, **r})
+    _scenario_table(console, "Regime 2 — UNIFORM contention, comm-significant (10 GbE) "
+                             "(comp inflates 1/c, comm fixed -> balance shifts)", rows_slow)
+    summary["regimes"]["uniform_slow"] = rows_slow
+    console.print(f"  max regret across c: {max(r['regret'] for r in rows_slow) * 100:.2f}% "
+                  "— even a UNIFORM slowdown moves cuts once comm is non-negligible.\n")
+
+    # --- Regime 3: asymmetric contention (co-tenant on the first half of stages) ---
     affected = list(range(max(1, k // 2)))
-    rows2 = []
+    rows3 = []
     for c in c_grid:
         factors = dict.fromkeys(affected, c)
         r = _blind_vs_aware_regret(layers, stages, links, factors, args.objective)
-        rows2.append({"c": c, **r})
-    _scenario_table(console, f"Regime 2 — ASYMMETRIC contention on stages {affected} "
-                             "(blind plan mis-balances load)", rows2)
-    summary["regimes"]["asymmetric"] = rows2
-    console.print(f"  max regret across c: {max(r['regret'] for r in rows2) * 100:.2f}% "
-                  "— a contention-aware re-plan recovers this.\n")
+        rows3.append({"c": c, **r})
+    _scenario_table(console, f"Regime 3 — ASYMMETRIC contention on stages {affected} "
+                             "(blind plan mis-balances load; regret ~ 1/c - 1)", rows3)
+    summary["regimes"]["asymmetric"] = rows3
+    console.print(f"  max regret across c: {max(r['regret'] for r in rows3) * 100:.2f}% "
+                  "— tracks 1/c-1; a contention-aware re-plan (or incremental re-plan) recovers it.\n")
 
     # --- Incremental recovery for the worst asymmetric case ---
-    worst = max(rows2, key=lambda r: r["regret"])
+    worst = max(rows3, key=lambda r: r["regret"])
     c_worst = worst["c"]
     factors = dict.fromkeys(affected, c_worst)
     console.print(f"[bold]Incremental recovery[/] (asymmetric c={c_worst}, "

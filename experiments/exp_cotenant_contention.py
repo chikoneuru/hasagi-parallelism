@@ -2,9 +2,13 @@
 
 Grounds the parametric contention factor swept by ``exp_contention_decision`` in a
 real measurement: when N identical training processes share one GPU, how much
-does each tenant's throughput drop versus running alone? That per-tenant factor
-c(N) = throughput_per_tenant(N) / throughput_solo is exactly the StageSpec
-throughput scaling the decision study perturbs.
+does each tenant's throughput drop versus running alone? The result is the
+well-known GPU time-slice saturation (per-tenant c(N) ~ 1/N). Its only role here
+is to establish that the swept contention factor c ~ 0.3-0.5 is PHYSICALLY
+REACHABLE. It is NOT a calibration of the per-stage, asymmetric, single-co-tenant
+model the decision study perturbs (this measurement is whole-job, symmetric, and
+single-GPU; it contains no pipeline stages), and it demonstrates no partitioner
+benefit.
 
 Scope and honesty:
   - This measures DEFAULT time-sliced co-location — multiple independent CUDA
@@ -216,7 +220,7 @@ def run(args: argparse.Namespace) -> int:
     t = Table(title=f"Co-tenant throughput degradation - {args.workload}, "
                     f"time-sliced co-location ({args.repeats} reps x N tenants)")
     t.add_column("tenants N", justify="right")
-    t.add_column("per-tenant it/s (mean+/-sd)", justify="right")
+    t.add_column("per-tenant it/s (mean+/-sd, pooled tenants x reps)", justify="right")
     t.add_column("c(N)=thr(N)/thr(1)", justify="right")
     t.add_column("aggregate it/s", justify="right")
     t.add_column("aggregate scaling", justify="right")

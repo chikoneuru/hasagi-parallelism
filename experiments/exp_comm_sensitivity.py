@@ -54,10 +54,9 @@ from hasagi.parallel.partitioner import (
     incremental_partition,
     partition_pipeline,
 )
-from hasagi.parallel.planner import select_hybrid_strategy
+from hasagi.parallel.planner import SimpleRuntimeModel, select_hybrid_strategy
 
 _MICROBATCHES = 8
-_PIPELINE_ALPHA = 0.05   # pipeline-bubble fraction per stage (matches SimpleRuntimeModel)
 _GLOBAL_BATCH = 1024     # samples per optimiser step, fixed and split across dp replicas
 
 # Named interconnect regimes, bits per second. The planner/partitioner cost model
@@ -102,27 +101,21 @@ def _log_grid(lo: float, hi: float, n: int) -> list[float]:
 # Planner sweep
 # ---------------------------------------------------------------------------
 #
-# Runtime model used for the strategy sweep. The production ``SimpleRuntimeModel``
-# fixes the PER-REPLICA batch (it returns per-step latency), so data-parallelism
-# carries only all-reduce cost and never compute benefit — under it the optimum
-# degenerates to maximal model-parallel regardless of bandwidth, which is not the
-# tradeoff a strategy planner faces. The standard framing (Megatron, Hydrozoa)
-# fixes the GLOBAL batch and splits it across dp replicas, so dp reduces per-step
-# compute at the cost of an all-reduce, while mp reduces compute at the cost of a
-# pipeline bubble. comp = flops · (global_batch / dp) / (throughput · mp); note
-# comp depends only on the product dp·mp, so the choice is driven by the
-# all-reduce (bandwidth-sensitive) versus bubble (bandwidth-free) balance.
+# The sweep uses the SHIPPED ``SimpleRuntimeModel`` configured with a fixed GLOBAL
+# batch (``global_batch_size``), the standard data-parallel framing (Megatron,
+# Hydrozoa): dp reduces per-replica compute at the cost of an all-reduce, mp
+# reduces compute at the cost of a pipeline bubble, so the optimal split is
+# bandwidth-dependent. IMPORTANT: the planner's DEFAULT mode (no global batch,
+# fixed per-replica microbatch) is bandwidth-INSENSITIVE — it always picks maximal
+# model-parallel — and that default is what the orchestrator/admission callers
+# currently use. So the bandwidth-sensitivity below is a property of the
+# global-batch configuration the orchestrator SHOULD adopt, not of its current
+# default. This is the standard comm-vs-compute tradeoff, not a novel finding; the
+# only quantitative content here is the regret of a bandwidth-blind choice in this
+# cost model (analytic, not wall-clock).
 
-def _runtime(model: dict, global_batch: int, bw: float, dp: int, mp: int) -> float:
-    comp = model["per_sample_flops"] * (global_batch / dp) / (model["device_throughput_flops"] * mp)
-    shard_bytes = model["model_bytes"] / mp
-    allreduce = 2.0 * max(dp - 1, 0) * shard_bytes * 8.0 / bw
-    bubble = _PIPELINE_ALPHA * (mp - 1) * comp
-    return comp + allreduce + bubble
-
-
-def _make_runtime_model(model: dict, global_batch: int, bw: float):
-    return lambda dp, mp: _runtime(model, global_batch, bw, dp, mp)
+def _make_runtime_model(model: dict, global_batch: int, bw: float) -> SimpleRuntimeModel:
+    return SimpleRuntimeModel(network_bandwidth_bps=bw, global_batch_size=global_batch, **model)
 
 
 def _planner_sweep(cluster_size: int, model: dict, bw_grid: list[float],
@@ -169,8 +162,9 @@ def _planner_blind_regret(cluster_size: int, model: dict, bw_grid: list[float],
     penalties: list[float] = []
     worst = {"bandwidth_bps": blind_bw, "regret": 0.0}
     for bw in bw_grid:
-        opt = select_hybrid_strategy(cluster_size, _make_runtime_model(model, global_batch, bw)).estimated_runtime_s
-        blind_rt = _runtime(model, global_batch, bw, blind.data_parallel, blind.model_parallel)
+        rt = _make_runtime_model(model, global_batch, bw)
+        opt = select_hybrid_strategy(cluster_size, rt).estimated_runtime_s
+        blind_rt = rt(blind.data_parallel, blind.model_parallel)
         reg = blind_rt / opt - 1.0 if opt > 0 else 0.0
         penalties.append(reg)
         if reg > worst["regret"]:

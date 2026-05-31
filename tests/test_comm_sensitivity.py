@@ -11,12 +11,12 @@ from experiments.exp_comm_sensitivity import (
     _cut_flips,
     _links,
     _log_grid,
+    _make_runtime_model,
     _partition_blind_regret,
     _partition_sweep,
     _planner_blind_regret,
     _planner_sweep,
     _rebuild_at_cuts,
-    _runtime,
     _strategy_flips,
     _synthetic_layers,
     _uniform_stages,
@@ -33,25 +33,22 @@ def test_log_grid_endpoints_and_length() -> None:
     assert all(g[i] < g[i + 1] for i in range(len(g) - 1))
 
 
-def test_runtime_compute_depends_only_on_product_dp_mp() -> None:
-    # With all-reduce removed (dp=1) the bubble differs by mp, but the bare
-    # compute term flops*B/(thru*dp*mp) depends only on the product dp*mp.
-    model = MODEL_PRESETS["cnn"]
-    gb = 1024
-
-    def comp_only(dp: int, mp: int) -> float:
-        return model["per_sample_flops"] * (gb / dp) / (model["device_throughput_flops"] * mp)
-
-    assert abs(comp_only(2, 8) - comp_only(8, 2)) < 1e-15
-    assert abs(comp_only(4, 4) - comp_only(2, 8)) < 1e-15
+def test_runtime_model_uses_shipped_class_with_global_batch() -> None:
+    # The sweep configures the production SimpleRuntimeModel with a fixed global
+    # batch (not a hand-written shadow model). Its default (per-replica) mode is
+    # bandwidth-insensitive; the global-batch mode is what makes the split move.
+    from hasagi.parallel.planner import SimpleRuntimeModel
+    rt = _make_runtime_model(MODEL_PRESETS["cnn"], 1024, 1e10)
+    assert isinstance(rt, SimpleRuntimeModel)
+    assert rt.global_batch_size == 1024
 
 
 def test_runtime_allreduce_vanishes_at_dp1_and_grows_as_bandwidth_drops() -> None:
     model = MODEL_PRESETS["cnn"]
     # dp=1 -> no all-reduce, so runtime is bandwidth-independent.
-    assert _runtime(model, 1024, 1e9, 1, 16) == _runtime(model, 1024, 1e13, 1, 16)
+    assert _make_runtime_model(model, 1024, 1e9)(1, 16) == _make_runtime_model(model, 1024, 1e13)(1, 16)
     # dp>1 -> lower bandwidth is strictly slower.
-    assert _runtime(model, 1024, 1e9, 8, 2) > _runtime(model, 1024, 1e13, 8, 2)
+    assert _make_runtime_model(model, 1024, 1e9)(8, 2) > _make_runtime_model(model, 1024, 1e13)(8, 2)
 
 
 def test_planner_shifts_from_model_parallel_to_data_parallel_with_bandwidth() -> None:
