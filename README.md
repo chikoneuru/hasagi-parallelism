@@ -161,6 +161,23 @@ carbon is energy × a grid-intensity trace. Numbers carry their caveats.
   repeats and is withdrawn**. The surviving effect is **under-capping risk**: a
   too-low cap penalises the compute-heavy Transformer (~+17 % at 200 W, ~+73 % at
   150 W) while ResNet tolerates it. A cap in the ~250–300 W overlap serves both.
+- **Co-tenant contention: measured throughput floor + partitioner decision-quality**
+  ([`exp_cotenant_contention.py`](experiments/exp_cotenant_contention.py),
+  [`exp_contention_decision.py`](experiments/exp_contention_decision.py),
+  [`exp_comm_sensitivity.py`](experiments/exp_comm_sensitivity.py)). *Measured:*
+  time-sliced co-location of N identical GPU-bound ResNet trainers on the 3080 Ti
+  (own processes, 3 repeats) — each tenant retains **c(2)=0.46, c(3)=0.31** of solo
+  throughput, just below the 1/N time-slice floor, so aggregate GPU throughput stays
+  flat at ~0.92× (an ≈8 % co-location overhead beyond pure time-slicing). This is
+  time-sliced sharing; an MPS daemon would reduce contention, so the measured c is a
+  lower bound. *Simulation (algorithm only):* the partitioner's decisions are robust
+  to **uniform** slowdown (scale-invariant, ~0 regret) but a **contention-blind** plan
+  under **asymmetric** co-tenancy leaves regret growing to ~100 % at c=0.3, which the
+  implemented sliding-window incremental re-partition recovers (1–5 steps, with a
+  StagnationTracker → full-DP fallback for window-trapping cases); the chosen
+  parallel strategy and pipeline cuts are also bandwidth-regime dependent (a
+  bandwidth-blind decision costs up to +60–128 % in the analytic cost model). Regret
+  here is modelled, not wall-clock; there is no distributed execution.
 - **Reproducibility note.** Result artifacts and downloaded traces live under
   gitignored `artifacts/` and `data_cache/`; regenerate the carbon traces with
   `experiments/fetch_electricitymaps_traces.py` (needs `$ELECTRICITYMAPS_TOKEN`) and
