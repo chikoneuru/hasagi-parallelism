@@ -182,6 +182,25 @@ carbon is energy × a grid-intensity trace. Numbers carry their caveats.
   co-tenancy regret tracks 1/c-1 and the incremental re-partition recovers it in a
   few steps. These confirm the control logic behaves sensibly; they do not
   demonstrate a hybrid-parallel benefit, which is gated on real multi-GPU.
+- **When does carbon-driven *repartition* pay? (decision-layer simulation, no distributed execution)**
+  ([`exp_carbon_repartition_breakeven.py`](experiments/exp_carbon_repartition_breakeven.py)). A
+  carbon-aware controller in a dirty grid window can THROTTLE the cap (DVFS, free, no
+  state moves) or REPARTITION to a lower-power layout (pays a state-migration +
+  cold-start cost per switch). This is the first characterisation of when the carbon
+  signal is worth the structural lever. Findings: (1) moving pipeline cut-points alone
+  has **~no energy lever** (the partitioner's energy objective matches its bottleneck
+  objective on energy-per-iter, at lower throughput) — the lever must be a power/layout
+  change; (2) even granting the eco layout a *larger* energy saving than throttle,
+  carbon-driven repartition **never beats free throttle** across a swing × state-size ×
+  bandwidth sweep (the cold-start floor × #switches dominates) and is **Pareto-dominated**
+  (throttle is lower-carbon AND lower-makespan; "always-eco" is the carbon floor and needs
+  no signal); (3) break-even: repartition pays only once the structural lever clears
+  DVFS-throttle by a wide margin (saving markedly more than throttle's ~15 %). Actionable:
+  route the carbon signal into the free lever. Scope: the per-iter layout costs are
+  parameters; real multi-GPU validation (does a real layout change unlock that margin?)
+  is future work. See [`docs/related-work-carbon-serverless-2026-05-31.md`](../docs/related-work-carbon-serverless-2026-05-31.md)
+  for the prior-art map placing this in the one unoccupied cell (carbon→layout repartition;
+  cf. CarbonScaler=count, Tenplex/DynaTrain/ResiHP=carbon-blind, LLMCarbon=modeling).
 - **Reproducibility note.** Result artifacts and downloaded traces live under
   gitignored `artifacts/` and `data_cache/`; regenerate the carbon traces with
   `experiments/fetch_electricitymaps_traces.py` (needs `$ELECTRICITYMAPS_TOKEN`) and

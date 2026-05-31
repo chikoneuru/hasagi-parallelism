@@ -29,6 +29,15 @@ Output: the break-even surface over (carbon swing x migrated state size x migrat
 bandwidth) -- where, if anywhere, carbon-driven repartition's net carbon (including
 migration) beats carbon-aware throttle, and at what makespan cost.
 
+Modelling note (honest scope): grid intensity is sampled per WORK-WINDOW (one
+decision step = one chunk of iters), not per wall-clock hour, so a slower layout's
+extra wall-clock does not feed back into which intensities it sees. This favours the
+slow levers (eco/throttle/repartition) equally and, if anything, is GENEROUS to
+repartition (its slower eco windows are not charged extra dirty-window exposure), so
+the negative result below is conservative. There is no distributed execution; the
+per-iter energy/throughput of the fast/eco layouts are parameters (defaults grounded
+in the measured power-cap study and the partitioner's energy-vs-bottleneck objectives).
+
 Usage::
 
     python -m experiments.exp_carbon_repartition_breakeven \
@@ -275,9 +284,15 @@ def run(args: argparse.Namespace) -> int:
                   f"{r['makespan_h']:.2f}", str(r["switches"]))
     console.print(t)
     rep_vs_thr = pols["repartition"]["carbon_g"] - pols["throttle"]["carbon_g"]
+    dominated = (pols["throttle"]["carbon_g"] <= pols["repartition"]["carbon_g"]
+                 and pols["throttle"]["makespan_h"] <= pols["repartition"]["makespan_h"])
     console.print(f"  repartition vs throttle: {rep_vs_thr:+.1f} g carbon "
                   f"({'REPARTITION WINS' if rep_vs_thr < 0 else 'throttle wins'}), "
-                  f"at {pols['repartition']['makespan_h']:.2f}h vs {pols['throttle']['makespan_h']:.2f}h makespan.\n")
+                  f"at {pols['repartition']['makespan_h']:.2f}h vs {pols['throttle']['makespan_h']:.2f}h makespan.")
+    if dominated:
+        console.print("  [bold]Throttle PARETO-DOMINATES repartition[/] here (lower carbon AND lower makespan); "
+                      "static-eco is the carbon floor (apply the eco lever always, no signal needed).")
+    console.print()
 
     # Break-even surface.
     rows = breakeven_sweep(
