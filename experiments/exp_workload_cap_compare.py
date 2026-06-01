@@ -238,6 +238,10 @@ def run(args: argparse.Namespace) -> int:
         out = Path(args.out)
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(json.dumps({
+            "_SUPERSEDED": ("Single-sweep comparison; the workload-dependent-optimum claim did NOT "
+                            "survive repeats and is WITHDRAWN. Authoritative: cap_robustness.json "
+                            "(3 repeats x both cap-orders). Do not cite the field below or the "
+                            "single-sweep cross-application penalty as a live result."),
             "profiles": paths,
             "per_workload": summary,
             "energy_optimal_cap_is_workload_dependent": distinct,

@@ -62,7 +62,7 @@ Bring up orchestrator + Redis + Prometheus + worker stubs on one machine:
 
 ```bash
 make up                  # docker-compose up -d
-make exp02               # carbon-replay experiment (ResNet-18 / CIFAR-10)
+make exp02               # multi-GPU scaling SIMULATION (synthetic gpus^0.85 throughput; no NVML, no real training)
 make logs                # tail orchestrator
 make down
 ```
@@ -115,7 +115,7 @@ What's implemented vs stubbed:
 | `energy/carbon_sources.py` (ElectricityMaps + WattTime + IEA static + multi-source aggregator) | ✅ implemented |
 | `energy/carbon_trace.py` (proxy-only trace replay) | ✅ implemented |
 | `energy/policy.py` (rule-based + PowerAwareRule + MPC with reconfig penalty) | ✅ implemented |
-| `energy/rl_policy.py` (PPO) | 🚧 scaffold; training pending |
+| `energy/rl_policy.py` (PPO) | ✗ evaluated and dropped — 5-seed eval, PPO 1.53% worse than MPC; use MPC |
 | `orchestrator/control_loop.py`, `energy_aware_control_loop.py`, `api.py` | ✅ implemented |
 | `pool/local_pool.py` (Docker) | ✅ |
 | `pool/knative_pool.py` | 🚧 stub |
@@ -187,24 +187,38 @@ carbon is energy × a grid-intensity trace. Numbers carry their caveats.
   carbon-aware controller in a dirty grid window can THROTTLE the cap (DVFS, free, no
   state moves) or REPARTITION to a lower-power layout (pays a state-migration +
   cold-start cost per switch). This is the first characterisation of when the carbon
-  signal is worth the structural lever. Findings: (1) moving pipeline cut-points alone
-  has **~no energy lever** (the partitioner's energy objective matches its bottleneck
-  objective on energy-per-iter, at lower throughput) — the lever must be a power/layout
-  change; (2) even granting the eco layout a *larger* energy saving than throttle,
-  carbon-driven repartition **never beats free throttle** across a swing × state-size ×
-  bandwidth sweep (the cold-start floor × #switches dominates) and is **Pareto-dominated**
-  (throttle is lower-carbon AND lower-makespan; "always-eco" is the carbon floor and needs
-  no signal); (3) break-even: repartition pays only once the structural lever clears
-  DVFS-throttle by a wide margin (saving markedly more than throttle's ~15 %). Actionable:
-  route the carbon signal into the free lever. Scope: the per-iter layout costs are
-  parameters; real multi-GPU validation (does a real layout change unlock that margin?)
-  is future work. See [`docs/related-work-carbon-serverless-2026-05-31.md`](../docs/related-work-carbon-serverless-2026-05-31.md)
+  signal is worth the structural lever. The answer is a **2-D break-even surface** over
+  (eco-lever strength × per-switch cost), not a flat negative. Findings: (1) moving pipeline
+  cut-points has **~no energy lever under uniform per-stage power** (the partitioner's energy
+  objective matches its bottleneck objective on energy-per-iter, ratio ~1.0) — but that is a
+  **uniform-power degeneracy**: under heterogeneous per-stage power the energy-optimal cuts
+  diverge and save real energy (**ratio ~0.83**), so a power/layout change is a genuine lever;
+  (2) at the *measured ~4.7 s Knative cold-start*, even granting the eco layout a *larger*
+  energy saving than throttle, carbon-driven repartition **never beats free throttle** across a
+  swing × state-size × bandwidth sweep and is **Pareto-dominated** (throttle lower-carbon AND
+  lower-makespan; "always-eco" is the carbon floor and needs no signal); (3) the negative is
+  **cost-driven, not lever-driven** — holding the eco saving at the best-case 20 %, repartition
+  **beats free throttle once the per-switch cold-start drops below ~2 s**, and at the slow
+  cold-start the eco layout must instead save ≥ ~25 % to win. Actionable: route the carbon
+  signal into the free lever when reconfiguration is expensive (Knative-style); under
+  fast-switching reconfiguration (DynaTrain/Tenplex-grade sub-second), the carbon-triggered
+  structural lever pays. Scope: the per-iter layout costs and switch cost are parameters; real
+  multi-GPU validation (does a real layout change land inside the winning region?) is future
+  work. See [`docs/related-work-carbon-serverless-2026-05-31.md`](../docs/related-work-carbon-serverless-2026-05-31.md)
   for the prior-art map placing this in the one unoccupied cell (carbon→layout repartition;
   cf. CarbonScaler=count, Tenplex/DynaTrain/ResiHP=carbon-blind, LLMCarbon=modeling).
 - **Reproducibility note.** Result artifacts and downloaded traces live under
   gitignored `artifacts/` and `data_cache/`; regenerate the carbon traces with
   `experiments/fetch_electricitymaps_traces.py` (needs `$ELECTRICITYMAPS_TOKEN`) and
   the GPU sweeps with `exp_hardware_pareto.py` (needs `nvidia-smi -pl` privileges).
+- **Superseded / withdrawn artifacts — do not cite** (local `artifacts/` carry an in-file
+  `_SUPERSEDED`/`_WITHDRAWN` key flagging this):
+  `workload_cap_compare.json` (single-sweep workload-dependent-cap claim WITHDRAWN → use
+  `cap_robustness.json`); `throttle_pareto.json` (old 200 W cap → use `throttle_pareto_clean.json`
+  at 250 W, which also carries the carbon-blind-vs-awareness decomposition);
+  `deferral_breakeven.json` (co-tenant-contaminated → use `deferral_clean.json`);
+  `c2_analytical_aggregate.json` (BERT −2.43 % carbon WITHDRAWN; its pooled significance stats
+  are nulled as effective-N≈3 pseudo-replication).
 
 **Not yet established (future work):** real multi-GPU / distributed execution; the
 hybrid-parallel re-partition and ZeRO redistribution beyond algorithm + simulation;

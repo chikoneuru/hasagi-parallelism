@@ -4,11 +4,13 @@ from __future__ import annotations
 from experiments.exp_carbon_repartition_breakeven import (
     Layout,
     _cutpoint_energy_gap,
+    _heterogeneous_cutpoint_energy_gap,
     breakeven_eco_strength,
     breakeven_sweep,
     migration_cost,
     parametric_trace,
     simulate,
+    switchcost_sweep,
 )
 
 _FAST = Layout("fast", energy_per_iter_j=1.0, throughput_iter_s=1.0)
@@ -37,6 +39,36 @@ def test_cutpoint_repartition_has_no_energy_lever() -> None:
     gap = _cutpoint_energy_gap()
     assert abs(gap["energy_ratio_eco_over_fast"] - 1.0) < 1e-6
     assert gap["eco_throughput"] < gap["fast_throughput"]
+
+
+def test_heterogeneous_power_gives_cutpoint_a_real_energy_lever() -> None:
+    # The ratio=1.0 is a UNIFORM-power degeneracy: under heterogeneous per-stage
+    # power the energy-optimal cuts diverge and save real energy/iter (ratio < 1).
+    het = _heterogeneous_cutpoint_energy_gap()
+    assert het["energy_ratio_eco_over_fast"] < 0.99          # a real lever appears
+    assert het["eco_cuts"] != het["fast_cuts"]               # energy obj picks different cuts
+    assert het["eco_energy_per_iter"] < het["fast_energy_per_iter"]
+
+
+def test_switchcost_breakeven_is_cost_driven_not_lever_driven() -> None:
+    # At the best-case eco (20% saving), repartition LOSES at the measured ~4.7s
+    # Knative cold-start but WINS once switching is cheap enough -> the negative is
+    # cost-driven, and carbon-triggered repartition pays under fast (DynaTrain-grade)
+    # switching.
+    fast = Layout("fast", energy_per_iter_j=1.0, throughput_iter_s=1.0)
+    eco = Layout("eco", energy_per_iter_j=0.80, throughput_iter_s=0.6)
+    sc = switchcost_sweep(fast, eco, cold_starts=[4.7, 2.0, 1.0, 0.5, 0.0], swing=0.6,
+                          hours=168, iters_per_window=1000, threshold_q=0.6,
+                          throttle_energy_frac=0.85, throttle_tput_frac=0.7,
+                          state_gb=5.0, bw_gbps=100.0, migrate_power_w=100.0)
+    by_cs = {r["cold_start_s"]: r for r in sc["rows"]}
+    assert by_cs[4.7]["repartition_wins"] is False           # loses at Knative cold-start
+    assert by_cs[0.0]["repartition_wins"] is True            # wins at zero switch cost
+    assert sc["crossover_cold_start_s"] is not None
+    assert 0.0 < sc["crossover_cold_start_s"] < 4.7          # crossover strictly inside
+    # monotone: cheaper switching never hurts repartition's carbon
+    deltas = [by_cs[c]["delta_g"] for c in (4.7, 2.0, 1.0, 0.5, 0.0)]
+    assert all(deltas[i] >= deltas[i + 1] - 1e-9 for i in range(len(deltas) - 1))
 
 
 def test_static_eco_saves_energy_vs_fast() -> None:

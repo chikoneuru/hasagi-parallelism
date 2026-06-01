@@ -14,20 +14,38 @@ cheap lever HASAGI already measured (~15% energy at ~+30% latency). Repartition 
 the expensive structural lever. So: *is the carbon signal ever worth routing into
 the structural lever instead of the free one, once migration is charged?*
 
-Two honest groundings, both pushing the answer toward "rarely":
-  1. PP cut-point repartition alone has almost NO energy lever. Running the
-     partitioner's energy objective vs its bottleneck objective on a uniform-power
-     model yields the SAME energy-per-iter at lower throughput (see
-     ``_cutpoint_energy_gap``) -- moving cut-points trades throughput, not energy.
-     So a repartition that actually saves energy must change the layout's POWER
-     (fewer/again-different replicas), which is parametrised here as the eco layout.
-  2. We give repartition its BEST CASE: the eco layout is granted a real
-     energy reduction (default 20%) -- if it still loses to free throttle once
-     migration is charged, the negative result is strong.
+Two groundings on where the energy lever comes from:
+  1. PP cut-point repartition has no energy lever UNDER UNIFORM PER-STAGE POWER.
+     Running the partitioner's energy objective vs its bottleneck objective on a
+     uniform-power model yields the SAME energy-per-iter at lower throughput (see
+     ``_cutpoint_energy_gap``, ratio ~ 1.0) -- moving cut-points trades throughput,
+     not energy. But this is a degeneracy of the uniform model, not a law: under
+     HETEROGENEOUS per-stage power (``_heterogeneous_cutpoint_energy_gap``) the
+     energy-optimal cuts diverge and save real energy/iter (ratio ~ 0.83). So a
+     repartition that saves energy must change the layout's POWER profile, which a
+     real multi-GPU layout change provides and which the parametric eco layout
+     stands in for here.
+  2. We give repartition its BEST CASE: the eco layout is granted a real energy
+     reduction (default 20%); the question is whether that clears free throttle
+     once migration is charged.
+
+The answer is CONDITIONAL on two axes, not a flat "rarely":
+  - eco-lever strength: at the measured ~4.7s Knative cold-start, the eco layout
+    must save >= ~25% energy (clear throttle's ~15% by a 1.67x margin) to win
+    (``breakeven_eco_strength``).
+  - per-switch cost: holding the eco saving at the best-case 20%, repartition
+    BEATS free throttle once the per-switch cold-start drops below ~2s
+    (``switchcost_sweep``). So the headline negative is COST-driven, not
+    lever-driven: it holds for expensive (Knative-style) reconfiguration and
+    FLIPS under DynaTrain/Tenplex-grade sub-second switching, where carbon-triggered
+    repartition pays. This directly answers the "cheap reconfig obsoletes the
+    negative" objection -- it does, and that is the regime where the carbon trigger
+    earns its keep.
 
 Output: the break-even surface over (carbon swing x migrated state size x migration
-bandwidth) -- where, if anywhere, carbon-driven repartition's net carbon (including
-migration) beats carbon-aware throttle, and at what makespan cost.
+bandwidth), plus the eco-lever-strength and per-switch-cost crossovers -- where, if
+anywhere, carbon-driven repartition's net carbon (including migration) beats
+carbon-aware throttle, and at what makespan cost.
 
 Modelling note (honest scope): grid intensity is sampled per WORK-WINDOW (one
 decision step = one chunk of iters), not per wall-clock hour, so a slower layout's
@@ -88,6 +106,40 @@ def _cutpoint_energy_gap() -> dict:
     fast = partition_pipeline(layers, stages, links, num_microbatches=8, objective="bottleneck")
     eco = partition_pipeline(layers, stages, links, num_microbatches=8, objective="energy")
     return {
+        "fast_cuts": list(fast.cuts), "eco_cuts": list(eco.cuts),
+        "fast_energy_per_iter": fast.energy_per_iter,
+        "eco_energy_per_iter": eco.energy_per_iter,
+        "energy_ratio_eco_over_fast": eco.energy_per_iter / fast.energy_per_iter,
+        "fast_throughput": 1.0 / max(fast.stage_exec_time.values()),
+        "eco_throughput": 1.0 / max(eco.stage_exec_time.values()),
+    }
+
+
+def _heterogeneous_cutpoint_energy_gap(
+    stage_powers: tuple[float, ...] = (180.0, 250.0, 320.0, 400.0),
+) -> dict:
+    """Companion to ``_cutpoint_energy_gap`` with HETEROGENEOUS per-stage power.
+
+    The uniform-power gap (ratio 1.0) shows cut placement has no energy lever *when
+    every stage draws the same power* -- a degeneracy of the uniform model, not a
+    law. Once stages draw different power (heterogeneous accelerators, or MP-heavy
+    vs DP-heavy stages with different aggregate draw), the energy objective
+    ``E = Sigma_s P_s * T_s`` genuinely depends on which layers land on which stage,
+    so the energy-optimal cuts diverge from the bottleneck-optimal cuts and save
+    real energy/iter (ratio < 1.0). This relocates the structural energy lever from
+    cut placement under uniform power (dead) to layout/power heterogeneity (live),
+    which is what a real multi-GPU layout change provides and what the parametric
+    eco layout below stands in for."""
+    n_stages = len(stage_powers)
+    layers = [LayerProfile(index=i, fwd_flops=1.0e9, bwd_flops=2.0e9, activation_bytes=4_000_000)
+              for i in range(16)]
+    stages = [StageSpec(stage_id=s, throughput_flops=3.5e13, memory_bytes=10_000_000_000,
+                        power_draw_w=stage_powers[s]) for s in range(n_stages)]
+    links = [LinkSpec(src_stage=s, dst_stage=s + 1, bandwidth_bps=1.0e11) for s in range(n_stages - 1)]
+    fast = partition_pipeline(layers, stages, links, num_microbatches=8, objective="bottleneck")
+    eco = partition_pipeline(layers, stages, links, num_microbatches=8, objective="energy")
+    return {
+        "stage_powers_w": list(stage_powers),
         "fast_cuts": list(fast.cuts), "eco_cuts": list(eco.cuts),
         "fast_energy_per_iter": fast.energy_per_iter,
         "eco_energy_per_iter": eco.energy_per_iter,
@@ -246,16 +298,53 @@ def breakeven_eco_strength(fast: Layout, *, swing: float, hours: int, iters_per_
             "crossover_eco_frac": crossover, "rows": rows}
 
 
+def switchcost_sweep(fast: Layout, eco: Layout, *, cold_starts: list[float], swing: float,
+                     hours: int, iters_per_window: int, threshold_q: float,
+                     throttle_energy_frac: float, throttle_tput_frac: float,
+                     state_gb: float, bw_gbps: float, migrate_power_w: float) -> dict:
+    """Is the throttle-beats-repartition negative driven by the per-switch COST or by
+    the eco lever? Hold the eco layout's energy saving fixed (the best-case 20%) and
+    sweep the per-switch cold-start from the measured Knative value (~4.7s) down to
+    DynaTrain-grade sub-second / zero. If repartition still loses at zero cost the
+    cause is the lever; if it starts winning below some cold-start the negative is
+    cost-driven and carbon-triggered repartition pays under cheap, fast-switching
+    reconfiguration (the modern regime DynaTrain/Tenplex target). ``crossover_cold_start_s``
+    is the largest per-switch cost at which repartition still beats throttle (None if
+    it never does in the swept range)."""
+    trace = parametric_trace(hours, swing)
+    common = dict(iters_per_window=iters_per_window, threshold_q=threshold_q,
+                  throttle_energy_frac=throttle_energy_frac, throttle_tput_frac=throttle_tput_frac)
+    thr = simulate(trace, fast, eco, "throttle", **common)["carbon_g"]
+    rows = []
+    for cs in cold_starts:
+        mt, me = migration_cost(state_gb, bw_gbps, cs, migrate_power_w)
+        rep = simulate(trace, fast, eco, "repartition", **common,
+                       migration_energy_j=me, migration_time_s=mt)
+        rows.append({"cold_start_s": cs, "carbon_repartition_g": rep["carbon_g"],
+                     "carbon_throttle_g": thr, "delta_g": rep["carbon_g"] - thr,
+                     "repartition_wins": rep["carbon_g"] < thr, "switches": rep["switches"]})
+    winning = [r["cold_start_s"] for r in rows if r["repartition_wins"]]
+    return {"throttle_carbon_g": thr, "eco_energy_frac": eco.energy_per_iter_j,
+            "crossover_cold_start_s": (max(winning) if winning else None), "rows": rows}
+
+
 def run(args: argparse.Namespace) -> int:
     console = Console()
 
     gap = _cutpoint_energy_gap()
     console.print("[bold]Grounding: does moving pipeline cut-points save energy?[/]")
-    console.print(f"  fast cuts {gap['fast_cuts']} vs eco cuts {gap['eco_cuts']}; "
+    console.print(f"  uniform power: fast cuts {gap['fast_cuts']} vs eco cuts {gap['eco_cuts']}; "
                   f"energy ratio eco/fast = [bold]{gap['energy_ratio_eco_over_fast']:.3f}[/] "
                   f"(throughput {gap['eco_throughput']:.0f} vs {gap['fast_throughput']:.0f} it/s). "
-                  "Cut-point repartition trades THROUGHPUT, not energy -> the energy lever must come "
-                  "from a power/layout change, modelled below as the eco layout.\n")
+                  "Cut-point repartition trades THROUGHPUT, not energy.")
+    het = _heterogeneous_cutpoint_energy_gap()
+    console.print(f"  heterogeneous power {het['stage_powers_w']}: fast cuts {het['fast_cuts']} vs "
+                  f"eco cuts {het['eco_cuts']}; energy ratio eco/fast = "
+                  f"[bold]{het['energy_ratio_eco_over_fast']:.3f}[/] "
+                  f"(throughput {het['eco_throughput']:.0f} vs {het['fast_throughput']:.0f} it/s). "
+                  "The ratio=1.0 is a UNIFORM-power degeneracy; under heterogeneous per-stage power "
+                  "the cut placement gains a real energy lever -> the eco layout below stands in for "
+                  "such a layout/power change.\n")
 
     # Fast vs eco layout. eco is GRANTED a real energy reduction (best case for repartition).
     fast = Layout("fast", energy_per_iter_j=1.0, throughput_iter_s=1.0)
@@ -334,16 +423,38 @@ def run(args: argparse.Namespace) -> int:
                       f">= {100*(1-co):.0f}%, vs throttle's {100*(1-args.throttle_energy_frac):.0f}%) — "
                       "the structural lever must clear DVFS by a wide margin to justify migration.\n")
 
+    # Is the negative cost-driven or lever-driven? Sweep per-switch cold-start down to
+    # DynaTrain-grade sub-second / zero, holding the eco saving at the best-case default.
+    sc = switchcost_sweep(
+        fast, eco, cold_starts=[4.7, 3.0, 2.0, 1.0, 0.5, 0.3, 0.1, 0.0], swing=args.swing,
+        hours=args.hours, iters_per_window=args.iters_per_window, threshold_q=args.threshold_q,
+        throttle_energy_frac=args.throttle_energy_frac, throttle_tput_frac=args.throttle_tput_frac,
+        state_gb=args.state_gb, bw_gbps=args.bw_gbps, migrate_power_w=args.migrate_power_w,
+    )
+    cco = sc["crossover_cold_start_s"]
+    if cco is None:
+        console.print(f"[bold]Switch-cost break-even[/]: at eco={args.eco_energy_frac:.2f}E, repartition "
+                      "loses to throttle even at [bold]zero[/] per-switch cost — the negative is "
+                      "LEVER-driven (the eco saving does not clear throttle's margin), not cost-driven.\n")
+    else:
+        console.print(f"[bold]Switch-cost break-even[/]: at eco={args.eco_energy_frac:.2f}E (best-case 20% "
+                      f"saving), repartition BEATS throttle once the per-switch cold-start drops to "
+                      f"<= [bold]{cco:.1f}s[/] (it loses at the measured ~4.7s Knative cost). The negative "
+                      "is COST-driven: under DynaTrain/Tenplex-grade sub-second switching, carbon-triggered "
+                      "repartition pays.\n")
+
     if args.out:
         out = Path(args.out)
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(json.dumps({
             "cutpoint_energy_gap": gap,
+            "heterogeneous_cutpoint_energy_gap": het,
             "headline": {p: r for p, r in pols.items()},
             "breakeven_rows": rows,
             "repartition_win_cells": len(wins),
             "total_cells": len(rows),
             "eco_strength_breakeven": eco_be,
+            "switchcost_breakeven": sc,
         }, indent=2))
         console.print(f"[dim]wrote {out}[/]")
     return 0
