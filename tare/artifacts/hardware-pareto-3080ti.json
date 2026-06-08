@@ -1,0 +1,85 @@
+{
+  "gpu_name": "NVIDIA GeForce RTX 3080 Ti",
+  "rows": [
+    {
+      "cap_w_requested": 100.0,
+      "cap_w_observed": 100.0,
+      "iters": 200,
+      "wall_seconds": 16.100429873986286,
+      "throughput_iters_per_s": 12.422028577208556,
+      "avg_power_w": 122.20002000000001,
+      "peak_power_w": 123.001,
+      "avg_sm_clock_mhz": 210.0,
+      "energy_per_iter_j": 9.837364263048608,
+      "energy_per_iter_kwh": 2.732601184180169e-06,
+      "samples_count": 200
+    },
+    {
+      "cap_w_requested": 150.0,
+      "cap_w_observed": 150.0,
+      "iters": 200,
+      "wall_seconds": 8.29502276299172,
+      "throughput_iters_per_s": 24.11084402230948,
+      "avg_power_w": 149.46887,
+      "peak_power_w": 150.077,
+      "avg_sm_clock_mhz": 518.025,
+      "energy_per_iter_j": 6.199238395043252,
+      "energy_per_iter_kwh": 1.7220106652897922e-06,
+      "samples_count": 200
+    },
+    {
+      "cap_w_requested": 200.0,
+      "cap_w_observed": 200.0,
+      "iters": 200,
+      "wall_seconds": 4.5879761109972605,
+      "throughput_iters_per_s": 43.59220605369003,
+      "avg_power_w": 187.109755,
+      "peak_power_w": 200.417,
+      "avg_sm_clock_mhz": 1127.1,
+      "energy_per_iter_j": 4.292275430372752,
+      "energy_per_iter_kwh": 1.1922987306590978e-06,
+      "samples_count": 200
+    },
+    {
+      "cap_w_requested": 250.0,
+      "cap_w_observed": 250.0,
+      "iters": 200,
+      "wall_seconds": 3.7980255270085763,
+      "throughput_iters_per_s": 52.65894043569665,
+      "avg_power_w": 230.910065,
+      "peak_power_w": 250.485,
+      "avg_sm_clock_mhz": 1635.825,
+      "energy_per_iter_j": 4.3850116065660485,
+      "energy_per_iter_kwh": 1.2180587796016802e-06,
+      "samples_count": 200
+    },
+    {
+      "cap_w_requested": 300.0,
+      "cap_w_observed": 300.0,
+      "iters": 200,
+      "wall_seconds": 3.6201489649974974,
+      "throughput_iters_per_s": 55.24634536693389,
+      "avg_power_w": 268.85534,
+      "peak_power_w": 299.114,
+      "avg_sm_clock_mhz": 1773.75,
+      "energy_per_iter_j": 4.866481904175251,
+      "energy_per_iter_kwh": 1.35180052893757e-06,
+      "samples_count": 200
+    },
+    {
+      "cap_w_requested": 350.0,
+      "cap_w_observed": 350.0,
+      "iters": 200,
+      "wall_seconds": 3.5309363059932366,
+      "throughput_iters_per_s": 56.64219987784257,
+      "avg_power_w": 309.327275,
+      "peak_power_w": 349.0,
+      "avg_sm_clock_mhz": 1868.55,
+      "energy_per_iter_j": 5.461074528657271,
+      "energy_per_iter_kwh": 1.5169651468492418e-06,
+      "samples_count": 200
+    }
+  ],
+  "alpha": 0.9074618086464291,
+  "p_max_w": 309.327275
+}

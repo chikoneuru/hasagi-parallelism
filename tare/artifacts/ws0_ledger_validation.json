@@ -1,0 +1,55 @@
+{
+  "schedule_g_per_kwh": [
+    200.0,
+    900.0,
+    200.0
+  ],
+  "threshold_g_per_kwh": 800.0,
+  "trace_source": "synthetic-parametric",
+  "energy_source": "nvml-measured",
+  "carbon_aware": {
+    "total_energy_wh": 2.446188806876662,
+    "total_carbon_g": 1.7725640214962892,
+    "resume_energy_wh": 0.14387551037990978,
+    "resume_carbon_g": 0.02877510207598196,
+    "active_energy_wh": 0.4689900677525286,
+    "cold_starts": 2,
+    "energy_by_phase_wh": {
+      "cold_start": 0.14387551037990978,
+      "active": 0.4689900677525286,
+      "idle": 1.8333232287442236
+    },
+    "carbon_by_phase_g": {
+      "cold_start": 0.02877510207598196,
+      "active": 0.09379801355050572,
+      "idle": 1.6499909058698012
+    },
+    "duration_by_phase_s": {
+      "cold_start": 4.182529075013008,
+      "active": 8.179611451982055,
+      "idle": 50.491990829992574
+    }
+  },
+  "always_on": {
+    "total_energy_wh": 0.7905158310546498,
+    "total_carbon_g": 0.34367495278168486,
+    "resume_energy_wh": 0.03277815303635466,
+    "resume_carbon_g": 0.006555630607270931,
+    "active_energy_wh": 0.7577376780182953,
+    "cold_starts": 1,
+    "energy_by_phase_wh": {
+      "cold_start": 0.03277815303635466,
+      "active": 0.7577376780182953
+    },
+    "carbon_by_phase_g": {
+      "cold_start": 0.006555630607270931,
+      "active": 0.3371193221744139
+    },
+    "duration_by_phase_s": {
+      "cold_start": 0.954427266959101,
+      "active": 12.030516894999892
+    }
+  },
+  "net_carbon_delta_g": 1.4288890687146043,
+  "net_carbon_delta_pct": 415.76759002925877
+}

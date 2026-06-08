@@ -1,0 +1,79 @@
+{
+  "n_full": 8,
+  "h_job_full_count_hours": 48,
+  "threshold_q": 0.5,
+  "power_per_gpu_w": 300.0,
+  "n_real_zones": 16,
+  "policy": "carbon-aware pause (scale-to-zero in dirty hours) vs always-on, with per-resume state-size reload tax",
+  "rows": [
+    {
+      "state_gb": 0.045,
+      "mean_reduction_pct": 11.183970538872197,
+      "ci_lo": 7.365849412840397,
+      "ci_hi": 15.552085567005486,
+      "permutation_p": 3.0517578125e-05,
+      "mean_makespan_factor": 1.9676123929563158,
+      "mean_resumes_per_run": 4.770833333333333,
+      "reload_tax_s_per_resume": 5.600060939060939,
+      "ci_excludes_zero": true
+    },
+    {
+      "state_gb": 1.0,
+      "mean_reduction_pct": 11.181374715533288,
+      "ci_lo": 7.307917610862774,
+      "ci_hi": 15.548454139221244,
+      "permutation_p": 3.0517578125e-05,
+      "mean_makespan_factor": 1.967693872112447,
+      "mean_resumes_per_run": 4.770833333333333,
+      "reload_tax_s_per_resume": 8.55124309024309,
+      "ci_excludes_zero": true
+    },
+    {
+      "state_gb": 5.0,
+      "mean_reduction_pct": 11.170502157045709,
+      "ci_lo": 7.365660022772999,
+      "ci_hi": 15.5940555682981,
+      "permutation_p": 3.0517578125e-05,
+      "mean_makespan_factor": 1.968035146064833,
+      "mean_resumes_per_run": 4.770833333333333,
+      "reload_tax_s_per_resume": 20.912215451215452,
+      "ci_excludes_zero": true
+    },
+    {
+      "state_gb": 20.0,
+      "mean_reduction_pct": 11.129730062717286,
+      "ci_lo": 7.31149690300216,
+      "ci_hi": 15.570444796514185,
+      "permutation_p": 3.0517578125e-05,
+      "mean_makespan_factor": 1.9693149233862761,
+      "mean_resumes_per_run": 4.770833333333333,
+      "reload_tax_s_per_resume": 67.2658618048618,
+      "ci_excludes_zero": true
+    },
+    {
+      "state_gb": 80.0,
+      "mean_reduction_pct": 10.669566390189225,
+      "ci_lo": 6.997346479865401,
+      "ci_hi": 14.846454066503703,
+      "permutation_p": 3.0517578125e-05,
+      "mean_makespan_factor": 1.9634697313464868,
+      "mean_resumes_per_run": 4.728219696969697,
+      "reload_tax_s_per_resume": 252.68044721944722,
+      "ci_excludes_zero": true
+    },
+    {
+      "state_gb": 160.0,
+      "mean_reduction_pct": 10.295621535921557,
+      "ci_lo": 6.5703790958881445,
+      "ci_hi": 14.40442615587481,
+      "permutation_p": 3.0517578125e-05,
+      "mean_makespan_factor": 1.9696521699093035,
+      "mean_resumes_per_run": 4.681818181818182,
+      "reload_tax_s_per_resume": 499.8998944388945,
+      "ci_excludes_zero": true
+    }
+  ],
+  "ceiling_reduction_pct": 11.183970538872197,
+  "max_state_reduction_pct": 10.295621535921557,
+  "large_win_survives_at_max_state": false
+}

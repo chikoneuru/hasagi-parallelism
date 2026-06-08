@@ -1,0 +1,24 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: tare-worker
+  namespace: tare
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/class: kpa.autoscaling.knative.dev
+        autoscaling.knative.dev/minScale: "0"
+        autoscaling.knative.dev/maxScale: "16"
+        autoscaling.knative.dev/target: "1"
+    spec:
+      containerConcurrency: 1
+      timeoutSeconds: 3600
+      containers:
+        - image: tare-worker:dev
+          env:
+            - {name: HASAGI_ORCHESTRATOR_URL, value: http://tare-orchestrator.tare:8000}
+            - {name: HASAGI_REDIS_URL, value: redis://tare-redis.tare:6379/0}
+          resources:
+            limits:
+              nvidia.com/gpu: 1

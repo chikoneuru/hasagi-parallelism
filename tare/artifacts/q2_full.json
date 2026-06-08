@@ -1,0 +1,165 @@
+{
+  "args": {
+    "trace": null,
+    "seeds": 5,
+    "timesteps": 200000,
+    "n_envs": 4,
+    "n_steps": 512,
+    "target_iters": 200000,
+    "episode_hours": 24,
+    "energy_budget_kwh": 5.0,
+    "min_gpus": 1,
+    "max_gpus": 8,
+    "output": "artifacts/q2_full.json"
+  },
+  "results": [
+    {
+      "seed": 0,
+      "policy": "static-max",
+      "energy_kwh": 4.602000000000002,
+      "iters_done": 201886,
+      "emissions_g": 3176.783165738498
+    },
+    {
+      "seed": 0,
+      "policy": "rule-based",
+      "energy_kwh": 3.630999999999994,
+      "iters_done": 206156,
+      "emissions_g": 1650.7096183421254
+    },
+    {
+      "seed": 0,
+      "policy": "mpc",
+      "energy_kwh": 3.349999999999992,
+      "iters_done": 201000,
+      "emissions_g": 1575.6788476286963
+    },
+    {
+      "seed": 0,
+      "policy": "ppo",
+      "energy_kwh": 3.4539999999999935,
+      "iters_done": 200222,
+      "emissions_g": 1607.3292284514857
+    },
+    {
+      "seed": 1,
+      "policy": "static-max",
+      "energy_kwh": 4.602000000000002,
+      "iters_done": 201886,
+      "emissions_g": 3176.783165738498
+    },
+    {
+      "seed": 1,
+      "policy": "rule-based",
+      "energy_kwh": 3.630999999999994,
+      "iters_done": 206156,
+      "emissions_g": 1650.7096183421254
+    },
+    {
+      "seed": 1,
+      "policy": "mpc",
+      "energy_kwh": 3.349999999999992,
+      "iters_done": 201000,
+      "emissions_g": 1575.6788476286963
+    },
+    {
+      "seed": 1,
+      "policy": "ppo",
+      "energy_kwh": 3.349999999999992,
+      "iters_done": 201000,
+      "emissions_g": 1575.6788476286963
+    },
+    {
+      "seed": 2,
+      "policy": "static-max",
+      "energy_kwh": 4.602000000000002,
+      "iters_done": 201886,
+      "emissions_g": 3176.783165738498
+    },
+    {
+      "seed": 2,
+      "policy": "rule-based",
+      "energy_kwh": 3.630999999999994,
+      "iters_done": 206156,
+      "emissions_g": 1650.7096183421254
+    },
+    {
+      "seed": 2,
+      "policy": "mpc",
+      "energy_kwh": 3.349999999999992,
+      "iters_done": 201000,
+      "emissions_g": 1575.6788476286963
+    },
+    {
+      "seed": 2,
+      "policy": "ppo",
+      "energy_kwh": 3.5019999999999936,
+      "iters_done": 203466,
+      "emissions_g": 1614.3247173184052
+    },
+    {
+      "seed": 3,
+      "policy": "static-max",
+      "energy_kwh": 4.602000000000002,
+      "iters_done": 201886,
+      "emissions_g": 3176.783165738498
+    },
+    {
+      "seed": 3,
+      "policy": "rule-based",
+      "energy_kwh": 3.630999999999994,
+      "iters_done": 206156,
+      "emissions_g": 1650.7096183421254
+    },
+    {
+      "seed": 3,
+      "policy": "mpc",
+      "energy_kwh": 3.349999999999992,
+      "iters_done": 201000,
+      "emissions_g": 1575.6788476286963
+    },
+    {
+      "seed": 3,
+      "policy": "ppo",
+      "energy_kwh": 3.349999999999992,
+      "iters_done": 201000,
+      "emissions_g": 1575.6788476286963
+    },
+    {
+      "seed": 4,
+      "policy": "static-max",
+      "energy_kwh": 4.602000000000002,
+      "iters_done": 201886,
+      "emissions_g": 3176.783165738498
+    },
+    {
+      "seed": 4,
+      "policy": "rule-based",
+      "energy_kwh": 3.630999999999994,
+      "iters_done": 206156,
+      "emissions_g": 1650.7096183421254
+    },
+    {
+      "seed": 4,
+      "policy": "mpc",
+      "energy_kwh": 3.349999999999992,
+      "iters_done": 201000,
+      "emissions_g": 1575.6788476286963
+    },
+    {
+      "seed": 4,
+      "policy": "ppo",
+      "energy_kwh": 3.349999999999992,
+      "iters_done": 201000,
+      "emissions_g": 1575.6788476286963
+    }
+  ],
+  "decision": {
+    "n_seeds": 5,
+    "ppo_mean_kwh": 3.4011999999999927,
+    "mpc_mean_kwh": 3.349999999999992,
+    "delta_pct_ppo_vs_mpc": -1.5283582089552448,
+    "cohens_d_mpc_minus_ppo": -1.0038057960884483,
+    "keep_ppo": false
+  }
+}

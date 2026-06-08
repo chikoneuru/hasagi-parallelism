@@ -1,0 +1,32 @@
+{
+  "recompute_energy_ratio": {
+    "point": 0.7756642097613669,
+    "delta_ci_lo": 0.7019874573194823,
+    "delta_ci_hi": 0.8493409622032514,
+    "se": 0.037590179817288016,
+    "independent_extremes_ci_lo": 0.6952926580651448,
+    "independent_extremes_ci_hi": 0.8576999803183347,
+    "num_rel_se": 0.04817908689089738,
+    "den_rel_se": 0.005228158704315726,
+    "break_even_estar": 0.75,
+    "straddles_break_even": true
+  },
+  "deployable_signal_pp": {
+    "point": 0.7530318136424827,
+    "ci_lo": -0.028218210845034453,
+    "ci_hi": 1.5796243905567195,
+    "excludes_zero": false
+  },
+  "oracle_signal_pp": {
+    "point": 1.5551649057811994,
+    "ci_lo": 0.9778259227920852,
+    "ci_hi": 2.172384931393063,
+    "excludes_zero": true
+  },
+  "n_zones": 16,
+  "makespan": {
+    "throttle_online_h_mean": 2.1840973410868814,
+    "online_pause_h_mean": 14.129999999999997,
+    "ratio": 6.46949187391457
+  }
+}

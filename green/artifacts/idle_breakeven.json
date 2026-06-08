@@ -1,0 +1,29 @@
+{
+  "gpu_index": 0,
+  "p_alloc_idle_w": 100.0,
+  "p_powered_down_w_assumed": 15.0,
+  "idle_minus_powerdown_delta_w": 85.0,
+  "median_idle_gap_s": 30.0,
+  "per_size": [
+    {
+      "size": "125M",
+      "p_active_w": 181.2,
+      "reload_energy_j": 93.316,
+      "reload_s": 0.351,
+      "ckpt_bytes": 226773910,
+      "breakeven_t_star_s": 1.1,
+      "verdict_vs_gate": "ALIVE"
+    },
+    {
+      "size": "350M",
+      "p_active_w": 297.7,
+      "reload_energy_j": 157.59,
+      "reload_s": 1.238,
+      "ckpt_bytes": 806040954,
+      "breakeven_t_star_s": 1.85,
+      "verdict_vs_gate": "ALIVE"
+    }
+  ],
+  "gate": "t* << gap ALIVE | ~gap MARGINAL | >> gap DEAD (pre-registered)",
+  "note": "P_powered_down is assumed (true power-down needs node sleep/MIG-off, not measurable in-process). Sweep --powered-down-w to bound sensitivity. Cluster-level headroom needs a trace replay on top of t*."
+}

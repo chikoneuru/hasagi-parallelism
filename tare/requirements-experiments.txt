@@ -1,0 +1,16 @@
+# Hardware reproduction of the measured experiments (needs the relevant GPUs).
+# Tested with Python 3.12 on the structural-energy probe nodes.
+#
+#   python -m pip install -r src/requirements-experiments.txt
+#
+# Structural-energy probe (2- and 4-GPU E_eco; needs >=2 NVIDIA GPUs, NVLink for
+# representative sharded-comm energy), per docs/tier1a-multigpu-probe-runbook.md:
+#   cd src && torchrun --nproc_per_node=4 -m experiments.exp_tier1a_multigpu_probe ...
+#
+# Single-GPU energy / throttle / pause-resume (needs 1 NVIDIA GPU + NVML), and the
+# real-grid carbon replays, run from src/ as experiments.* modules.
+torch==2.12.0
+nvidia-ml-py==13.610.43   # provides the pynvml module used for NVML energy/power
+numpy==1.26.4
+# The carbon-trace and stats experiments use the in-repo `hasagi` package
+# (src/hasagi/), which needs no dependencies beyond numpy.

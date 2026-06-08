@@ -1,0 +1,204 @@
+{
+  "schedule_g_per_kwh": [
+    200.0,
+    200.0,
+    900.0,
+    900.0
+  ],
+  "threshold_g_per_kwh": 800.0,
+  "total_iters": 4000,
+  "tick_seconds": 3.0,
+  "trace_source": "synthetic-parametric",
+  "energy_source": "nvml-measured-marginal-drift-corrected",
+  "background_w_calibration": 25.909200000000002,
+  "background_w_calibration_sd": 0.0305629405217064,
+  "background_w_drift": 0.0,
+  "background_w_mean": 26.0,
+  "background_anchors": 1,
+  "drift_contaminated": false,
+  "active_marginal_power_w_alwayson": 183.47657914284622,
+  "active_j_per_iter_alwayson": 1.0145892021482188,
+  "active_j_per_iter_aware": 0.9634972656228957,
+  "resume_energy_wh": 0.05980822313861827,
+  "dedicated_idle_w_assumed": 26.0,
+  "always_on": {
+    "iters": 4007,
+    "ticks": 8,
+    "pauses": 0,
+    "makespan_s": 25.15003242698731,
+    "energy_by_phase_wh": {
+      "cold_start": 0.01103186653162786,
+      "active": 1.1292941480577536
+    },
+    "duration_by_phase_s": {
+      "cold_start": 2.9921130280126818,
+      "active": 22.157917659031227
+    },
+    "power_by_phase_w": {
+      "cold_start": 13.273134785365457,
+      "active": 183.47657914284622
+    },
+    "intervals_phase_dur_s": [
+      [
+        "cold_start",
+        2.99
+      ],
+      [
+        "active",
+        3.04
+      ],
+      [
+        "active",
+        3.03
+      ],
+      [
+        "active",
+        3.03
+      ],
+      [
+        "active",
+        3.01
+      ],
+      [
+        "active",
+        3.03
+      ],
+      [
+        "active",
+        3.04
+      ],
+      [
+        "active",
+        3.04
+      ],
+      [
+        "active",
+        0.92
+      ]
+    ],
+    "total_carbon_g_measured": 0.5934539488534238
+  },
+  "carbon_aware": {
+    "iters": 4004,
+    "ticks": 14,
+    "pauses": 3,
+    "makespan_s": 41.861003681027796,
+    "energy_by_phase_wh": {
+      "cold_start": 0.05980822313861827,
+      "active": 1.0716230698761318,
+      "idle": 0.5619747954299474
+    },
+    "duration_by_phase_s": {
+      "cold_start": 1.6351012620143592,
+      "active": 21.7660933129373,
+      "idle": 18.45980725606205
+    },
+    "power_by_phase_w": {
+      "cold_start": 131.67967532101076,
+      "active": 177.24094976938534,
+      "idle": 109.59536226378735
+    },
+    "intervals_phase_dur_s": [
+      [
+        "cold_start",
+        0.92
+      ],
+      [
+        "active",
+        3.02
+      ],
+      [
+        "active",
+        3.0
+      ],
+      [
+        "idle",
+        3.16
+      ],
+      [
+        "idle",
+        3.0
+      ],
+      [
+        "cold_start",
+        0.24
+      ],
+      [
+        "active",
+        3.03
+      ],
+      [
+        "active",
+        3.01
+      ],
+      [
+        "idle",
+        3.14
+      ],
+      [
+        "idle",
+        3.0
+      ],
+      [
+        "cold_start",
+        0.24
+      ],
+      [
+        "active",
+        3.05
+      ],
+      [
+        "active",
+        3.0
+      ],
+      [
+        "idle",
+        3.16
+      ],
+      [
+        "idle",
+        3.0
+      ],
+      [
+        "cold_start",
+        0.24
+      ],
+      [
+        "active",
+        3.04
+      ],
+      [
+        "active",
+        0.62
+      ]
+    ],
+    "total_carbon_g_measured": 0.7320635744899028
+  },
+  "makespan_cost_s": 16.710971254040487,
+  "regimes": {
+    "dedicated": {
+      "carbon_aware_g": 0.34627500576735337,
+      "always_on_g": 0.5934539488534238,
+      "delta_g": -0.24717894308607047,
+      "delta_pct": -41.65090544323276,
+      "break_even_window_s": 0.40998231466791374,
+      "idle_power_w_assumed": 26.0
+    },
+    "reallocated": {
+      "carbon_aware_g": 0.22628625860295004,
+      "always_on_g": 0.5934539488534238,
+      "delta_g": -0.3671676902504738,
+      "delta_pct": -61.86961784648262,
+      "break_even_window_s": 0.33528546150903055,
+      "idle_power_w_assumed": 0.0
+    },
+    "powered_down": {
+      "carbon_aware_g": 0.22628625860295004,
+      "always_on_g": 0.5934539488534238,
+      "delta_g": -0.3671676902504738,
+      "delta_pct": -61.86961784648262,
+      "break_even_window_s": 0.33528546150903055,
+      "idle_power_w_assumed": 0.0
+    }
+  }
+}

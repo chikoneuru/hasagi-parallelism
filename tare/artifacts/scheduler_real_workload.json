@@ -1,0 +1,1011 @@
+{
+  "args": {
+    "seeds": 20,
+    "n_jobs": 3,
+    "available_gpus": 10,
+    "profile_json": "artifacts/resnet18_real_profile.json",
+    "out": "artifacts/scheduler_real_workload.json"
+  },
+  "profile_path": "artifacts/resnet18_real_profile.json",
+  "n_operating_points": 5,
+  "results": [
+    {
+      "seed": 0,
+      "allocator": "PowerFlow",
+      "total_energy_kwh": 0.010113707433774226,
+      "max_jct_s": 53.74749466660433,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 0,
+      "allocator": "ElasticFlow",
+      "total_energy_kwh": 0.0037312429892685404,
+      "max_jct_s": 42.058142730655774,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 0,
+      "allocator": "Zeus(\u03b7=0.5)",
+      "total_energy_kwh": 0.011218995641678102,
+      "max_jct_s": 111.9449215331891,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 0,
+      "allocator": "Pollux",
+      "total_energy_kwh": 0.010113707433774226,
+      "max_jct_s": 53.74749466660433,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 0,
+      "allocator": "Optimus",
+      "total_energy_kwh": 0.010113707433774226,
+      "max_jct_s": 53.74749466660433,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 0,
+      "allocator": "HISE EB",
+      "total_energy_kwh": 0.0037312429892685404,
+      "max_jct_s": 42.058142730655774,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 1,
+      "allocator": "PowerFlow",
+      "total_energy_kwh": 0.0038968739078431886,
+      "max_jct_s": 22.51342410656313,
+      "deadlines_met": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 1,
+      "allocator": "ElasticFlow",
+      "total_energy_kwh": 0.002798432241951405,
+      "max_jct_s": 21.029071365327887,
+      "deadlines_met": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 1,
+      "allocator": "Zeus(\u03b7=0.5)",
+      "total_energy_kwh": 0.003871627099424239,
+      "max_jct_s": 44.77796861327564,
+      "deadlines_met": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 1,
+      "allocator": "Pollux",
+      "total_energy_kwh": 0.0038968739078431886,
+      "max_jct_s": 22.51342410656313,
+      "deadlines_met": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 1,
+      "allocator": "Optimus",
+      "total_energy_kwh": 0.0038968739078431886,
+      "max_jct_s": 22.51342410656313,
+      "deadlines_met": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 1,
+      "allocator": "HISE EB",
+      "total_energy_kwh": 0.002798432241951405,
+      "max_jct_s": 21.029071365327887,
+      "deadlines_met": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 2,
+      "allocator": "PowerFlow",
+      "total_energy_kwh": 0.004730742869266022,
+      "max_jct_s": 32.248496799962595,
+      "deadlines_met": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 2,
+      "allocator": "ElasticFlow",
+      "total_energy_kwh": 0.002798432241951405,
+      "max_jct_s": 21.029071365327887,
+      "deadlines_met": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 2,
+      "allocator": "Zeus(\u03b7=0.5)",
+      "total_energy_kwh": 0.004787939802574024,
+      "max_jct_s": 67.16695291991346,
+      "deadlines_met": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 2,
+      "allocator": "Pollux",
+      "total_energy_kwh": 0.004639919236175696,
+      "max_jct_s": 33.7701361598447,
+      "deadlines_met": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 2,
+      "allocator": "Optimus",
+      "total_energy_kwh": 0.004730742869266022,
+      "max_jct_s": 32.248496799962595,
+      "deadlines_met": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 2,
+      "allocator": "HISE EB",
+      "total_energy_kwh": 0.002798432241951405,
+      "max_jct_s": 21.029071365327887,
+      "deadlines_met": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 3,
+      "allocator": "PowerFlow",
+      "total_energy_kwh": 0.007612100549505728,
+      "max_jct_s": 45.02684821312626,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 3,
+      "allocator": "ElasticFlow",
+      "total_energy_kwh": 0.00559686448390281,
+      "max_jct_s": 42.058142730655774,
+      "deadlines_met": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 3,
+      "allocator": "Zeus(\u03b7=0.5)",
+      "total_energy_kwh": 0.008360061120373585,
+      "max_jct_s": 89.55593722655128,
+      "deadlines_met": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 3,
+      "allocator": "Pollux",
+      "total_energy_kwh": 0.007793747815686377,
+      "max_jct_s": 45.02684821312626,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 3,
+      "allocator": "Optimus",
+      "total_energy_kwh": 0.007793747815686377,
+      "max_jct_s": 45.02684821312626,
+      "deadlines_met": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 3,
+      "allocator": "HISE EB",
+      "total_energy_kwh": 0.0018656214946342702,
+      "max_jct_s": 21.029071365327887,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 4,
+      "allocator": "PowerFlow",
+      "total_energy_kwh": 0.0031538285795106808,
+      "max_jct_s": 21.498997866641734,
+      "deadlines_met": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 4,
+      "allocator": "ElasticFlow",
+      "total_energy_kwh": 0.0031538285795106808,
+      "max_jct_s": 21.498997866641734,
+      "deadlines_met": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 4,
+      "allocator": "Zeus(\u03b7=0.5)",
+      "total_energy_kwh": 0.002718668924166224,
+      "max_jct_s": 25.170907066669315,
+      "deadlines_met": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 4,
+      "allocator": "Pollux",
+      "total_energy_kwh": 0.0030630049464203564,
+      "max_jct_s": 22.51342410656313,
+      "deadlines_met": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 4,
+      "allocator": "Optimus",
+      "total_energy_kwh": 0.0031538285795106808,
+      "max_jct_s": 21.498997866641734,
+      "deadlines_met": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 4,
+      "allocator": "HISE EB",
+      "total_energy_kwh": 0.0031538285795106808,
+      "max_jct_s": 21.498997866641734,
+      "deadlines_met": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 5,
+      "allocator": "PowerFlow",
+      "total_energy_kwh": 0.00862761677710921,
+      "max_jct_s": 56.283560266407825,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 5,
+      "allocator": "ElasticFlow",
+      "total_energy_kwh": 0.0009328107473171351,
+      "max_jct_s": 10.514535682663944,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 5,
+      "allocator": "Zeus(\u03b7=0.5)",
+      "total_energy_kwh": 0.00984279426253941,
+      "max_jct_s": 111.9449215331891,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 5,
+      "allocator": "Pollux",
+      "total_energy_kwh": 0.00862761677710921,
+      "max_jct_s": 56.283560266407825,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 5,
+      "allocator": "Optimus",
+      "total_energy_kwh": 0.00901835684526988,
+      "max_jct_s": 53.74749466660433,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 5,
+      "allocator": "HISE EB",
+      "total_energy_kwh": 0.0009328107473171351,
+      "max_jct_s": 10.514535682663944,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 6,
+      "allocator": "PowerFlow",
+      "total_energy_kwh": 0.0069598788542635445,
+      "max_jct_s": 56.283560266407825,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 6,
+      "allocator": "ElasticFlow",
+      "total_energy_kwh": 0.0009328107473171351,
+      "max_jct_s": 10.514535682663944,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 6,
+      "allocator": "Zeus(\u03b7=0.5)",
+      "total_energy_kwh": 0.00801016885623984,
+      "max_jct_s": 111.9449215331891,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 6,
+      "allocator": "Pollux",
+      "total_energy_kwh": 0.006778231588082896,
+      "max_jct_s": 56.283560266407825,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 6,
+      "allocator": "Optimus",
+      "total_energy_kwh": 0.007350618922424215,
+      "max_jct_s": 53.74749466660433,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 6,
+      "allocator": "HISE EB",
+      "total_energy_kwh": 0.0009328107473171351,
+      "max_jct_s": 10.514535682663944,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 7,
+      "allocator": "PowerFlow",
+      "total_energy_kwh": 0.007702924182596053,
+      "max_jct_s": 56.283560266407825,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 7,
+      "allocator": "ElasticFlow",
+      "total_energy_kwh": 0.0027984322419514055,
+      "max_jct_s": 31.54360704799183,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 7,
+      "allocator": "Zeus(\u03b7=0.5)",
+      "total_energy_kwh": 0.008453190615173167,
+      "max_jct_s": 111.9449215331891,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 7,
+      "allocator": "Pollux",
+      "total_energy_kwh": 0.007884571448776702,
+      "max_jct_s": 53.74749466660433,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 7,
+      "allocator": "Optimus",
+      "total_energy_kwh": 0.007884571448776702,
+      "max_jct_s": 53.74749466660433,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 7,
+      "allocator": "HISE EB",
+      "total_energy_kwh": 0.0027984322419514055,
+      "max_jct_s": 31.54360704799183,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 8,
+      "allocator": "PowerFlow",
+      "total_energy_kwh": 0.0038968739078431886,
+      "max_jct_s": 22.51342410656313,
+      "deadlines_met": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 8,
+      "allocator": "ElasticFlow",
+      "total_energy_kwh": 0.0038968739078431886,
+      "max_jct_s": 22.51342410656313,
+      "deadlines_met": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 8,
+      "allocator": "Zeus(\u03b7=0.5)",
+      "total_energy_kwh": 0.0033983361552077803,
+      "max_jct_s": 25.170907066669315,
+      "deadlines_met": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 8,
+      "allocator": "Pollux",
+      "total_energy_kwh": 0.003806050274752864,
+      "max_jct_s": 22.51342410656313,
+      "deadlines_met": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 8,
+      "allocator": "Optimus",
+      "total_energy_kwh": 0.0038968739078431886,
+      "max_jct_s": 22.51342410656313,
+      "deadlines_met": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 8,
+      "allocator": "HISE EB",
+      "total_energy_kwh": 0.0038968739078431886,
+      "max_jct_s": 22.51342410656313,
+      "deadlines_met": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 9,
+      "allocator": "PowerFlow",
+      "total_energy_kwh": 0.006216833525931037,
+      "max_jct_s": 45.02684821312626,
+      "deadlines_met": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 9,
+      "allocator": "ElasticFlow",
+      "total_energy_kwh": 0.006513290010725717,
+      "max_jct_s": 42.058142730655774,
+      "deadlines_met": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 9,
+      "allocator": "Zeus(\u03b7=0.5)",
+      "total_energy_kwh": 0.0064499119134347645,
+      "max_jct_s": 42.058142730655774,
+      "deadlines_met": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 9,
+      "allocator": "Pollux",
+      "total_energy_kwh": 0.006035186259750388,
+      "max_jct_s": 45.02684821312626,
+      "deadlines_met": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 9,
+      "allocator": "Optimus",
+      "total_energy_kwh": 0.006516749961001382,
+      "max_jct_s": 42.99799573328347,
+      "deadlines_met": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 9,
+      "allocator": "HISE EB",
+      "total_energy_kwh": 0.006513290010725717,
+      "max_jct_s": 42.058142730655774,
+      "deadlines_met": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 10,
+      "allocator": "PowerFlow",
+      "total_energy_kwh": 0.00862761677710921,
+      "max_jct_s": 53.74749466660433,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 10,
+      "allocator": "ElasticFlow",
+      "total_energy_kwh": 0.0037312429892685404,
+      "max_jct_s": 42.058142730655774,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 10,
+      "allocator": "Zeus(\u03b7=0.5)",
+      "total_energy_kwh": 0.009132857846214723,
+      "max_jct_s": 111.9449215331891,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 10,
+      "allocator": "Pollux",
+      "total_energy_kwh": 0.008536793144018886,
+      "max_jct_s": 56.283560266407825,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 10,
+      "allocator": "Optimus",
+      "total_energy_kwh": 0.00862761677710921,
+      "max_jct_s": 53.74749466660433,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 10,
+      "allocator": "HISE EB",
+      "total_energy_kwh": 0.0037312429892685404,
+      "max_jct_s": 42.058142730655774,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 11,
+      "allocator": "PowerFlow",
+      "total_energy_kwh": 0.010113707433774226,
+      "max_jct_s": 53.74749466660433,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 11,
+      "allocator": "ElasticFlow",
+      "total_energy_kwh": 0.0037312429892685404,
+      "max_jct_s": 42.058142730655774,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 11,
+      "allocator": "Zeus(\u03b7=0.5)",
+      "total_energy_kwh": 0.010965483252514292,
+      "max_jct_s": 111.9449215331891,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 11,
+      "allocator": "Pollux",
+      "total_energy_kwh": 0.010022883800683901,
+      "max_jct_s": 56.283560266407825,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 11,
+      "allocator": "Optimus",
+      "total_energy_kwh": 0.010113707433774226,
+      "max_jct_s": 53.74749466660433,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 11,
+      "allocator": "HISE EB",
+      "total_energy_kwh": 0.0037312429892685404,
+      "max_jct_s": 42.058142730655774,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 12,
+      "allocator": "PowerFlow",
+      "total_energy_kwh": 0.009279838472351393,
+      "max_jct_s": 45.02684821312626,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 12,
+      "allocator": "ElasticFlow",
+      "total_energy_kwh": 0.0037312429892685404,
+      "max_jct_s": 42.058142730655774,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 12,
+      "allocator": "Zeus(\u03b7=0.5)",
+      "total_energy_kwh": 0.010302682938528315,
+      "max_jct_s": 89.55593722655128,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 12,
+      "allocator": "Pollux",
+      "total_energy_kwh": 0.009279838472351393,
+      "max_jct_s": 45.02684821312626,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 12,
+      "allocator": "Optimus",
+      "total_energy_kwh": 0.009279838472351393,
+      "max_jct_s": 45.02684821312626,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 12,
+      "allocator": "HISE EB",
+      "total_energy_kwh": 0.0037312429892685404,
+      "max_jct_s": 42.058142730655774,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 13,
+      "allocator": "PowerFlow",
+      "total_energy_kwh": 0.00547378819759853,
+      "max_jct_s": 32.248496799962595,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 13,
+      "allocator": "ElasticFlow",
+      "total_energy_kwh": 0.0018656214946342702,
+      "max_jct_s": 21.029071365327887,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 13,
+      "allocator": "Zeus(\u03b7=0.5)",
+      "total_energy_kwh": 0.00594089797783204,
+      "max_jct_s": 67.16695291991346,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 13,
+      "allocator": "Pollux",
+      "total_energy_kwh": 0.005382964564508205,
+      "max_jct_s": 33.7701361598447,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 13,
+      "allocator": "Optimus",
+      "total_energy_kwh": 0.00547378819759853,
+      "max_jct_s": 32.248496799962595,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 13,
+      "allocator": "HISE EB",
+      "total_energy_kwh": 0.0018656214946342702,
+      "max_jct_s": 21.029071365327887,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 14,
+      "allocator": "PowerFlow",
+      "total_energy_kwh": 0.00529214093141788,
+      "max_jct_s": 45.02684821312626,
+      "deadlines_met": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 14,
+      "allocator": "ElasticFlow",
+      "total_energy_kwh": 0.002798432241951405,
+      "max_jct_s": 21.029071365327887,
+      "deadlines_met": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 14,
+      "allocator": "Zeus(\u03b7=0.5)",
+      "total_energy_kwh": 0.00570425250572381,
+      "max_jct_s": 89.55593722655128,
+      "deadlines_met": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 14,
+      "allocator": "Pollux",
+      "total_energy_kwh": 0.005382964564508205,
+      "max_jct_s": 45.02684821312626,
+      "deadlines_met": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 14,
+      "allocator": "Optimus",
+      "total_energy_kwh": 0.005564611830688853,
+      "max_jct_s": 42.99799573328347,
+      "deadlines_met": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 14,
+      "allocator": "HISE EB",
+      "total_energy_kwh": 0.002798432241951405,
+      "max_jct_s": 21.029071365327887,
+      "deadlines_met": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 15,
+      "allocator": "PowerFlow",
+      "total_energy_kwh": 0.005473788197598529,
+      "max_jct_s": 32.248496799962595,
+      "deadlines_met": 0,
+      "n_jobs": 3
+    },
+    {
+      "seed": 15,
+      "allocator": "ElasticFlow",
+      "total_energy_kwh": 0.0,
+      "max_jct_s": 0.0,
+      "deadlines_met": 0,
+      "n_jobs": 3
+    },
+    {
+      "seed": 15,
+      "allocator": "Zeus(\u03b7=0.5)",
+      "total_energy_kwh": 0.006414188922048498,
+      "max_jct_s": 67.16695291991346,
+      "deadlines_met": 0,
+      "n_jobs": 3
+    },
+    {
+      "seed": 15,
+      "allocator": "Pollux",
+      "total_energy_kwh": 0.005473788197598529,
+      "max_jct_s": 32.248496799962595,
+      "deadlines_met": 0,
+      "n_jobs": 3
+    },
+    {
+      "seed": 15,
+      "allocator": "Optimus",
+      "total_energy_kwh": 0.005473788197598529,
+      "max_jct_s": 32.248496799962595,
+      "deadlines_met": 0,
+      "n_jobs": 3
+    },
+    {
+      "seed": 15,
+      "allocator": "HISE EB",
+      "total_energy_kwh": 0.0,
+      "max_jct_s": 0.0,
+      "deadlines_met": 0,
+      "n_jobs": 3
+    },
+    {
+      "seed": 16,
+      "allocator": "PowerFlow",
+      "total_energy_kwh": 0.004730742869266022,
+      "max_jct_s": 32.248496799962595,
+      "deadlines_met": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 16,
+      "allocator": "ElasticFlow",
+      "total_energy_kwh": 0.0037312429892685404,
+      "max_jct_s": 31.54360704799183,
+      "deadlines_met": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 16,
+      "allocator": "Zeus(\u03b7=0.5)",
+      "total_energy_kwh": 0.00474142862233865,
+      "max_jct_s": 44.77796861327564,
+      "deadlines_met": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 16,
+      "allocator": "Pollux",
+      "total_energy_kwh": 0.004458271969995048,
+      "max_jct_s": 33.7701361598447,
+      "deadlines_met": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 16,
+      "allocator": "Optimus",
+      "total_energy_kwh": 0.004730742869266022,
+      "max_jct_s": 32.248496799962595,
+      "deadlines_met": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 16,
+      "allocator": "HISE EB",
+      "total_energy_kwh": 0.0037312429892685404,
+      "max_jct_s": 31.54360704799183,
+      "deadlines_met": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 17,
+      "allocator": "PowerFlow",
+      "total_energy_kwh": 0.006398480792111687,
+      "max_jct_s": 53.74749466660433,
+      "deadlines_met": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 17,
+      "allocator": "ElasticFlow",
+      "total_energy_kwh": 0.002798432241951405,
+      "max_jct_s": 21.029071365327887,
+      "deadlines_met": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 17,
+      "allocator": "Zeus(\u03b7=0.5)",
+      "total_energy_kwh": 0.006620565208873596,
+      "max_jct_s": 111.9449215331891,
+      "deadlines_met": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 17,
+      "allocator": "Pollux",
+      "total_energy_kwh": 0.006035186259750388,
+      "max_jct_s": 56.283560266407825,
+      "deadlines_met": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 17,
+      "allocator": "Optimus",
+      "total_energy_kwh": 0.006398480792111687,
+      "max_jct_s": 53.74749466660433,
+      "deadlines_met": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 17,
+      "allocator": "HISE EB",
+      "total_energy_kwh": 0.002798432241951405,
+      "max_jct_s": 21.029071365327887,
+      "deadlines_met": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 18,
+      "allocator": "PowerFlow",
+      "total_energy_kwh": 0.0069598788542635445,
+      "max_jct_s": 45.02684821312626,
+      "deadlines_met": 0,
+      "n_jobs": 3
+    },
+    {
+      "seed": 18,
+      "allocator": "ElasticFlow",
+      "total_energy_kwh": 0.0037312429892685404,
+      "max_jct_s": 42.058142730655774,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 18,
+      "allocator": "Zeus(\u03b7=0.5)",
+      "total_energy_kwh": 0.007917039361440257,
+      "max_jct_s": 67.16695291991346,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 18,
+      "allocator": "Pollux",
+      "total_energy_kwh": 0.006687407954992571,
+      "max_jct_s": 45.02684821312626,
+      "deadlines_met": 0,
+      "n_jobs": 3
+    },
+    {
+      "seed": 18,
+      "allocator": "Optimus",
+      "total_energy_kwh": 0.007050702487353869,
+      "max_jct_s": 42.99799573328347,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 18,
+      "allocator": "HISE EB",
+      "total_energy_kwh": 0.0037312429892685404,
+      "max_jct_s": 42.058142730655774,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 19,
+      "allocator": "PowerFlow",
+      "total_energy_kwh": 0.007884571448776703,
+      "max_jct_s": 53.74749466660433,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 19,
+      "allocator": "ElasticFlow",
+      "total_energy_kwh": 0.0009328107473171351,
+      "max_jct_s": 10.514535682663944,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 19,
+      "allocator": "Zeus(\u03b7=0.5)",
+      "total_energy_kwh": 0.008926481559389625,
+      "max_jct_s": 111.9449215331891,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 19,
+      "allocator": "Pollux",
+      "total_energy_kwh": 0.007793747815686378,
+      "max_jct_s": 56.283560266407825,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 19,
+      "allocator": "Optimus",
+      "total_energy_kwh": 0.008184487883847048,
+      "max_jct_s": 53.74749466660433,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 19,
+      "allocator": "HISE EB",
+      "total_energy_kwh": 0.0009328107473171351,
+      "max_jct_s": 10.514535682663944,
+      "deadlines_met": 1,
+      "n_jobs": 3
+    }
+  ],
+  "summary": {
+    "PowerFlow": {
+      "mean_kwh": 0.00665729672809553,
+      "stddev_kwh": 0.002078629422156105,
+      "mean_max_jct_s": 42.91211142387474,
+      "mean_deadlines_met": 1.4
+    },
+    "ElasticFlow": {
+      "mean_kwh": 0.003010226493196817,
+      "stddev_kwh": 0.0015632446139294868,
+      "mean_max_jct_s": 26.90977995292051,
+      "mean_deadlines_met": 1.55
+    },
+    "Zeus(\u03b7=0.5)": {
+      "mean_kwh": 0.007188878629285747,
+      "stddev_kwh": 0.002518952050393811,
+      "mean_max_jct_s": 80.7425444857683,
+      "mean_deadlines_met": 1.55
+    },
+    "Pollux": {
+      "mean_kwh": 0.00658463782162327,
+      "stddev_kwh": 0.002109653392956871,
+      "mean_max_jct_s": 43.57148847982365,
+      "mean_deadlines_met": 1.4
+    },
+    "Optimus": {
+      "mean_kwh": 0.006762691831654761,
+      "stddev_kwh": 0.0021125046321955683,
+      "mean_max_jct_s": 42.2273737119278,
+      "mean_deadlines_met": 1.5
+    },
+    "HISE EB": {
+      "mean_kwh": 0.00282366434373339,
+      "stddev_kwh": 0.0014573634545072716,
+      "mean_max_jct_s": 25.858326384654116,
+      "mean_deadlines_met": 1.5
+    }
+  }
+}

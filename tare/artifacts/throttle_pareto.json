@@ -1,0 +1,58 @@
+{
+  "gpu": "NVIDIA GeForce RTX 3080 Ti",
+  "profile": "artifacts/hardware-pareto-3080ti.json",
+  "full_cap_w": 350.0,
+  "throttle_cap_w": 200.0,
+  "schedule_g_per_kwh": [
+    200.0,
+    200.0,
+    900.0,
+    900.0
+  ],
+  "threshold_g_per_kwh": 800.0,
+  "total_iters": 200000,
+  "window_s": 600.0,
+  "resume_energy_wh": 0.07,
+  "dedicated_idle_w": 30.0,
+  "trace_source": "synthetic-parametric",
+  "energy_source": "measured-power-cap-profile",
+  "policies": {
+    "always-on": {
+      "total_carbon_g": 132.8554553582982,
+      "makespan_s": 3530.964547013733,
+      "iters": 200000,
+      "idle_carbon_g": 0.0,
+      "resume_carbon_g": 0.0,
+      "rel_carbon_pct_vs_alwayson": 0.0,
+      "makespan_delta_s": 0.0
+    },
+    "throttle@200W": {
+      "total_carbon_g": 109.98512224338666,
+      "makespan_s": 3869.543596521089,
+      "iters": 200000,
+      "idle_carbon_g": 0.0,
+      "resume_carbon_g": 0.0,
+      "rel_carbon_pct_vs_alwayson": -17.21444787738109,
+      "makespan_delta_s": 338.5790495073561
+    },
+    "pause/reallocated": {
+      "total_carbon_g": 60.707091191631534,
+      "makespan_s": 5930.964547013733,
+      "iters": 200000,
+      "idle_carbon_g": 0.0,
+      "resume_carbon_g": 0.028000000000000004,
+      "rel_carbon_pct_vs_alwayson": -54.30591011267815,
+      "makespan_delta_s": 2400.0
+    },
+    "pause/dedicated": {
+      "total_carbon_g": 78.70709119163153,
+      "makespan_s": 5930.964547013733,
+      "iters": 200000,
+      "idle_carbon_g": 18.0,
+      "resume_carbon_g": 0.028000000000000004,
+      "rel_carbon_pct_vs_alwayson": -40.75735092746761,
+      "makespan_delta_s": 2400.0
+    }
+  },
+  "_SUPERSEDED": "Old 200W energy-optimal cap on the pre-clean hardware-pareto-3080ti profile; the 200-vs-250W single-sweep optimum is WITHDRAWN. Authoritative: throttle_pareto_clean.json (250W) which also carries the carbon-blind-vs-awareness _decomposition. Do not cite the -17.2% here."
+}

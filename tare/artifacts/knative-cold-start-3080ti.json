@@ -1,0 +1,67 @@
+[
+  {
+    "replicate": 1,
+    "trigger_unix": 1779787069.1608455,
+    "pod_name": "hise-worker-lifecycle-00001-deployment-7bdbcbdc4c-8jvnv",
+    "pod_created_unix": 1779787069.0,
+    "pod_container_started_unix": 1779787069.0,
+    "pod_ready_unix": 1779787071.0,
+    "container_start_unix": 1779787070.0942824,
+    "app_ready_offset_s": 0.05779796000570059,
+    "cuda_init_complete_offset_s": 3.059569792007096,
+    "first_work_completed_offset_s": 3.3096883079997497,
+    "end_to_end_wall_s": 4.244813442230225
+  },
+  {
+    "replicate": 2,
+    "trigger_unix": 1779787138.6688766,
+    "pod_name": "hise-worker-lifecycle-00001-deployment-7bdbcbdc4c-85ktr",
+    "pod_created_unix": 1779787138.0,
+    "pod_container_started_unix": 1779787139.0,
+    "pod_ready_unix": 1779787140.0,
+    "container_start_unix": 1779787139.4883776,
+    "app_ready_offset_s": 0.7570311019953806,
+    "cuda_init_complete_offset_s": 3.7591185399942333,
+    "first_work_completed_offset_s": 4.009236127996701,
+    "end_to_end_wall_s": 4.830078125
+  },
+  {
+    "replicate": 3,
+    "trigger_unix": 1779787208.7763138,
+    "pod_name": "hise-worker-lifecycle-00001-deployment-7bdbcbdc4c-rr8cc",
+    "pod_created_unix": 1779787208.0,
+    "pod_container_started_unix": 1779787209.0,
+    "pod_ready_unix": 1779787210.0,
+    "container_start_unix": 1779787209.601109,
+    "app_ready_offset_s": 0.7606425720005063,
+    "cuda_init_complete_offset_s": 3.762204127997393,
+    "first_work_completed_offset_s": 4.0123239599925,
+    "end_to_end_wall_s": 4.8383893966674805
+  },
+  {
+    "replicate": 4,
+    "trigger_unix": 1779787281.0450838,
+    "pod_name": "hise-worker-lifecycle-00001-deployment-7bdbcbdc4c-whbrc",
+    "pod_created_unix": 1779787281.0,
+    "pod_container_started_unix": 1779787281.0,
+    "pod_ready_unix": 1779787282.0,
+    "container_start_unix": 1779787281.8672004,
+    "app_ready_offset_s": 0.6079157330095768,
+    "cuda_init_complete_offset_s": 3.609667041004286,
+    "first_work_completed_offset_s": 3.8597806680045323,
+    "end_to_end_wall_s": 4.683130502700806
+  },
+  {
+    "replicate": 5,
+    "trigger_unix": 1779787350.9934845,
+    "pod_name": "hise-worker-lifecycle-00001-deployment-7bdbcbdc4c-wq5hq",
+    "pod_created_unix": 1779787351.0,
+    "pod_container_started_unix": 1779787351.0,
+    "pod_ready_unix": 1779787352.0,
+    "container_start_unix": 1779787351.8119695,
+    "app_ready_offset_s": 0.774361425996176,
+    "cuda_init_complete_offset_s": 3.7760721469967393,
+    "first_work_completed_offset_s": 4.0261835679993965,
+    "end_to_end_wall_s": 4.8460471630096436
+  }
+]

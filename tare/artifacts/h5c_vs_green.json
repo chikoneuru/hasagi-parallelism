@@ -1,0 +1,541 @@
+{
+  "args": {
+    "zones": [
+      "NO",
+      "FR",
+      "BR",
+      "GB",
+      "US-CA",
+      "DE",
+      "AE",
+      "SG",
+      "VN",
+      "KR",
+      "JP",
+      "AU",
+      "CN",
+      "IN",
+      "PL",
+      "ZA"
+    ],
+    "days": 14,
+    "sample_minutes": 60,
+    "seed": 0,
+    "hise_threshold_multiplier": 1.1,
+    "out": "artifacts/h5c_vs_green.json"
+  },
+  "results": [
+    {
+      "zone": "NO",
+      "policy": "constant-N",
+      "active_ticks": 337,
+      "pause_fraction": 0.0,
+      "energy_kwh": 70.77000000000002,
+      "emissions_g": 1969.8755634198837
+    },
+    {
+      "zone": "NO",
+      "policy": "hise-threshold",
+      "active_ticks": 205,
+      "pause_fraction": 0.3916913946587537,
+      "energy_kwh": 43.05000000000014,
+      "emissions_g": 945.7597553890032
+    },
+    {
+      "zone": "NO",
+      "policy": "green-offline",
+      "active_ticks": 205,
+      "pause_fraction": 0.3916913946587537,
+      "energy_kwh": 43.05000000000014,
+      "emissions_g": 945.7597553890032
+    },
+    {
+      "zone": "NO",
+      "policy": "green-online",
+      "active_ticks": 216,
+      "pause_fraction": 0.35905044510385753,
+      "energy_kwh": 45.36000000000015,
+      "emissions_g": 1027.6646105808736
+    },
+    {
+      "zone": "FR",
+      "policy": "constant-N",
+      "active_ticks": 337,
+      "pause_fraction": 0.0,
+      "energy_kwh": 70.77000000000002,
+      "emissions_g": 4588.798277076713
+    },
+    {
+      "zone": "FR",
+      "policy": "hise-threshold",
+      "active_ticks": 233,
+      "pause_fraction": 0.3086053412462908,
+      "energy_kwh": 48.93000000000016,
+      "emissions_g": 2845.8477424882317
+    },
+    {
+      "zone": "FR",
+      "policy": "green-offline",
+      "active_ticks": 233,
+      "pause_fraction": 0.3086053412462908,
+      "energy_kwh": 48.93000000000016,
+      "emissions_g": 2845.8477424882317
+    },
+    {
+      "zone": "FR",
+      "policy": "green-online",
+      "active_ticks": 235,
+      "pause_fraction": 0.3026706231454006,
+      "energy_kwh": 49.350000000000165,
+      "emissions_g": 2893.500012819488
+    },
+    {
+      "zone": "BR",
+      "policy": "constant-N",
+      "active_ticks": 337,
+      "pause_fraction": 0.0,
+      "energy_kwh": 70.77000000000002,
+      "emissions_g": 7044.3942569223655
+    },
+    {
+      "zone": "BR",
+      "policy": "hise-threshold",
+      "active_ticks": 211,
+      "pause_fraction": 0.3738872403560831,
+      "energy_kwh": 44.310000000000144,
+      "emissions_g": 3621.378231959961
+    },
+    {
+      "zone": "BR",
+      "policy": "green-offline",
+      "active_ticks": 211,
+      "pause_fraction": 0.3738872403560831,
+      "energy_kwh": 44.310000000000144,
+      "emissions_g": 3621.378231959961
+    },
+    {
+      "zone": "BR",
+      "policy": "green-online",
+      "active_ticks": 224,
+      "pause_fraction": 0.33531157270029677,
+      "energy_kwh": 47.040000000000155,
+      "emissions_g": 3980.5780602357904
+    },
+    {
+      "zone": "GB",
+      "policy": "constant-N",
+      "active_ticks": 337,
+      "pause_fraction": 0.0,
+      "energy_kwh": 70.77000000000002,
+      "emissions_g": 14090.379312264253
+    },
+    {
+      "zone": "GB",
+      "policy": "hise-threshold",
+      "active_ticks": 195,
+      "pause_fraction": 0.42136498516320475,
+      "energy_kwh": 40.95000000000013,
+      "emissions_g": 5195.322562254788
+    },
+    {
+      "zone": "GB",
+      "policy": "green-offline",
+      "active_ticks": 195,
+      "pause_fraction": 0.42136498516320475,
+      "energy_kwh": 40.95000000000013,
+      "emissions_g": 5195.322562254788
+    },
+    {
+      "zone": "GB",
+      "policy": "green-online",
+      "active_ticks": 198,
+      "pause_fraction": 0.41246290801186947,
+      "energy_kwh": 41.58000000000013,
+      "emissions_g": 5447.810438361558
+    },
+    {
+      "zone": "US-CA",
+      "policy": "constant-N",
+      "active_ticks": 337,
+      "pause_fraction": 0.0,
+      "energy_kwh": 70.77000000000002,
+      "emissions_g": 16940.54483123014
+    },
+    {
+      "zone": "US-CA",
+      "policy": "hise-threshold",
+      "active_ticks": 189,
+      "pause_fraction": 0.4391691394658753,
+      "energy_kwh": 39.690000000000126,
+      "emissions_g": 6966.410914108727
+    },
+    {
+      "zone": "US-CA",
+      "policy": "green-offline",
+      "active_ticks": 189,
+      "pause_fraction": 0.4391691394658753,
+      "energy_kwh": 39.690000000000126,
+      "emissions_g": 6966.410914108727
+    },
+    {
+      "zone": "US-CA",
+      "policy": "green-online",
+      "active_ticks": 192,
+      "pause_fraction": 0.43026706231454004,
+      "energy_kwh": 40.32000000000013,
+      "emissions_g": 7205.284294850245
+    },
+    {
+      "zone": "DE",
+      "policy": "constant-N",
+      "active_ticks": 337,
+      "pause_fraction": 0.0,
+      "energy_kwh": 70.77000000000002,
+      "emissions_g": 25417.01782115298
+    },
+    {
+      "zone": "DE",
+      "policy": "hise-threshold",
+      "active_ticks": 189,
+      "pause_fraction": 0.4391691394658753,
+      "energy_kwh": 39.690000000000126,
+      "emissions_g": 10785.69706209543
+    },
+    {
+      "zone": "DE",
+      "policy": "green-offline",
+      "active_ticks": 189,
+      "pause_fraction": 0.4391691394658753,
+      "energy_kwh": 39.690000000000126,
+      "emissions_g": 10785.69706209543
+    },
+    {
+      "zone": "DE",
+      "policy": "green-online",
+      "active_ticks": 192,
+      "pause_fraction": 0.43026706231454004,
+      "energy_kwh": 40.32000000000013,
+      "emissions_g": 11138.46966809751
+    },
+    {
+      "zone": "AE",
+      "policy": "constant-N",
+      "active_ticks": 337,
+      "pause_fraction": 0.0,
+      "energy_kwh": 70.77000000000002,
+      "emissions_g": 30401.92069269178
+    },
+    {
+      "zone": "AE",
+      "policy": "hise-threshold",
+      "active_ticks": 275,
+      "pause_fraction": 0.18397626112759646,
+      "energy_kwh": 57.7500000000002,
+      "emissions_g": 24031.942531365476
+    },
+    {
+      "zone": "AE",
+      "policy": "green-offline",
+      "active_ticks": 275,
+      "pause_fraction": 0.18397626112759646,
+      "energy_kwh": 57.7500000000002,
+      "emissions_g": 24031.942531365476
+    },
+    {
+      "zone": "AE",
+      "policy": "green-online",
+      "active_ticks": 277,
+      "pause_fraction": 0.17804154302670627,
+      "energy_kwh": 58.1700000000002,
+      "emissions_g": 24307.041056276063
+    },
+    {
+      "zone": "SG",
+      "policy": "constant-N",
+      "active_ticks": 337,
+      "pause_fraction": 0.0,
+      "energy_kwh": 70.77000000000002,
+      "emissions_g": 30407.17069269179
+    },
+    {
+      "zone": "SG",
+      "policy": "hise-threshold",
+      "active_ticks": 304,
+      "pause_fraction": 0.09792284866468848,
+      "energy_kwh": 63.840000000000224,
+      "emissions_g": 27047.17086105273
+    },
+    {
+      "zone": "SG",
+      "policy": "green-offline",
+      "active_ticks": 304,
+      "pause_fraction": 0.09792284866468848,
+      "energy_kwh": 63.840000000000224,
+      "emissions_g": 27047.17086105273
+    },
+    {
+      "zone": "SG",
+      "policy": "green-online",
+      "active_ticks": 310,
+      "pause_fraction": 0.0801186943620178,
+      "energy_kwh": 65.1000000000002,
+      "emissions_g": 27705.598834640874
+    },
+    {
+      "zone": "VN",
+      "policy": "constant-N",
+      "active_ticks": 337,
+      "pause_fraction": 0.0,
+      "energy_kwh": 70.77000000000002,
+      "emissions_g": 31088.06782115297
+    },
+    {
+      "zone": "VN",
+      "policy": "hise-threshold",
+      "active_ticks": 234,
+      "pause_fraction": 0.3056379821958457,
+      "energy_kwh": 49.140000000000164,
+      "emissions_g": 19753.03928721474
+    },
+    {
+      "zone": "VN",
+      "policy": "green-offline",
+      "active_ticks": 234,
+      "pause_fraction": 0.3056379821958457,
+      "energy_kwh": 49.140000000000164,
+      "emissions_g": 19753.03928721474
+    },
+    {
+      "zone": "VN",
+      "policy": "green-online",
+      "active_ticks": 234,
+      "pause_fraction": 0.3056379821958457,
+      "energy_kwh": 49.140000000000164,
+      "emissions_g": 19859.528396512145
+    },
+    {
+      "zone": "KR",
+      "policy": "constant-N",
+      "active_ticks": 337,
+      "pause_fraction": 0.0,
+      "energy_kwh": 70.77000000000002,
+      "emissions_g": 31809.69425692238
+    },
+    {
+      "zone": "KR",
+      "policy": "hise-threshold",
+      "active_ticks": 263,
+      "pause_fraction": 0.21958456973293772,
+      "energy_kwh": 55.23000000000019,
+      "emissions_g": 23634.17396909603
+    },
+    {
+      "zone": "KR",
+      "policy": "green-offline",
+      "active_ticks": 263,
+      "pause_fraction": 0.21958456973293772,
+      "energy_kwh": 55.23000000000019,
+      "emissions_g": 23634.17396909603
+    },
+    {
+      "zone": "KR",
+      "policy": "green-online",
+      "active_ticks": 262,
+      "pause_fraction": 0.2225519287833828,
+      "energy_kwh": 55.02000000000019,
+      "emissions_g": 23655.418894428538
+    },
+    {
+      "zone": "JP",
+      "policy": "constant-N",
+      "active_ticks": 337,
+      "pause_fraction": 0.0,
+      "energy_kwh": 70.77000000000002,
+      "emissions_g": 34639.44425692239
+    },
+    {
+      "zone": "JP",
+      "policy": "hise-threshold",
+      "active_ticks": 264,
+      "pause_fraction": 0.21661721068249262,
+      "energy_kwh": 55.44000000000019,
+      "emissions_g": 25894.92212127626
+    },
+    {
+      "zone": "JP",
+      "policy": "green-offline",
+      "active_ticks": 264,
+      "pause_fraction": 0.21661721068249262,
+      "energy_kwh": 55.44000000000019,
+      "emissions_g": 25894.92212127626
+    },
+    {
+      "zone": "JP",
+      "policy": "green-online",
+      "active_ticks": 262,
+      "pause_fraction": 0.2225519287833828,
+      "energy_kwh": 55.02000000000019,
+      "emissions_g": 25793.133354988262
+    },
+    {
+      "zone": "AU",
+      "policy": "constant-N",
+      "active_ticks": 337,
+      "pause_fraction": 0.0,
+      "energy_kwh": 70.77000000000002,
+      "emissions_g": 39567.59138538357
+    },
+    {
+      "zone": "AU",
+      "policy": "hise-threshold",
+      "active_ticks": 227,
+      "pause_fraction": 0.32640949554896137,
+      "energy_kwh": 47.67000000000016,
+      "emissions_g": 24170.218445192717
+    },
+    {
+      "zone": "AU",
+      "policy": "green-offline",
+      "active_ticks": 227,
+      "pause_fraction": 0.32640949554896137,
+      "energy_kwh": 47.67000000000016,
+      "emissions_g": 24170.218445192717
+    },
+    {
+      "zone": "AU",
+      "policy": "green-online",
+      "active_ticks": 233,
+      "pause_fraction": 0.3086053412462908,
+      "energy_kwh": 48.93000000000016,
+      "emissions_g": 25078.494111943455
+    },
+    {
+      "zone": "CN",
+      "policy": "constant-N",
+      "active_ticks": 337,
+      "pause_fraction": 0.0,
+      "energy_kwh": 70.77000000000002,
+      "emissions_g": 42416.517821152964
+    },
+    {
+      "zone": "CN",
+      "policy": "hise-threshold",
+      "active_ticks": 280,
+      "pause_fraction": 0.16913946587537088,
+      "energy_kwh": 58.8000000000002,
+      "emissions_g": 34222.71014131085
+    },
+    {
+      "zone": "CN",
+      "policy": "green-offline",
+      "active_ticks": 280,
+      "pause_fraction": 0.16913946587537088,
+      "energy_kwh": 58.8000000000002,
+      "emissions_g": 34222.71014131085
+    },
+    {
+      "zone": "CN",
+      "policy": "green-online",
+      "active_ticks": 275,
+      "pause_fraction": 0.18397626112759646,
+      "energy_kwh": 57.7500000000002,
+      "emissions_g": 33637.84336569925
+    },
+    {
+      "zone": "IN",
+      "policy": "constant-N",
+      "active_ticks": 337,
+      "pause_fraction": 0.0,
+      "energy_kwh": 70.77000000000002,
+      "emissions_g": 43821.141385383555
+    },
+    {
+      "zone": "IN",
+      "policy": "hise-threshold",
+      "active_ticks": 270,
+      "pause_fraction": 0.19881305637982194,
+      "energy_kwh": 56.700000000000195,
+      "emissions_g": 33755.20504791288
+    },
+    {
+      "zone": "IN",
+      "policy": "green-offline",
+      "active_ticks": 270,
+      "pause_fraction": 0.19881305637982194,
+      "energy_kwh": 56.700000000000195,
+      "emissions_g": 33755.20504791288
+    },
+    {
+      "zone": "IN",
+      "policy": "green-online",
+      "active_ticks": 276,
+      "pause_fraction": 0.18100890207715137,
+      "energy_kwh": 57.9600000000002,
+      "emissions_g": 34714.06253539398
+    },
+    {
+      "zone": "PL",
+      "policy": "constant-N",
+      "active_ticks": 337,
+      "pause_fraction": 0.0,
+      "energy_kwh": 70.77000000000002,
+      "emissions_g": 50916.124256922376
+    },
+    {
+      "zone": "PL",
+      "policy": "hise-threshold",
+      "active_ticks": 319,
+      "pause_fraction": 0.053412462908011826,
+      "energy_kwh": 66.99000000000014,
+      "emissions_g": 47867.9045036225
+    },
+    {
+      "zone": "PL",
+      "policy": "green-offline",
+      "active_ticks": 319,
+      "pause_fraction": 0.053412462908011826,
+      "energy_kwh": 66.99000000000014,
+      "emissions_g": 47867.9045036225
+    },
+    {
+      "zone": "PL",
+      "policy": "green-online",
+      "active_ticks": 324,
+      "pause_fraction": 0.03857566765578635,
+      "energy_kwh": 68.0400000000001,
+      "emissions_g": 48732.52235961973
+    },
+    {
+      "zone": "ZA",
+      "policy": "constant-N",
+      "active_ticks": 337,
+      "pause_fraction": 0.0,
+      "energy_kwh": 70.77000000000002,
+      "emissions_g": 66472.79138538355
+    },
+    {
+      "zone": "ZA",
+      "policy": "hise-threshold",
+      "active_ticks": 326,
+      "pause_fraction": 0.03264094955489616,
+      "energy_kwh": 68.4600000000001,
+      "emissions_g": 64046.561237825095
+    },
+    {
+      "zone": "ZA",
+      "policy": "green-offline",
+      "active_ticks": 326,
+      "pause_fraction": 0.03264094955489616,
+      "energy_kwh": 68.4600000000001,
+      "emissions_g": 64046.561237825095
+    },
+    {
+      "zone": "ZA",
+      "policy": "green-online",
+      "active_ticks": 337,
+      "pause_fraction": 0.0,
+      "energy_kwh": 70.77000000000002,
+      "emissions_g": 66472.79138538355
+    }
+  ]
+}

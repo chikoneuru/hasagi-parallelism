@@ -1,0 +1,76 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tare"
+version = "0.1.0"
+description = "HASAGI — Hybrid Parallelism Architecture for Energy-Aware Serverless AI Training"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{name = "Nguyen Pham Trung Hieu"}]
+license = {text = "Apache-2.0"}
+
+dependencies = [
+  "torch>=2.1",
+  "torchvision>=0.16",
+  "numpy>=1.24",
+  "pandas>=2.0",
+  "networkx>=3.0",
+  "pyyaml>=6.0",
+  "fastapi>=0.110",
+  "uvicorn[standard]>=0.27",
+  "httpx>=0.27",
+  "redis>=5.0",
+  "prometheus-client>=0.20",
+  "typer>=0.12",
+  "rich>=13.7",
+  "pydantic>=2.6",
+]
+
+[project.optional-dependencies]
+rl = ["stable-baselines3>=2.3", "gymnasium>=0.29"]
+energy-api = ["requests>=2.31"]
+gpu = ["nvidia-ml-py>=12.0"]
+docker = ["docker>=7.0"]
+dev = [
+  "pytest>=8.0",
+  "pytest-asyncio>=0.23",
+  "ruff>=0.4",
+  "mypy>=1.10",
+  "nvidia-ml-py>=12.0",
+]
+
+[project.scripts]
+tare-orchestrator = "tare.orchestrator.api:run"
+tare-worker = "tare.worker.main:run"
+tare-cli = "tare.cli:app"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["tare*"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "N"]
+ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+# Math/algorithm code follows literature naming (K stages from PipeDream, INF for math.inf).
+"tare/parallel/partitioner.py" = ["N803", "N806"]
+"tare/parallel/joint_partitioner.py" = ["N803", "N806"]
+"tare/parallel/stochastic_joint_partitioner.py" = ["N803", "N806"]
+# Math-symbol identifiers from the proofs are preserved verbatim in tests.
+"tests/test_joint_partitioner.py" = ["N802", "N803", "N806"]
+"tests/test_stochastic_joint_partitioner.py" = ["N802", "N803", "N806"]
+"tests/test_primal_dual_policy.py" = ["N803", "N806"]
+"experiments/exp_joint_vs_stacked.py" = ["N806"]
+"experiments/exp_online_deadline.py" = ["N806"]
+"experiments/exp_online_primal_dual_sweep.py" = ["N803", "N806"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra -q"

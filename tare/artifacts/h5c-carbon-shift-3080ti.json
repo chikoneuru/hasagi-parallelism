@@ -1,0 +1,116 @@
+{
+  "carbon_aware": {
+    "name": "carbon-aware (pause when intensity > threshold)",
+    "samples": [
+      {
+        "tick": 0,
+        "t_seconds": 30.35716199874878,
+        "intensity_g_per_kwh": 700.0,
+        "target_replicas": 0,
+        "observed_replicas": 3,
+        "incurred_cold_start": false
+      },
+      {
+        "tick": 1,
+        "t_seconds": 60.88141202926636,
+        "intensity_g_per_kwh": 691.4814565722671,
+        "target_replicas": 0,
+        "observed_replicas": 2,
+        "incurred_cold_start": false
+      },
+      {
+        "tick": 2,
+        "t_seconds": 86.9646463394165,
+        "intensity_g_per_kwh": 666.5063509461097,
+        "target_replicas": 0,
+        "observed_replicas": 0,
+        "incurred_cold_start": false
+      },
+      {
+        "tick": 3,
+        "t_seconds": 87.24363970756531,
+        "intensity_g_per_kwh": 626.776695296637,
+        "target_replicas": 0,
+        "observed_replicas": 0,
+        "incurred_cold_start": false
+      },
+      {
+        "tick": 4,
+        "t_seconds": 88.6059947013855,
+        "intensity_g_per_kwh": 575.0,
+        "target_replicas": 1,
+        "observed_replicas": 1,
+        "incurred_cold_start": true
+      },
+      {
+        "tick": 5,
+        "t_seconds": 88.88637328147888,
+        "intensity_g_per_kwh": 514.7047612756302,
+        "target_replicas": 1,
+        "observed_replicas": 1,
+        "incurred_cold_start": false
+      }
+    ],
+    "energy_kwh": 1.4701697222222223,
+    "emissions_g": 960.3578019060122,
+    "pause_minutes": 120.0,
+    "cold_starts": 1
+  },
+  "baseline": {
+    "name": "constant N=1 (no carbon shift)",
+    "samples": [
+      {
+        "tick": 0,
+        "t_seconds": 0.07640886306762695,
+        "intensity_g_per_kwh": 700.0,
+        "target_replicas": 1,
+        "observed_replicas": 1,
+        "incurred_cold_start": true
+      },
+      {
+        "tick": 1,
+        "t_seconds": 0.35347628593444824,
+        "intensity_g_per_kwh": 691.4814565722671,
+        "target_replicas": 1,
+        "observed_replicas": 1,
+        "incurred_cold_start": false
+      },
+      {
+        "tick": 2,
+        "t_seconds": 0.6316375732421875,
+        "intensity_g_per_kwh": 666.5063509461097,
+        "target_replicas": 1,
+        "observed_replicas": 1,
+        "incurred_cold_start": false
+      },
+      {
+        "tick": 3,
+        "t_seconds": 0.9107663631439209,
+        "intensity_g_per_kwh": 626.776695296637,
+        "target_replicas": 1,
+        "observed_replicas": 1,
+        "incurred_cold_start": false
+      },
+      {
+        "tick": 4,
+        "t_seconds": 1.1882708072662354,
+        "intensity_g_per_kwh": 575.0,
+        "target_replicas": 1,
+        "observed_replicas": 1,
+        "incurred_cold_start": false
+      },
+      {
+        "tick": 5,
+        "t_seconds": 1.4694700241088867,
+        "intensity_g_per_kwh": 514.7047612756302,
+        "target_replicas": 1,
+        "observed_replicas": 1,
+        "incurred_cold_start": false
+      }
+    ],
+    "energy_kwh": 1.2601697222222221,
+    "emissions_g": 792.7573510145908,
+    "pause_minutes": 0,
+    "cold_starts": 1
+  }
+}

@@ -1,0 +1,62 @@
+{
+ "price_usd_per_kwh": {
+  "DE": 0.285,
+  "NO": 0.109,
+  "FR": 0.185,
+  "GB": 0.445,
+  "US-CA": 0.2153,
+  "PL": 0.346,
+  "VN": 0.078,
+  "JP": 0.202,
+  "KR": 0.119,
+  "BR": 0.132,
+  "SG": 0.265,
+  "ZA": 0.103,
+  "AU": 0.24,
+  "IN": 0.123,
+  "CN": 0.108,
+  "AE": 0.11
+ },
+ "carbon_g_per_kwh_mean": {
+  "DE": 272.73214285714283,
+  "US-CA": 243.54761904761904,
+  "FR": 22.821428571428573,
+  "PL": 562.9672619047619,
+  "VN": 349.8184523809524,
+  "JP": 541.0416666666666,
+  "GB": 142.46428571428572,
+  "SG": 481.9434523809524,
+  "KR": 418.4375,
+  "BR": 120.2827380952381,
+  "NO": 26.029761904761905,
+  "ZA": 723.7827380952381,
+  "AU": 617.1994047619048,
+  "IN": 601.2529761904761,
+  "CN": 495.76190476190476,
+  "AE": 374.79761904761904
+ },
+ "spearman_rho": -0.06764705882352941,
+ "spearman_p": 0.8034203137966693,
+ "pearson_r": -0.09380723784581271,
+ "pearson_p": 0.7296775678047805,
+ "greenest_zone": "FR",
+ "cheapest_zone": "VN",
+ "carbon_min_eq_price_min": false,
+ "cleanest4": [
+  "BR",
+  "FR",
+  "GB",
+  "NO"
+ ],
+ "cheapest4": [
+  "CN",
+  "NO",
+  "VN",
+  "ZA"
+ ],
+ "overlap4": [
+  "NO"
+ ],
+ "price_source": "GlobalPetrolPrices.com business 2023-2026 avg (15 zones) + EIA Table 4 2024 CA industrial (US-CA); accessed 2026-06-01",
+ "carbon_source": "ElectricityMaps real hourly traces 2024-07-01..15 (LCA), per-zone mean"
+}

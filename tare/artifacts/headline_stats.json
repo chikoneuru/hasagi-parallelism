@@ -1,0 +1,444 @@
+{
+  "h5c": {
+    "name": "H5-C HISE-online vs GREEN-online (pp gap, per zone)",
+    "alpha": 0.05,
+    "inference_note": "Headline is the zone-clustered estimate; per-zone p uses exact sign-flip enumeration (floor 0.25 at n=3). Flat pool shown for transparency only.",
+    "rows": [
+      {
+        "zone": "NO",
+        "n_seeds": 3,
+        "mean_pp_gap": 2.2385375505736462,
+        "ci_lo": 0.8377642624631889,
+        "ci_hi": 3.0669329796937603,
+        "p_value": 0.25,
+        "holm_rejected": false,
+        "holm_alpha": 0.003125
+      },
+      {
+        "zone": "FR",
+        "n_seeds": 3,
+        "mean_pp_gap": 2.6775402783691953,
+        "ci_lo": 1.0324766514436448,
+        "ci_hi": 4.67806394789519,
+        "p_value": 0.25,
+        "holm_rejected": false,
+        "holm_alpha": 0.0033333333333333335
+      },
+      {
+        "zone": "BR",
+        "n_seeds": 3,
+        "mean_pp_gap": 2.006683776080069,
+        "ci_lo": -0.10135993353434714,
+        "ci_hi": 3.8808344213293893,
+        "p_value": 0.5,
+        "holm_rejected": false,
+        "holm_alpha": 0.016666666666666666
+      },
+      {
+        "zone": "GB",
+        "n_seeds": 3,
+        "mean_pp_gap": 1.679384214418344,
+        "ci_lo": 1.0075344828582757,
+        "ci_hi": 2.6929367240305453,
+        "p_value": 0.25,
+        "holm_rejected": false,
+        "holm_alpha": 0.0035714285714285718
+      },
+      {
+        "zone": "US-CA",
+        "n_seeds": 3,
+        "mean_pp_gap": 2.1571837810648162,
+        "ci_lo": 0.681041932657763,
+        "ci_hi": 4.687079492969453,
+        "p_value": 0.25,
+        "holm_rejected": false,
+        "holm_alpha": 0.0038461538461538464
+      },
+      {
+        "zone": "DE",
+        "n_seeds": 3,
+        "mean_pp_gap": 1.5834432310275066,
+        "ci_lo": -0.5304580107804568,
+        "ci_hi": 4.61280303231549,
+        "p_value": 0.5,
+        "holm_rejected": false,
+        "holm_alpha": 0.025
+      },
+      {
+        "zone": "AE",
+        "n_seeds": 3,
+        "mean_pp_gap": 1.4832607933958901,
+        "ci_lo": 1.1758117114451672,
+        "ci_hi": 1.6541257825564806,
+        "p_value": 0.25,
+        "holm_rejected": false,
+        "holm_alpha": 0.004166666666666667
+      },
+      {
+        "zone": "SG",
+        "n_seeds": 3,
+        "mean_pp_gap": 2.1321006761181422,
+        "ci_lo": 0.39240745518203024,
+        "ci_hi": 3.989206856357479,
+        "p_value": 0.25,
+        "holm_rejected": false,
+        "holm_alpha": 0.004545454545454546
+      },
+      {
+        "zone": "VN",
+        "n_seeds": 3,
+        "mean_pp_gap": 1.5720892471015588,
+        "ci_lo": -0.24615570413249088,
+        "ci_hi": 2.9179980738704216,
+        "p_value": 0.5,
+        "holm_rejected": false,
+        "holm_alpha": 0.05
+      },
+      {
+        "zone": "KR",
+        "n_seeds": 3,
+        "mean_pp_gap": 2.2025133125563094,
+        "ci_lo": 1.2972193855829808,
+        "ci_hi": 3.446536140655546,
+        "p_value": 0.25,
+        "holm_rejected": false,
+        "holm_alpha": 0.005
+      },
+      {
+        "zone": "JP",
+        "n_seeds": 3,
+        "mean_pp_gap": 1.9824472603550258,
+        "ci_lo": 1.3043649389370486,
+        "ci_hi": 2.7276744885691215,
+        "p_value": 0.25,
+        "holm_rejected": false,
+        "holm_alpha": 0.005555555555555556
+      },
+      {
+        "zone": "AU",
+        "n_seeds": 3,
+        "mean_pp_gap": 2.1177519679569365,
+        "ci_lo": 0.3708831611126371,
+        "ci_hi": 3.943015867279577,
+        "p_value": 0.25,
+        "holm_rejected": false,
+        "holm_alpha": 0.00625
+      },
+      {
+        "zone": "CN",
+        "n_seeds": 3,
+        "mean_pp_gap": 2.0611932028473117,
+        "ci_lo": 0.9380008687925567,
+        "ci_hi": 2.9233663323346217,
+        "p_value": 0.25,
+        "holm_rejected": false,
+        "holm_alpha": 0.0071428571428571435
+      },
+      {
+        "zone": "IN",
+        "n_seeds": 3,
+        "mean_pp_gap": 1.0586152781093563,
+        "ci_lo": 0.14891574370140503,
+        "ci_hi": 1.6643893585233727,
+        "p_value": 0.25,
+        "holm_rejected": false,
+        "holm_alpha": 0.008333333333333333
+      },
+      {
+        "zone": "PL",
+        "n_seeds": 3,
+        "mean_pp_gap": 2.7551017721737985,
+        "ci_lo": 1.655896223044687,
+        "ci_hi": 3.312354795698703,
+        "p_value": 0.25,
+        "holm_rejected": false,
+        "holm_alpha": 0.01
+      },
+      {
+        "zone": "ZA",
+        "n_seeds": 3,
+        "mean_pp_gap": 2.0925487729759857,
+        "ci_lo": 0.3369579860803968,
+        "ci_hi": 3.9445207548750636,
+        "p_value": 0.25,
+        "holm_rejected": false,
+        "holm_alpha": 0.0125
+      }
+    ],
+    "pooled_clustered": {
+      "n_clusters": 16,
+      "mean_pp_gap": 1.9875246946952432,
+      "ci_lo": 1.777843911229496,
+      "ci_hi": 2.1862384781662256,
+      "cluster_permutation_p": 3.0517578125e-05,
+      "one_sample_effect": 4.595310655067357
+    },
+    "naive_flat_pooled_NOT_headline": {
+      "n": 48,
+      "mean_pp_gap": 1.9875246946952434,
+      "ci_lo": 1.619392088875713,
+      "ci_hi": 2.3620897396429146
+    }
+  },
+  "scheduler_head_to_head": {
+    "name": "Scheduler head-to-head: HISE EB vs each baseline on energy",
+    "alpha": 0.05,
+    "rows": [
+      {
+        "baseline": "ElasticFlow",
+        "n_seeds": 10,
+        "delta_mean_kwh": -0.00170632923840133,
+        "delta_ci_lo": -0.006234711884890935,
+        "delta_ci_hi": 0.0021577080504765643,
+        "cohens_d": -0.06626647659231572,
+        "effect_size": "negligible",
+        "p_value": 0.484375,
+        "holm_rejected": false,
+        "holm_alpha": 0.025
+      },
+      {
+        "baseline": "Optimus",
+        "n_seeds": 10,
+        "delta_mean_kwh": -0.0136459929028205,
+        "delta_ci_lo": -0.021434362498547757,
+        "delta_ci_hi": -0.007375825865776987,
+        "cohens_d": -0.5367481137072778,
+        "effect_size": "medium",
+        "p_value": 0.001953125,
+        "holm_rejected": true,
+        "holm_alpha": 0.01
+      },
+      {
+        "baseline": "Pollux",
+        "n_seeds": 10,
+        "delta_mean_kwh": -0.0007991225966140741,
+        "delta_ci_lo": -0.006516847943687612,
+        "delta_ci_hi": 0.004845030860702375,
+        "cohens_d": -0.030772023419316015,
+        "effect_size": "negligible",
+        "p_value": 0.822265625,
+        "holm_rejected": false,
+        "holm_alpha": 0.05
+      },
+      {
+        "baseline": "PowerFlow",
+        "n_seeds": 10,
+        "delta_mean_kwh": 0.008455355004653605,
+        "delta_ci_lo": 0.0034529817580357487,
+        "delta_ci_hi": 0.013533558674313278,
+        "cohens_d": 0.3264096858112326,
+        "effect_size": "small",
+        "p_value": 0.015625,
+        "holm_rejected": false,
+        "holm_alpha": 0.0125
+      },
+      {
+        "baseline": "Zeus(\u03b7=0.5)",
+        "n_seeds": 10,
+        "delta_mean_kwh": -0.006974806175074154,
+        "delta_ci_lo": -0.014009106826021878,
+        "delta_ci_hi": -0.0008736582309090996,
+        "cohens_d": -0.2883539293594159,
+        "effect_size": "small",
+        "p_value": 0.0703125,
+        "holm_rejected": false,
+        "holm_alpha": 0.016666666666666666
+      }
+    ]
+  },
+  "tight_budget": {
+    "name": "Tight-budget sweep: HISE EB vs PowerFlow on energy per multiplier",
+    "alpha": 0.05,
+    "rows": [
+      {
+        "multiplier": 0.5,
+        "n_seeds": 10,
+        "delta_energy_mean_kwh": -0.05569554173193936,
+        "delta_energy_ci_lo": -0.06864054366331797,
+        "delta_energy_ci_hi": -0.04477029260081408,
+        "delta_met_mean": -1.3,
+        "delta_met_ci_lo": -1.6,
+        "delta_met_ci_hi": -1,
+        "cohens_d_energy": -2.26665888201184,
+        "effect_size": "very large",
+        "p_value_energy": 0.001953125,
+        "holm_rejected": true,
+        "holm_alpha": 0.0071428571428571435
+      },
+      {
+        "multiplier": 0.7,
+        "n_seeds": 10,
+        "delta_energy_mean_kwh": -0.0429213337716984,
+        "delta_energy_ci_lo": -0.05685839898225151,
+        "delta_energy_ci_hi": -0.031259698223258026,
+        "delta_met_mean": -0.8,
+        "delta_met_ci_lo": -1,
+        "delta_met_ci_hi": -0.5,
+        "cohens_d_energy": -1.9954668381628609,
+        "effect_size": "very large",
+        "p_value_energy": 0.001953125,
+        "holm_rejected": true,
+        "holm_alpha": 0.008333333333333333
+      },
+      {
+        "multiplier": 0.9,
+        "n_seeds": 10,
+        "delta_energy_mean_kwh": -0.03496636025836675,
+        "delta_energy_ci_lo": -0.05047474339130749,
+        "delta_energy_ci_hi": -0.022339406544061708,
+        "delta_met_mean": -0.6,
+        "delta_met_ci_lo": -0.9,
+        "delta_met_ci_hi": -0.3,
+        "cohens_d_energy": -1.611064492362756,
+        "effect_size": "very large",
+        "p_value_energy": 0.001953125,
+        "holm_rejected": true,
+        "holm_alpha": 0.01
+      },
+      {
+        "multiplier": 1.0,
+        "n_seeds": 10,
+        "delta_energy_mean_kwh": -0.026360609483979162,
+        "delta_energy_ci_lo": -0.04485917757175077,
+        "delta_energy_ci_hi": -0.010990479523084469,
+        "delta_met_mean": -0.3,
+        "delta_met_ci_lo": -0.6,
+        "delta_met_ci_hi": 0,
+        "cohens_d_energy": -1.1850413892526481,
+        "effect_size": "large",
+        "p_value_energy": 0.009765625,
+        "holm_rejected": true,
+        "holm_alpha": 0.0125
+      },
+      {
+        "multiplier": 1.2,
+        "n_seeds": 10,
+        "delta_energy_mean_kwh": -0.013290699770425933,
+        "delta_energy_ci_lo": -0.023724545531764424,
+        "delta_energy_ci_hi": -0.003320967493685685,
+        "delta_met_mean": 0,
+        "delta_met_ci_lo": -0.3,
+        "delta_met_ci_hi": 0.3,
+        "cohens_d_energy": -0.4299687868138707,
+        "effect_size": "small",
+        "p_value_energy": 0.04296875,
+        "holm_rejected": false,
+        "holm_alpha": 0.025
+      },
+      {
+        "multiplier": 1.5,
+        "n_seeds": 10,
+        "delta_energy_mean_kwh": -0.005177290983472943,
+        "delta_energy_ci_lo": -0.017737053764978302,
+        "delta_energy_ci_hi": 0.005856325518487094,
+        "delta_met_mean": 0.3,
+        "delta_met_ci_lo": -0.1,
+        "delta_met_ci_hi": 0.7,
+        "cohens_d_energy": -0.17270732926909865,
+        "effect_size": "negligible",
+        "p_value_energy": 0.435546875,
+        "holm_rejected": false,
+        "holm_alpha": 0.05
+      },
+      {
+        "multiplier": Infinity,
+        "n_seeds": 10,
+        "delta_energy_mean_kwh": 0.008455355004653605,
+        "delta_energy_ci_lo": 0.0035835370888184213,
+        "delta_energy_ci_hi": 0.013415698173402204,
+        "delta_met_mean": 0.6,
+        "delta_met_ci_lo": 0.3,
+        "delta_met_ci_hi": 0.9,
+        "cohens_d_energy": 0.3264096858112326,
+        "effect_size": "small",
+        "p_value_energy": 0.015625,
+        "holm_rejected": true,
+        "holm_alpha": 0.016666666666666666
+      }
+    ]
+  },
+  "h2_endtoend": {
+    "name": "H2 end-to-end: elasticity condition \u2212 static, per metric",
+    "alpha": 0.05,
+    "rows": [
+      {
+        "condition": "combined",
+        "metric": "top1",
+        "n_seeds": 3,
+        "delta_mean": 0.013333333333335418,
+        "delta_ci_lo": -0.10999999999999943,
+        "delta_ci_hi": 0.14000000000000057,
+        "cohens_d": 0.05728037823505149,
+        "effect_size": "negligible",
+        "p_value": 0.75,
+        "holm_rejected": false,
+        "holm_alpha": 0.0125
+      },
+      {
+        "condition": "combined",
+        "metric": "energy_kwh",
+        "n_seeds": 3,
+        "delta_mean": -0.0018412674245017167,
+        "delta_ci_lo": -0.0019647016423828614,
+        "delta_ci_hi": -0.0016914203483679273,
+        "cohens_d": -19.13471742944386,
+        "effect_size": "very large",
+        "p_value": 0.25,
+        "holm_rejected": false,
+        "holm_alpha": 0.008333333333333333
+      },
+      {
+        "condition": "dvfs",
+        "metric": "top1",
+        "n_seeds": 3,
+        "delta_mean": -0.10000000000000853,
+        "delta_ci_lo": -0.30000000000001137,
+        "delta_ci_hi": 0.04999999999999716,
+        "cohens_d": -0.3425273568971347,
+        "effect_size": "small",
+        "p_value": 0.75,
+        "holm_rejected": false,
+        "holm_alpha": 0.016666666666666666
+      },
+      {
+        "condition": "dvfs",
+        "metric": "energy_kwh",
+        "n_seeds": 3,
+        "delta_mean": -0.0018498482626586009,
+        "delta_ci_lo": -0.0019630492900469115,
+        "delta_ci_hi": -0.0017086048616988952,
+        "cohens_d": -19.21789859913324,
+        "effect_size": "very large",
+        "p_value": 0.25,
+        "holm_rejected": false,
+        "holm_alpha": 0.01
+      },
+      {
+        "condition": "preempt",
+        "metric": "top1",
+        "n_seeds": 3,
+        "delta_mean": -0.14666666666667064,
+        "delta_ci_lo": -0.5700000000000074,
+        "delta_ci_hi": 0.18999999999999773,
+        "cohens_d": -0.3709416741988461,
+        "effect_size": "small",
+        "p_value": 0.75,
+        "holm_rejected": false,
+        "holm_alpha": 0.025
+      },
+      {
+        "condition": "preempt",
+        "metric": "energy_kwh",
+        "n_seeds": 3,
+        "delta_mean": 5.20568316658016e-05,
+        "delta_ci_lo": -7.117455965050326e-05,
+        "delta_ci_hi": 0.00019427512533363306,
+        "cohens_d": 0.5396811669490272,
+        "effect_size": "medium",
+        "p_value": 0.75,
+        "holm_rejected": false,
+        "holm_alpha": 0.05
+      }
+    ]
+  }
+}

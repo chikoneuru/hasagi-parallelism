@@ -1,0 +1,87 @@
+{
+  "source_artifacts": [
+    "realtrace_pareto.json",
+    "throttle_pareto_clean.json",
+    "marginal_intensity_sensitivity.json"
+  ],
+  "oracle_signal": {
+    "n_zones": 16,
+    "mean_pp": 1.5551649057811994,
+    "jackknife_loo_range_pp": [
+      1.3833042062561622,
+      1.7096289353995522
+    ],
+    "cluster_t_95ci_pp": [
+      0.8869188251851993,
+      2.2234109863771994
+    ],
+    "paper_claims": {
+      "jackknife": [
+        1.38,
+        1.71
+      ],
+      "cluster_t": [
+        0.89,
+        2.22
+      ]
+    },
+    "check_jackknife_lo": "ok",
+    "check_jackknife_hi": "ok",
+    "check_cluster_t_lo": "ok",
+    "check_cluster_t_hi": "ok"
+  },
+  "throttle_decomposition": {
+    "throttle_total_pct": 15.68058903501885,
+    "efficiency_pct_carbon_blind": 16.012137236298642,
+    "carbon_awareness_pct": -0.33154820127979256,
+    "paper_claims": {
+      "efficiency": 16.01,
+      "awareness": -0.3,
+      "s_theta_pct": 15.7
+    },
+    "check_efficiency": "ok",
+    "check_awareness": "ok",
+    "check_s_theta": "ok"
+  },
+  "swing_amplification": {
+    "method": "parametric-shape-distortion-sensitivity-bound",
+    "oracle_envelope": {
+      "oracle_signal_pp": {
+        "min_mean": 1.5551649057811994,
+        "max_mean": 3.8950463990393915,
+        "argmin_k": 1.0,
+        "argmax_k": 2.5
+      },
+      "deployable_signal_pp": {
+        "min_mean": 0.7530318136424827,
+        "max_mean": 3.1994677279563644,
+        "argmin_k": 1.0,
+        "argmax_k": 2.5
+      },
+      "fair_gap_pp": {
+        "min_mean": -7.879477372980774,
+        "max_mean": 0.5662230070553546,
+        "argmin_k": 2.5,
+        "argmax_k": 1.0
+      }
+    },
+    "paper_claims": {
+      "k1_oracle_pp": 1.56,
+      "k2p5_oracle_pp": 3.9
+    },
+    "note": "k=1 is the identity (must match the published +1.56pp); the envelope upper end at k=2.5 is the +3.90pp bound."
+  },
+  "break_even_derivation": {
+    "s_theta": 0.1568058903501885,
+    "e_star_absent_migration": 0.8431941096498115,
+    "migration_term": 0.09319410964981145,
+    "e_star_with_migration": 0.75,
+    "paper_claims": {
+      "e_star_absent_migration": 0.84,
+      "migration": 0.1,
+      "e_star": 0.75
+    },
+    "check_no_migration": "ok",
+    "check_migration": "ok"
+  }
+}

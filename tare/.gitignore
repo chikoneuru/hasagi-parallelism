@@ -1,0 +1,20 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+build/
+dist/
+.coverage
+htmlcov/
+*.log
+data_cache/
+checkpoints/
+# Track only the top-level aggregate result JSONs (the values every figure and
+# number reads); keep per-run shards, logs, and binary checkpoints out.
+artifacts/*
+!artifacts/*.json
+.DS_Store
+.env

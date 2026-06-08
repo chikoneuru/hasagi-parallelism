@@ -10,6 +10,11 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    # After the 2026-06-09 restructure the package + tests live in src/tare/ (the git worktree root is
+    # src/, so the workspace contains tare/, hasagi/, green/). Run all steps inside tare/.
+    defaults:
+      run:
+        working-directory: tare
     steps:
       - uses: actions/checkout@v6
 
@@ -18,7 +23,7 @@ jobs:
         with:
           python-version: "3.12"
           cache: pip
-          cache-dependency-path: pyproject.toml
+          cache-dependency-path: tare/pyproject.toml
 
       - name: Install dependencies (CPU torch)
         run: |
@@ -26,7 +31,7 @@ jobs:
           pip install --extra-index-url https://download.pytorch.org/whl/cpu -e .[dev]
 
       - name: Lint (ruff)
-        run: ruff check hasagi tests experiments
+        run: ruff check tare tests experiments
 
       - name: Unit tests (pytest)
         run: pytest -ra

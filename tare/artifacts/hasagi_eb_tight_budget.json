@@ -1,0 +1,2120 @@
+{
+  "args": {
+    "seeds": 10,
+    "n_jobs": 3,
+    "available_gpus": 10,
+    "asymmetric": true,
+    "multipliers": [
+      0.5,
+      0.7,
+      0.9,
+      1.0,
+      1.2,
+      1.5,
+      Infinity
+    ],
+    "out": "artifacts/hise_eb_tight_budget.json"
+  },
+  "trials": [
+    {
+      "seed": 0,
+      "budget_multiplier": 0.5,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.09731487346055855,
+      "max_jct_s": 205.1799354024071,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 0,
+      "budget_multiplier": 0.5,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.09731487346055855,
+      "max_jct_s": 205.1799354024071,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 0,
+      "budget_multiplier": 0.5,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.06302498525739389,
+      "max_jct_s": 95.80430217623204,
+      "deadlines_met": 2,
+      "admitted_count": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 0,
+      "budget_multiplier": 0.7,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.09731487346055855,
+      "max_jct_s": 205.1799354024071,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 0,
+      "budget_multiplier": 0.7,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.09731487346055855,
+      "max_jct_s": 205.1799354024071,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 0,
+      "budget_multiplier": 0.7,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.06302498525739389,
+      "max_jct_s": 95.80430217623204,
+      "deadlines_met": 2,
+      "admitted_count": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 0,
+      "budget_multiplier": 0.9,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.09731487346055855,
+      "max_jct_s": 205.1799354024071,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 0,
+      "budget_multiplier": 0.9,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.09731487346055855,
+      "max_jct_s": 205.1799354024071,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 0,
+      "budget_multiplier": 0.9,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.06302498525739389,
+      "max_jct_s": 95.80430217623204,
+      "deadlines_met": 2,
+      "admitted_count": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 0,
+      "budget_multiplier": 1.0,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.09731487346055855,
+      "max_jct_s": 205.1799354024071,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 0,
+      "budget_multiplier": 1.0,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.09731487346055855,
+      "max_jct_s": 205.1799354024071,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 0,
+      "budget_multiplier": 1.0,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.06302498525739389,
+      "max_jct_s": 95.80430217623204,
+      "deadlines_met": 2,
+      "admitted_count": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 0,
+      "budget_multiplier": 1.2,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.09731487346055855,
+      "max_jct_s": 205.1799354024071,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 0,
+      "budget_multiplier": 1.2,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.09731487346055855,
+      "max_jct_s": 205.1799354024071,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 0,
+      "budget_multiplier": 1.2,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.09356450193194135,
+      "max_jct_s": 126.89805057324003,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 0,
+      "budget_multiplier": 1.5,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.09731487346055855,
+      "max_jct_s": 205.1799354024071,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 0,
+      "budget_multiplier": 1.5,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.09731487346055855,
+      "max_jct_s": 205.1799354024071,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 0,
+      "budget_multiplier": 1.5,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.09356450193194135,
+      "max_jct_s": 126.89805057324003,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 0,
+      "budget_multiplier": Infinity,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.09731487346055855,
+      "max_jct_s": 205.1799354024071,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 0,
+      "budget_multiplier": Infinity,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.09731487346055855,
+      "max_jct_s": 205.1799354024071,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 0,
+      "budget_multiplier": Infinity,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.09356450193194135,
+      "max_jct_s": 126.89805057324003,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 1,
+      "budget_multiplier": 0.5,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.06854116642965999,
+      "max_jct_s": 244.54132147278327,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 1,
+      "budget_multiplier": 0.5,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.0907549943304762,
+      "max_jct_s": 244.54132147278327,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 1,
+      "budget_multiplier": 0.5,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.030050494593689095,
+      "max_jct_s": 40.13450810257708,
+      "deadlines_met": 1,
+      "admitted_count": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 1,
+      "budget_multiplier": 0.7,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.06854116642965999,
+      "max_jct_s": 244.54132147278327,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 1,
+      "budget_multiplier": 0.7,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.0907549943304762,
+      "max_jct_s": 244.54132147278327,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 1,
+      "budget_multiplier": 0.7,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.05933061363360679,
+      "max_jct_s": 97.35892092322176,
+      "deadlines_met": 2,
+      "admitted_count": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 1,
+      "budget_multiplier": 0.9,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.06854116642965999,
+      "max_jct_s": 244.54132147278327,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 1,
+      "budget_multiplier": 0.9,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.0907549943304762,
+      "max_jct_s": 244.54132147278327,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 1,
+      "budget_multiplier": 0.9,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.05933061363360679,
+      "max_jct_s": 97.35892092322176,
+      "deadlines_met": 2,
+      "admitted_count": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 1,
+      "budget_multiplier": 1.0,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.06854116642965999,
+      "max_jct_s": 244.54132147278327,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 1,
+      "budget_multiplier": 1.0,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.0907549943304762,
+      "max_jct_s": 244.54132147278327,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 1,
+      "budget_multiplier": 1.0,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.0798079601300775,
+      "max_jct_s": 244.54132147278327,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 1,
+      "budget_multiplier": 1.2,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.06854116642965999,
+      "max_jct_s": 244.54132147278327,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 1,
+      "budget_multiplier": 1.2,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.0907549943304762,
+      "max_jct_s": 244.54132147278327,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 1,
+      "budget_multiplier": 1.2,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.0798079601300775,
+      "max_jct_s": 244.54132147278327,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 1,
+      "budget_multiplier": 1.5,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.06854116642965999,
+      "max_jct_s": 244.54132147278327,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 1,
+      "budget_multiplier": 1.5,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.0907549943304762,
+      "max_jct_s": 244.54132147278327,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 1,
+      "budget_multiplier": 1.5,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.0798079601300775,
+      "max_jct_s": 244.54132147278327,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 1,
+      "budget_multiplier": Infinity,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.06854116642965999,
+      "max_jct_s": 244.54132147278327,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 1,
+      "budget_multiplier": Infinity,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.0907549943304762,
+      "max_jct_s": 244.54132147278327,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 1,
+      "budget_multiplier": Infinity,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.0798079601300775,
+      "max_jct_s": 244.54132147278327,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 2,
+      "budget_multiplier": 0.5,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.08807963220027198,
+      "max_jct_s": 297.3984443582141,
+      "deadlines_met": 2,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 2,
+      "budget_multiplier": 0.5,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.09457429614216303,
+      "max_jct_s": 191.52192746272277,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 2,
+      "budget_multiplier": 0.5,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.03596698882085994,
+      "max_jct_s": 39.94500484469457,
+      "deadlines_met": 1,
+      "admitted_count": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 2,
+      "budget_multiplier": 0.7,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.08807963220027198,
+      "max_jct_s": 297.3984443582141,
+      "deadlines_met": 2,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 2,
+      "budget_multiplier": 0.7,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.09457429614216303,
+      "max_jct_s": 191.52192746272277,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 2,
+      "budget_multiplier": 0.7,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.060056715612294594,
+      "max_jct_s": 57.30063468583006,
+      "deadlines_met": 2,
+      "admitted_count": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 2,
+      "budget_multiplier": 0.9,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.08807963220027198,
+      "max_jct_s": 297.3984443582141,
+      "deadlines_met": 2,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 2,
+      "budget_multiplier": 0.9,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.09457429614216303,
+      "max_jct_s": 191.52192746272277,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 2,
+      "budget_multiplier": 0.9,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.060056715612294594,
+      "max_jct_s": 57.30063468583006,
+      "deadlines_met": 2,
+      "admitted_count": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 2,
+      "budget_multiplier": 1.0,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.08807963220027198,
+      "max_jct_s": 297.3984443582141,
+      "deadlines_met": 2,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 2,
+      "budget_multiplier": 1.0,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.09457429614216303,
+      "max_jct_s": 191.52192746272277,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 2,
+      "budget_multiplier": 1.0,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.060056715612294594,
+      "max_jct_s": 57.30063468583006,
+      "deadlines_met": 2,
+      "admitted_count": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 2,
+      "budget_multiplier": 1.2,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.08807963220027198,
+      "max_jct_s": 297.3984443582141,
+      "deadlines_met": 2,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 2,
+      "budget_multiplier": 1.2,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.09457429614216303,
+      "max_jct_s": 191.52192746272277,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 2,
+      "budget_multiplier": 1.2,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.060056715612294594,
+      "max_jct_s": 57.30063468583006,
+      "deadlines_met": 2,
+      "admitted_count": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 2,
+      "budget_multiplier": 1.5,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.08807963220027198,
+      "max_jct_s": 297.3984443582141,
+      "deadlines_met": 2,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 2,
+      "budget_multiplier": 1.5,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.09457429614216303,
+      "max_jct_s": 191.52192746272277,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 2,
+      "budget_multiplier": 1.5,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.09754638491057364,
+      "max_jct_s": 148.05407329294206,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 2,
+      "budget_multiplier": Infinity,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.08807963220027198,
+      "max_jct_s": 297.3984443582141,
+      "deadlines_met": 2,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 2,
+      "budget_multiplier": Infinity,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.09457429614216303,
+      "max_jct_s": 191.52192746272277,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 2,
+      "budget_multiplier": Infinity,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.09754638491057364,
+      "max_jct_s": 148.05407329294206,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 3,
+      "budget_multiplier": 0.5,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.08964755108168704,
+      "max_jct_s": 364.97544752494804,
+      "deadlines_met": 2,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 3,
+      "budget_multiplier": 0.5,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.10177876462310899,
+      "max_jct_s": 233.36910244520212,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 3,
+      "budget_multiplier": 0.5,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.02967050795213485,
+      "max_jct_s": 22.223359582548277,
+      "deadlines_met": 1,
+      "admitted_count": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 3,
+      "budget_multiplier": 0.7,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.08964755108168704,
+      "max_jct_s": 364.97544752494804,
+      "deadlines_met": 2,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 3,
+      "budget_multiplier": 0.7,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.10177876462310899,
+      "max_jct_s": 233.36910244520212,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 3,
+      "budget_multiplier": 0.7,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.02967050795213485,
+      "max_jct_s": 22.223359582548277,
+      "deadlines_met": 1,
+      "admitted_count": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 3,
+      "budget_multiplier": 0.9,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.08964755108168704,
+      "max_jct_s": 364.97544752494804,
+      "deadlines_met": 2,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 3,
+      "budget_multiplier": 0.9,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.10177876462310899,
+      "max_jct_s": 233.36910244520212,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 3,
+      "budget_multiplier": 0.9,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.06767495211695214,
+      "max_jct_s": 145.11115884902924,
+      "deadlines_met": 2,
+      "admitted_count": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 3,
+      "budget_multiplier": 1.0,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.08964755108168704,
+      "max_jct_s": 364.97544752494804,
+      "deadlines_met": 2,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 3,
+      "budget_multiplier": 1.0,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.10177876462310899,
+      "max_jct_s": 233.36910244520212,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 3,
+      "budget_multiplier": 1.0,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.06767495211695214,
+      "max_jct_s": 145.11115884902924,
+      "deadlines_met": 2,
+      "admitted_count": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 3,
+      "budget_multiplier": 1.2,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.08964755108168704,
+      "max_jct_s": 364.97544752494804,
+      "deadlines_met": 2,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 3,
+      "budget_multiplier": 1.2,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.10177876462310899,
+      "max_jct_s": 233.36910244520212,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 3,
+      "budget_multiplier": 1.2,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.06767495211695214,
+      "max_jct_s": 145.11115884902924,
+      "deadlines_met": 2,
+      "admitted_count": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 3,
+      "budget_multiplier": 1.5,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.08964755108168704,
+      "max_jct_s": 364.97544752494804,
+      "deadlines_met": 2,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 3,
+      "budget_multiplier": 1.5,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.10177876462310899,
+      "max_jct_s": 233.36910244520212,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 3,
+      "budget_multiplier": 1.5,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.06767495211695214,
+      "max_jct_s": 145.11115884902924,
+      "deadlines_met": 2,
+      "admitted_count": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 3,
+      "budget_multiplier": Infinity,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.08964755108168704,
+      "max_jct_s": 364.97544752494804,
+      "deadlines_met": 2,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 3,
+      "budget_multiplier": Infinity,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.10177876462310899,
+      "max_jct_s": 233.36910244520212,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 3,
+      "budget_multiplier": Infinity,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.10177876462310899,
+      "max_jct_s": 233.36910244520212,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 4,
+      "budget_multiplier": 0.5,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.0789176532691159,
+      "max_jct_s": 228.80941489953014,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 4,
+      "budget_multiplier": 0.5,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.0789176532691159,
+      "max_jct_s": 228.80941489953014,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 4,
+      "budget_multiplier": 0.5,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.04178950743782366,
+      "max_jct_s": 88.22067109556986,
+      "deadlines_met": 2,
+      "admitted_count": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 4,
+      "budget_multiplier": 0.7,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.0789176532691159,
+      "max_jct_s": 228.80941489953014,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 4,
+      "budget_multiplier": 0.7,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.0789176532691159,
+      "max_jct_s": 228.80941489953014,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 4,
+      "budget_multiplier": 0.7,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.04178950743782366,
+      "max_jct_s": 88.22067109556986,
+      "deadlines_met": 2,
+      "admitted_count": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 4,
+      "budget_multiplier": 0.9,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.0789176532691159,
+      "max_jct_s": 228.80941489953014,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 4,
+      "budget_multiplier": 0.9,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.0789176532691159,
+      "max_jct_s": 228.80941489953014,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 4,
+      "budget_multiplier": 0.9,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.04178950743782366,
+      "max_jct_s": 88.22067109556986,
+      "deadlines_met": 2,
+      "admitted_count": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 4,
+      "budget_multiplier": 1.0,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.0789176532691159,
+      "max_jct_s": 228.80941489953014,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 4,
+      "budget_multiplier": 1.0,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.0789176532691159,
+      "max_jct_s": 228.80941489953014,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 4,
+      "budget_multiplier": 1.0,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.04178950743782366,
+      "max_jct_s": 88.22067109556986,
+      "deadlines_met": 2,
+      "admitted_count": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 4,
+      "budget_multiplier": 1.2,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.0789176532691159,
+      "max_jct_s": 228.80941489953014,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 4,
+      "budget_multiplier": 1.2,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.0789176532691159,
+      "max_jct_s": 228.80941489953014,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 4,
+      "budget_multiplier": 1.2,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.04178950743782366,
+      "max_jct_s": 88.22067109556986,
+      "deadlines_met": 2,
+      "admitted_count": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 4,
+      "budget_multiplier": 1.5,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.0789176532691159,
+      "max_jct_s": 228.80941489953014,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 4,
+      "budget_multiplier": 1.5,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.0789176532691159,
+      "max_jct_s": 228.80941489953014,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 4,
+      "budget_multiplier": 1.5,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.04178950743782366,
+      "max_jct_s": 88.22067109556986,
+      "deadlines_met": 2,
+      "admitted_count": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 4,
+      "budget_multiplier": Infinity,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.0789176532691159,
+      "max_jct_s": 228.80941489953014,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 4,
+      "budget_multiplier": Infinity,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.0789176532691159,
+      "max_jct_s": 228.80941489953014,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 4,
+      "budget_multiplier": Infinity,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.08161181830236708,
+      "max_jct_s": 228.80941489953014,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 5,
+      "budget_multiplier": 0.5,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.10366204264073141,
+      "max_jct_s": 130.45665133110236,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 5,
+      "budget_multiplier": 0.5,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.11771047091864076,
+      "max_jct_s": 216.10382871194838,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 5,
+      "budget_multiplier": 0.5,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.06166912426627418,
+      "max_jct_s": 75.96207587430358,
+      "deadlines_met": 2,
+      "admitted_count": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 5,
+      "budget_multiplier": 0.7,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.10366204264073141,
+      "max_jct_s": 130.45665133110236,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 5,
+      "budget_multiplier": 0.7,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.11771047091864076,
+      "max_jct_s": 216.10382871194838,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 5,
+      "budget_multiplier": 0.7,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.06166912426627418,
+      "max_jct_s": 75.96207587430358,
+      "deadlines_met": 2,
+      "admitted_count": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 5,
+      "budget_multiplier": 0.9,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.10366204264073141,
+      "max_jct_s": 130.45665133110236,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 5,
+      "budget_multiplier": 0.9,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.11771047091864076,
+      "max_jct_s": 216.10382871194838,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 5,
+      "budget_multiplier": 0.9,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.06166912426627418,
+      "max_jct_s": 75.96207587430358,
+      "deadlines_met": 2,
+      "admitted_count": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 5,
+      "budget_multiplier": 1.0,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.10366204264073141,
+      "max_jct_s": 130.45665133110236,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 5,
+      "budget_multiplier": 1.0,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.11771047091864076,
+      "max_jct_s": 216.10382871194838,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 5,
+      "budget_multiplier": 1.0,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.10083653695587273,
+      "max_jct_s": 115.76097500198829,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 5,
+      "budget_multiplier": 1.2,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.10366204264073141,
+      "max_jct_s": 130.45665133110236,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 5,
+      "budget_multiplier": 1.2,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.11771047091864076,
+      "max_jct_s": 216.10382871194838,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 5,
+      "budget_multiplier": 1.2,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.10083653695587273,
+      "max_jct_s": 115.76097500198829,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 5,
+      "budget_multiplier": 1.5,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.10366204264073141,
+      "max_jct_s": 130.45665133110236,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 5,
+      "budget_multiplier": 1.5,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.11771047091864076,
+      "max_jct_s": 216.10382871194838,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 5,
+      "budget_multiplier": 1.5,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.10083653695587273,
+      "max_jct_s": 115.76097500198829,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 5,
+      "budget_multiplier": Infinity,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.10366204264073141,
+      "max_jct_s": 130.45665133110236,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 5,
+      "budget_multiplier": Infinity,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.11771047091864076,
+      "max_jct_s": 216.10382871194838,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 5,
+      "budget_multiplier": Infinity,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.10083653695587273,
+      "max_jct_s": 115.76097500198829,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 6,
+      "budget_multiplier": 0.5,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.09245648988977889,
+      "max_jct_s": 395.09417741125185,
+      "deadlines_met": 2,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 6,
+      "budget_multiplier": 0.5,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.11567514853319644,
+      "max_jct_s": 169.28844445013226,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 6,
+      "budget_multiplier": 0.5,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.03705926805547542,
+      "max_jct_s": 27.72815294165833,
+      "deadlines_met": 1,
+      "admitted_count": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 6,
+      "budget_multiplier": 0.7,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.09245648988977889,
+      "max_jct_s": 395.09417741125185,
+      "deadlines_met": 2,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 6,
+      "budget_multiplier": 0.7,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.11567514853319644,
+      "max_jct_s": 169.28844445013226,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 6,
+      "budget_multiplier": 0.7,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.05431274894196062,
+      "max_jct_s": 50.584225312134784,
+      "deadlines_met": 2,
+      "admitted_count": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 6,
+      "budget_multiplier": 0.9,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.09245648988977889,
+      "max_jct_s": 395.09417741125185,
+      "deadlines_met": 2,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 6,
+      "budget_multiplier": 0.9,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.11567514853319644,
+      "max_jct_s": 169.28844445013226,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 6,
+      "budget_multiplier": 0.9,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.05431274894196062,
+      "max_jct_s": 50.584225312134784,
+      "deadlines_met": 2,
+      "admitted_count": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 6,
+      "budget_multiplier": 1.0,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.09245648988977889,
+      "max_jct_s": 395.09417741125185,
+      "deadlines_met": 2,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 6,
+      "budget_multiplier": 1.0,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.11567514853319644,
+      "max_jct_s": 169.28844445013226,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 6,
+      "budget_multiplier": 1.0,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.05431274894196062,
+      "max_jct_s": 50.584225312134784,
+      "deadlines_met": 2,
+      "admitted_count": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 6,
+      "budget_multiplier": 1.2,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.09245648988977889,
+      "max_jct_s": 395.09417741125185,
+      "deadlines_met": 2,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 6,
+      "budget_multiplier": 1.2,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.11567514853319644,
+      "max_jct_s": 169.28844445013226,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 6,
+      "budget_multiplier": 1.2,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.05431274894196062,
+      "max_jct_s": 50.584225312134784,
+      "deadlines_met": 2,
+      "admitted_count": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 6,
+      "budget_multiplier": 1.5,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.09245648988977889,
+      "max_jct_s": 395.09417741125185,
+      "deadlines_met": 2,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 6,
+      "budget_multiplier": 1.5,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.11567514853319644,
+      "max_jct_s": 169.28844445013226,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 6,
+      "budget_multiplier": 1.5,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.05431274894196062,
+      "max_jct_s": 50.584225312134784,
+      "deadlines_met": 2,
+      "admitted_count": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 6,
+      "budget_multiplier": Infinity,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.09245648988977889,
+      "max_jct_s": 395.09417741125185,
+      "deadlines_met": 2,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 6,
+      "budget_multiplier": Infinity,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.11567514853319644,
+      "max_jct_s": 169.28844445013226,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 6,
+      "budget_multiplier": Infinity,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.11671308545252584,
+      "max_jct_s": 169.28844445013226,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 7,
+      "budget_multiplier": 0.5,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.05797864246860239,
+      "max_jct_s": 302.85877977903846,
+      "deadlines_met": 2,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 7,
+      "budget_multiplier": 0.5,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.06703976993532183,
+      "max_jct_s": 201.50516294465444,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 7,
+      "budget_multiplier": 0.5,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.0,
+      "max_jct_s": 0.0,
+      "deadlines_met": 0,
+      "admitted_count": 0,
+      "n_jobs": 3
+    },
+    {
+      "seed": 7,
+      "budget_multiplier": 0.7,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.05797864246860239,
+      "max_jct_s": 302.85877977903846,
+      "deadlines_met": 2,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 7,
+      "budget_multiplier": 0.7,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.06703976993532183,
+      "max_jct_s": 201.50516294465444,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 7,
+      "budget_multiplier": 0.7,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.019487561947163116,
+      "max_jct_s": 30.935949956101563,
+      "deadlines_met": 1,
+      "admitted_count": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 7,
+      "budget_multiplier": 0.9,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.05797864246860239,
+      "max_jct_s": 302.85877977903846,
+      "deadlines_met": 2,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 7,
+      "budget_multiplier": 0.9,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.06703976993532183,
+      "max_jct_s": 201.50516294465444,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 7,
+      "budget_multiplier": 0.9,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.019487561947163116,
+      "max_jct_s": 30.935949956101563,
+      "deadlines_met": 1,
+      "admitted_count": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 7,
+      "budget_multiplier": 1.0,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.05797864246860239,
+      "max_jct_s": 302.85877977903846,
+      "deadlines_met": 2,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 7,
+      "budget_multiplier": 1.0,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.06703976993532183,
+      "max_jct_s": 201.50516294465444,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 7,
+      "budget_multiplier": 1.0,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.04590031050496967,
+      "max_jct_s": 134.39112896973896,
+      "deadlines_met": 2,
+      "admitted_count": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 7,
+      "budget_multiplier": 1.2,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.05797864246860239,
+      "max_jct_s": 302.85877977903846,
+      "deadlines_met": 2,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 7,
+      "budget_multiplier": 1.2,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.06703976993532183,
+      "max_jct_s": 201.50516294465444,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 7,
+      "budget_multiplier": 1.2,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.04590031050496967,
+      "max_jct_s": 134.39112896973896,
+      "deadlines_met": 2,
+      "admitted_count": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 7,
+      "budget_multiplier": 1.5,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.05797864246860239,
+      "max_jct_s": 302.85877977903846,
+      "deadlines_met": 2,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 7,
+      "budget_multiplier": 1.5,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.06703976993532183,
+      "max_jct_s": 201.50516294465444,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 7,
+      "budget_multiplier": 1.5,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.06703976993532183,
+      "max_jct_s": 201.50516294465444,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 7,
+      "budget_multiplier": Infinity,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.05797864246860239,
+      "max_jct_s": 302.85877977903846,
+      "deadlines_met": 2,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 7,
+      "budget_multiplier": Infinity,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.06703976993532183,
+      "max_jct_s": 201.50516294465444,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 7,
+      "budget_multiplier": Infinity,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.06703976993532183,
+      "max_jct_s": 201.50516294465444,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 8,
+      "budget_multiplier": 0.5,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.08540279725269055,
+      "max_jct_s": 236.79895613160215,
+      "deadlines_met": 2,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 8,
+      "budget_multiplier": 0.5,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.09387758446002747,
+      "max_jct_s": 236.79895613160215,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 8,
+      "budget_multiplier": 0.5,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.0,
+      "max_jct_s": 0.0,
+      "deadlines_met": 0,
+      "admitted_count": 0,
+      "n_jobs": 3
+    },
+    {
+      "seed": 8,
+      "budget_multiplier": 0.7,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.08540279725269055,
+      "max_jct_s": 236.79895613160215,
+      "deadlines_met": 2,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 8,
+      "budget_multiplier": 0.7,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.09387758446002747,
+      "max_jct_s": 236.79895613160215,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 8,
+      "budget_multiplier": 0.7,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.03763119093740894,
+      "max_jct_s": 32.14173659278166,
+      "deadlines_met": 1,
+      "admitted_count": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 8,
+      "budget_multiplier": 0.9,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.08540279725269055,
+      "max_jct_s": 236.79895613160215,
+      "deadlines_met": 2,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 8,
+      "budget_multiplier": 0.9,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.09387758446002747,
+      "max_jct_s": 236.79895613160215,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 8,
+      "budget_multiplier": 0.9,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.0791764819059082,
+      "max_jct_s": 128.2767011049024,
+      "deadlines_met": 2,
+      "admitted_count": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 8,
+      "budget_multiplier": 1.0,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.08540279725269055,
+      "max_jct_s": 236.79895613160215,
+      "deadlines_met": 2,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 8,
+      "budget_multiplier": 1.0,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.09387758446002747,
+      "max_jct_s": 236.79895613160215,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 8,
+      "budget_multiplier": 1.0,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.0791764819059082,
+      "max_jct_s": 128.2767011049024,
+      "deadlines_met": 2,
+      "admitted_count": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 8,
+      "budget_multiplier": 1.2,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.08540279725269055,
+      "max_jct_s": 236.79895613160215,
+      "deadlines_met": 2,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 8,
+      "budget_multiplier": 1.2,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.09387758446002747,
+      "max_jct_s": 236.79895613160215,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 8,
+      "budget_multiplier": 1.2,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.0791764819059082,
+      "max_jct_s": 128.2767011049024,
+      "deadlines_met": 2,
+      "admitted_count": 2,
+      "n_jobs": 3
+    },
+    {
+      "seed": 8,
+      "budget_multiplier": 1.5,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.08540279725269055,
+      "max_jct_s": 236.79895613160215,
+      "deadlines_met": 2,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 8,
+      "budget_multiplier": 1.5,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.09387758446002747,
+      "max_jct_s": 236.79895613160215,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 8,
+      "budget_multiplier": 1.5,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.10168144104680689,
+      "max_jct_s": 160.84445475340985,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 8,
+      "budget_multiplier": Infinity,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.08540279725269055,
+      "max_jct_s": 236.79895613160215,
+      "deadlines_met": 2,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 8,
+      "budget_multiplier": Infinity,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.09387758446002747,
+      "max_jct_s": 236.79895613160215,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 8,
+      "budget_multiplier": Infinity,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.10168144104680689,
+      "max_jct_s": 160.84445475340985,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 9,
+      "budget_multiplier": 0.5,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.15547867700379422,
+      "max_jct_s": 331.9460088793486,
+      "deadlines_met": 2,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 9,
+      "budget_multiplier": 0.5,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.16145281245483112,
+      "max_jct_s": 205.76162636815724,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 9,
+      "budget_multiplier": 0.5,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.06129323199384628,
+      "max_jct_s": 47.603350742376946,
+      "deadlines_met": 1,
+      "admitted_count": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 9,
+      "budget_multiplier": 0.7,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.15547867700379422,
+      "max_jct_s": 331.9460088793486,
+      "deadlines_met": 2,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 9,
+      "budget_multiplier": 0.7,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.16145281245483112,
+      "max_jct_s": 205.76162636815724,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 9,
+      "budget_multiplier": 0.7,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.06129323199384628,
+      "max_jct_s": 47.603350742376946,
+      "deadlines_met": 1,
+      "admitted_count": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 9,
+      "budget_multiplier": 0.9,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.15547867700379422,
+      "max_jct_s": 331.9460088793486,
+      "deadlines_met": 2,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 9,
+      "budget_multiplier": 0.9,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.16145281245483112,
+      "max_jct_s": 205.76162636815724,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 9,
+      "budget_multiplier": 0.9,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.06129323199384628,
+      "max_jct_s": 47.603350742376946,
+      "deadlines_met": 1,
+      "admitted_count": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 9,
+      "budget_multiplier": 1.0,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.15547867700379422,
+      "max_jct_s": 331.9460088793486,
+      "deadlines_met": 2,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 9,
+      "budget_multiplier": 1.0,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.16145281245483112,
+      "max_jct_s": 205.76162636815724,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 9,
+      "budget_multiplier": 1.0,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.06129323199384628,
+      "max_jct_s": 47.603350742376946,
+      "deadlines_met": 1,
+      "admitted_count": 1,
+      "n_jobs": 3
+    },
+    {
+      "seed": 9,
+      "budget_multiplier": 1.2,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.15547867700379422,
+      "max_jct_s": 331.9460088793486,
+      "deadlines_met": 2,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 9,
+      "budget_multiplier": 1.2,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.16145281245483112,
+      "max_jct_s": 205.76162636815724,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 9,
+      "budget_multiplier": 1.2,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.16145281245483112,
+      "max_jct_s": 205.76162636815724,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 9,
+      "budget_multiplier": 1.5,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.15547867700379422,
+      "max_jct_s": 331.9460088793486,
+      "deadlines_met": 2,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 9,
+      "budget_multiplier": 1.5,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.16145281245483112,
+      "max_jct_s": 205.76162636815724,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 9,
+      "budget_multiplier": 1.5,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.16145281245483112,
+      "max_jct_s": 205.76162636815724,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 9,
+      "budget_multiplier": Infinity,
+      "allocator": "PowerFlow",
+      "energy_kwh": 0.15547867700379422,
+      "max_jct_s": 331.9460088793486,
+      "deadlines_met": 2,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 9,
+      "budget_multiplier": Infinity,
+      "allocator": "ElasticFlow",
+      "energy_kwh": 0.16145281245483112,
+      "max_jct_s": 205.76162636815724,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    },
+    {
+      "seed": 9,
+      "budget_multiplier": Infinity,
+      "allocator": "HISE EB",
+      "energy_kwh": 0.16145281245483112,
+      "max_jct_s": 205.76162636815724,
+      "deadlines_met": 3,
+      "admitted_count": 3,
+      "n_jobs": 3
+    }
+  ]
+}

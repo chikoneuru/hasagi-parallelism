@@ -1,0 +1,27 @@
+{
+  "gpu": "NVIDIA GeForce RTX 3080 Ti",
+  "method": "torch.save(model+SGD-momentum) write; torch.load(map_location=cpu)+load_state_dict reload; host-to-device copy of params included, faithful to the small-state anchor",
+  "small_state_anchor": {
+    "params_gb": 0.045,
+    "write_s": 0.092,
+    "reload_s": 0.047
+  },
+  "measured_anchors": [
+    {
+      "params_gb": 1.0,
+      "ckpt_file_gb": 2.000005762,
+      "write_s": 2.9514450560091063,
+      "reload_s": 1.332933085039258,
+      "write_bw_gbps": 0.6776361152066891,
+      "reload_bw_gbps": 1.500454737336717
+    },
+    {
+      "params_gb": 4.0,
+      "ckpt_file_gb": 8.000005878,
+      "write_s": 11.642277801060118,
+      "reload_s": 7.6928552410099655,
+      "write_bw_gbps": 0.6871512615230276,
+      "reload_bw_gbps": 1.039926740770142
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "schedule_g_per_kwh": [
+    200.0,
+    900.0,
+    200.0
+  ],
+  "threshold_g_per_kwh": 800.0,
+  "trace_source": "synthetic-parametric",
+  "energy_source": "nvml-measured-marginal",
+  "background_w_mean": 147.74110000000002,
+  "background_w_sd": 1.3327126059282233,
+  "active_marginal_power_w": 90.1150777294707,
+  "resume_energy_wh": 0.0012503926400542452,
+  "dedicated_idle_w_assumed": 30.0,
+  "carbon_aware": {
+    "total_energy_wh": 0.21667619314709555,
+    "total_carbon_g": 0.06827231053384744,
+    "resume_energy_wh": 0.0012503926400542452,
+    "resume_carbon_g": 0.00025007852801084906,
+    "active_energy_wh": 0.1798014120721437,
+    "cold_starts": 2,
+    "energy_by_phase_wh": {
+      "cold_start": 0.0012503926400542452,
+      "active": 0.1798014120721437,
+      "idle": 0.035624388434897604
+    },
+    "carbon_by_phase_g": {
+      "cold_start": 0.00025007852801084906,
+      "active": 0.03596028241442874,
+      "idle": 0.032061949591407846
+    },
+    "duration_by_phase_s": {
+      "cold_start": 5.778241088031791,
+      "active": 8.18334251496708,
+      "idle": 45.22856985201361
+    }
+  },
+  "always_on": {
+    "total_energy_wh": 0.3014270314123683,
+    "total_carbon_g": 0.1370884449757238,
+    "resume_energy_wh": 0.0,
+    "resume_carbon_g": 0.0,
+    "active_energy_wh": 0.3014270314123683,
+    "cold_starts": 1,
+    "energy_by_phase_wh": {
+      "cold_start": 0.0,
+      "active": 0.3014270314123683
+    },
+    "carbon_by_phase_g": {
+      "cold_start": 0.0,
+      "active": 0.1370884449757238
+    },
+    "duration_by_phase_s": {
+      "cold_start": 0.9727982360054739,
+      "active": 12.041684260009788
+    }
+  },
+  "regimes": {
+    "dedicated": {
+      "break_even_window_s": 0.024952019600170815,
+      "idle_power_w_assumed": 30.0,
+      "saves": true
+    },
+    "reallocated": {
+      "break_even_window_s": 0.014271952890245253,
+      "idle_power_w_assumed": 0.0,
+      "saves": true
+    },
+    "powered_down": {
+      "break_even_window_s": 0.014271952890245253,
+      "idle_power_w_assumed": 0.0,
+      "saves": true
+    }
+  }
+}

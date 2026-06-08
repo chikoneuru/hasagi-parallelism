@@ -1,0 +1,52 @@
+{
+  "workload": "resnet18_cifar10",
+  "batch_size": 128,
+  "iters_per_cap": 150,
+  "points": [
+    {
+      "power_cap_w": 150,
+      "iters": 150,
+      "wall_seconds": 8.395869114989182,
+      "energy_joules": 1237.0221492522105,
+      "throughput_iter_per_s": 17.865928821139473,
+      "mean_power_w": 148.8440476190477,
+      "energy_per_iter_j": 8.24681432834807
+    },
+    {
+      "power_cap_w": 200,
+      "iters": 150,
+      "wall_seconds": 4.719545075000497,
+      "energy_joules": 917.5507619061005,
+      "throughput_iter_per_s": 31.782724312678425,
+      "mean_power_w": 193.79825000000005,
+      "energy_per_iter_j": 6.117005079374004
+    },
+    {
+      "power_cap_w": 250,
+      "iters": 150,
+      "wall_seconds": 4.221267019980587,
+      "energy_joules": 1003.1111932488857,
+      "throughput_iter_per_s": 35.534354801532984,
+      "mean_power_w": 235.8564883720931,
+      "energy_per_iter_j": 6.687407954992572
+    },
+    {
+      "power_cap_w": 300,
+      "iters": 150,
+      "wall_seconds": 4.031062099995324,
+      "energy_joules": 1125.7230979208236,
+      "throughput_iter_per_s": 37.21103676377845,
+      "mean_power_w": 278.4060731707316,
+      "energy_per_iter_j": 7.504820652805491
+    },
+    {
+      "power_cap_w": 350,
+      "iters": 150,
+      "wall_seconds": 3.9429508809989784,
+      "energy_joules": 1259.2945088781323,
+      "throughput_iter_per_s": 38.04257383038875,
+      "mean_power_w": 319.2220000000001,
+      "energy_per_iter_j": 8.395296725854216
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "regime": "reallocated / scale-to-zero (idle billed to co-tenant)",
+  "intensity_dirty_g_per_kwh": 900.0,
+  "intensity_clean_g_per_kwh": 200.0,
+  "active_power_w": 132.0,
+  "idle_power_w": 0.0,
+  "cold_start_s": 4.7,
+  "resume_power_w": 100.0,
+  "write_bw_gbps": 3.9,
+  "reload_bw_gbps": 7.7,
+  "warmup_s": 0.761,
+  "anchors": "resnet18 resume_breakdown (ckpt-write 0.092s, reload 0.047s @ ~0.045GB) + knative cold-start ~4.7s + active ~132W; bandwidths derived from the small-state times",
+  "rows": [
+    {
+      "state_gb": 0.045,
+      "resume_time_training_s": 5.600060939060939,
+      "resume_energy_stateless_wh": 0.13055555555555556,
+      "resume_energy_training_wh": 0.15555724830724832,
+      "t_star_stateless_s": 1.0173160173160174,
+      "t_star_training_s": 1.2121344023941425,
+      "misdecision_window_s": 0.1948183850781251,
+      "resume_energy_ratio_training_over_stateless": 1.1915023274597742
+    },
+    {
+      "state_gb": 1.0,
+      "resume_time_training_s": 8.55124309024309,
+      "resume_energy_stateless_wh": 0.13055555555555556,
+      "resume_energy_training_wh": 0.23753453028453028,
+      "t_star_stateless_s": 1.0173160173160174,
+      "t_star_training_s": 1.8509184178015348,
+      "misdecision_window_s": 0.8336024004855174,
+      "resume_energy_ratio_training_over_stateless": 1.8194134234559767
+    },
+    {
+      "state_gb": 5.0,
+      "resume_time_training_s": 20.912215451215452,
+      "resume_energy_stateless_wh": 0.13055555555555556,
+      "resume_energy_training_wh": 0.5808948736448737,
+      "t_star_stateless_s": 1.0173160173160174,
+      "t_star_training_s": 4.526453560869146,
+      "misdecision_window_s": 3.5091375435531287,
+      "resume_energy_ratio_training_over_stateless": 4.449407542811798
+    },
+    {
+      "state_gb": 20.0,
+      "resume_time_training_s": 67.2658618048618,
+      "resume_energy_stateless_wh": 0.13055555555555556,
+      "resume_energy_training_wh": 1.868496161246161,
+      "t_star_stateless_s": 1.0173160173160174,
+      "t_star_training_s": 14.559710347372683,
+      "misdecision_window_s": 13.542394330056664,
+      "resume_energy_ratio_training_over_stateless": 14.311885490396127
+    },
+    {
+      "state_gb": 80.0,
+      "resume_time_training_s": 252.68044721944722,
+      "resume_energy_stateless_wh": 0.13055555555555556,
+      "resume_energy_training_wh": 7.0189013116513115,
+      "t_star_stateless_s": 1.0173160173160174,
+      "t_star_training_s": 54.69273749338684,
+      "misdecision_window_s": 53.675421476070824,
+      "resume_energy_ratio_training_over_stateless": 53.761797280733454
+    },
+    {
+      "state_gb": 160.0,
+      "resume_time_training_s": 499.8998944388945,
+      "resume_energy_stateless_wh": 0.13055555555555556,
+      "resume_energy_training_wh": 13.88610817885818,
+      "t_star_stateless_s": 1.0173160173160174,
+      "t_star_training_s": 108.20344035473906,
+      "misdecision_window_s": 107.18612433742304,
+      "resume_energy_ratio_training_over_stateless": 106.36167966784988
+    }
+  ]
+}

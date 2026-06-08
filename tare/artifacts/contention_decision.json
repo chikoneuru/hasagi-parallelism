@@ -1,0 +1,369 @@
+{
+  "layers": 24,
+  "stages": 4,
+  "objective": "bottleneck",
+  "c_grid": [
+    0.3,
+    0.4,
+    0.5,
+    0.6,
+    0.7,
+    0.8,
+    0.9
+  ],
+  "regimes": {
+    "uniform_fast": [
+      {
+        "c": 0.3,
+        "blind_cuts": [
+          5,
+          11,
+          17
+        ],
+        "aware_cuts": [
+          5,
+          11,
+          17
+        ],
+        "cuts_changed": false,
+        "regret": 0.0
+      },
+      {
+        "c": 0.4,
+        "blind_cuts": [
+          5,
+          11,
+          17
+        ],
+        "aware_cuts": [
+          5,
+          11,
+          17
+        ],
+        "cuts_changed": false,
+        "regret": 0.0
+      },
+      {
+        "c": 0.5,
+        "blind_cuts": [
+          5,
+          11,
+          17
+        ],
+        "aware_cuts": [
+          5,
+          11,
+          17
+        ],
+        "cuts_changed": false,
+        "regret": 0.0
+      },
+      {
+        "c": 0.6,
+        "blind_cuts": [
+          5,
+          11,
+          17
+        ],
+        "aware_cuts": [
+          5,
+          11,
+          17
+        ],
+        "cuts_changed": false,
+        "regret": 0.0
+      },
+      {
+        "c": 0.7,
+        "blind_cuts": [
+          5,
+          11,
+          17
+        ],
+        "aware_cuts": [
+          5,
+          11,
+          17
+        ],
+        "cuts_changed": false,
+        "regret": 0.0
+      },
+      {
+        "c": 0.8,
+        "blind_cuts": [
+          5,
+          11,
+          17
+        ],
+        "aware_cuts": [
+          5,
+          11,
+          17
+        ],
+        "cuts_changed": false,
+        "regret": 0.0
+      },
+      {
+        "c": 0.9,
+        "blind_cuts": [
+          5,
+          11,
+          17
+        ],
+        "aware_cuts": [
+          5,
+          11,
+          17
+        ],
+        "cuts_changed": false,
+        "regret": 0.0
+      }
+    ],
+    "uniform_slow": [
+      {
+        "c": 0.3,
+        "blind_cuts": [
+          7,
+          11,
+          15
+        ],
+        "aware_cuts": [
+          6,
+          11,
+          16
+        ],
+        "cuts_changed": true,
+        "regret": 0.11904761904761907
+      },
+      {
+        "c": 0.4,
+        "blind_cuts": [
+          7,
+          11,
+          15
+        ],
+        "aware_cuts": [
+          6,
+          11,
+          16
+        ],
+        "cuts_changed": true,
+        "regret": 0.1127819548872182
+      },
+      {
+        "c": 0.5,
+        "blind_cuts": [
+          7,
+          11,
+          15
+        ],
+        "aware_cuts": [
+          6,
+          11,
+          16
+        ],
+        "cuts_changed": true,
+        "regret": 0.06896551724137945
+      },
+      {
+        "c": 0.6,
+        "blind_cuts": [
+          7,
+          11,
+          15
+        ],
+        "aware_cuts": [
+          6,
+          11,
+          16
+        ],
+        "cuts_changed": true,
+        "regret": 0.018867924528301883
+      },
+      {
+        "c": 0.7,
+        "blind_cuts": [
+          7,
+          11,
+          15
+        ],
+        "aware_cuts": [
+          7,
+          11,
+          15
+        ],
+        "cuts_changed": false,
+        "regret": 0.0
+      },
+      {
+        "c": 0.8,
+        "blind_cuts": [
+          7,
+          11,
+          15
+        ],
+        "aware_cuts": [
+          7,
+          11,
+          15
+        ],
+        "cuts_changed": false,
+        "regret": 0.0
+      },
+      {
+        "c": 0.9,
+        "blind_cuts": [
+          7,
+          11,
+          15
+        ],
+        "aware_cuts": [
+          7,
+          11,
+          15
+        ],
+        "cuts_changed": false,
+        "regret": 0.0
+      }
+    ],
+    "asymmetric": [
+      {
+        "c": 0.3,
+        "blind_cuts": [
+          5,
+          11,
+          17
+        ],
+        "aware_cuts": [
+          2,
+          4,
+          13
+        ],
+        "cuts_changed": true,
+        "regret": 1.0
+      },
+      {
+        "c": 0.4,
+        "blind_cuts": [
+          5,
+          11,
+          17
+        ],
+        "aware_cuts": [
+          2,
+          5,
+          14
+        ],
+        "cuts_changed": true,
+        "regret": 0.6652294425623653
+      },
+      {
+        "c": 0.5,
+        "blind_cuts": [
+          5,
+          11,
+          17
+        ],
+        "aware_cuts": [
+          3,
+          7,
+          15
+        ],
+        "cuts_changed": true,
+        "regret": 0.49878766886040893
+      },
+      {
+        "c": 0.6,
+        "blind_cuts": [
+          5,
+          11,
+          17
+        ],
+        "aware_cuts": [
+          3,
+          7,
+          15
+        ],
+        "cuts_changed": true,
+        "regret": 0.24939383443020424
+      },
+      {
+        "c": 0.7,
+        "blind_cuts": [
+          5,
+          11,
+          17
+        ],
+        "aware_cuts": [
+          4,
+          9,
+          16
+        ],
+        "cuts_changed": true,
+        "regret": 0.19945703363067202
+      },
+      {
+        "c": 0.8,
+        "blind_cuts": [
+          5,
+          11,
+          17
+        ],
+        "aware_cuts": [
+          4,
+          9,
+          16
+        ],
+        "cuts_changed": true,
+        "regret": 0.07123070834982204
+      },
+      {
+        "c": 0.9,
+        "blind_cuts": [
+          5,
+          11,
+          17
+        ],
+        "aware_cuts": [
+          5,
+          11,
+          17
+        ],
+        "cuts_changed": false,
+        "regret": 0.0
+      }
+    ]
+  },
+  "recovery": {
+    "window_1": {
+      "initial_regret": 0.9990287220757597,
+      "final_regret": 0.0,
+      "recovered_step": 5,
+      "fallback_step": null,
+      "window": 1,
+      "steps": 7,
+      "trajectory": [
+        0.9990287220757597,
+        0.6669904259747468,
+        0.6660191480505064,
+        0.3339808519494938,
+        0.33300957402525344,
+        0.0009712779242403435,
+        0.0
+      ]
+    },
+    "window_3": {
+      "initial_regret": 0.6660191480505064,
+      "final_regret": 0.0,
+      "recovered_step": 1,
+      "fallback_step": null,
+      "window": 3,
+      "steps": 3,
+      "trajectory": [
+        0.6660191480505064,
+        0.0009712779242403435,
+        0.0
+      ]
+    }
+  }
+}

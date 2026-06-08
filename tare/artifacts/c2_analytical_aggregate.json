@@ -1,0 +1,417 @@
+{
+  "_WITHDRAWN": "BERT carbon saving WITHDRAWN: 250W energy never validated end-to-end (only 200W run is clean and is carbon-positive); pseudo-replicated (eff N~3, shared synthetic diurnal phase); synthetic traces. Do not cite. See docs/checklist-current.md P0.",
+  "args": {
+    "src": "artifacts/c2_bert_sst2_analytical_cap250/summary.json",
+    "n_boot": 10000,
+    "n_perm": 10000,
+    "alpha": 0.05
+  },
+  "rows": [
+    {
+      "zone": "AE",
+      "n_seeds": 3,
+      "carbon_mean_pct": -2.349278018950624,
+      "carbon_ci": [
+        -5.805985549840048,
+        0.0
+      ],
+      "energy_mean_pct": -2.3223942199360192,
+      "energy_ci": [
+        -5.805985549840056,
+        0.0
+      ],
+      "top1_mean_pp": 0.0,
+      "top1_ci": [
+        0.0,
+        0.0
+      ],
+      "jct_mean_pct": 0.0,
+      "throttle_mean_hours": 2,
+      "p_value": 0.5005499450054994,
+      "holm_rejected": false,
+      "holm_alpha": 0.0071428571428571435
+    },
+    {
+      "zone": "AU",
+      "n_seeds": 3,
+      "carbon_mean_pct": -2.757155013138891,
+      "carbon_ci": [
+        -5.805985549840066,
+        0.0
+      ],
+      "energy_mean_pct": -2.7094599232586942,
+      "energy_ci": [
+        -5.805985549840056,
+        0.0
+      ],
+      "top1_mean_pp": 0.0,
+      "top1_ci": [
+        0.0,
+        0.0
+      ],
+      "jct_mean_pct": 0.0,
+      "throttle_mean_hours": 2.3333333333333335,
+      "p_value": 0.5026497350264973,
+      "holm_rejected": false,
+      "holm_alpha": 0.01
+    },
+    {
+      "zone": "BR",
+      "n_seeds": 3,
+      "carbon_mean_pct": -3.0108692358725513,
+      "carbon_ci": [
+        -4.910844566981208,
+        -1.5155871000730463
+      ],
+      "energy_mean_pct": -2.7094599232586942,
+      "energy_ci": [
+        -4.644788439872054,
+        -1.161197109968002
+      ],
+      "top1_mean_pp": 0.0,
+      "top1_ci": [
+        0.0,
+        0.0
+      ],
+      "jct_mean_pct": 0.0,
+      "throttle_mean_hours": 2.3333333333333335,
+      "p_value": 0.2465753424657534,
+      "holm_rejected": false,
+      "holm_alpha": 0.0038461538461538464
+    },
+    {
+      "zone": "CN",
+      "n_seeds": 3,
+      "carbon_mean_pct": -1.980805191047788,
+      "carbon_ci": [
+        -4.700376431449562,
+        0.0
+      ],
+      "energy_mean_pct": -1.9353285166133518,
+      "energy_ci": [
+        -4.644788439872054,
+        0.0
+      ],
+      "top1_mean_pp": 0.0,
+      "top1_ci": [
+        0.0,
+        0.0
+      ],
+      "jct_mean_pct": 0.0,
+      "throttle_mean_hours": 1.6666666666666667,
+      "p_value": 9.999000099990002e-05,
+      "holm_rejected": true,
+      "holm_alpha": 0.003125
+    },
+    {
+      "zone": "DE",
+      "n_seeds": 3,
+      "carbon_mean_pct": -3.544196217343483,
+      "carbon_ci": [
+        -5.805985549840068,
+        0.0
+      ],
+      "energy_mean_pct": -3.4835913299040366,
+      "energy_ci": [
+        -5.805985549840056,
+        0.0
+      ],
+      "top1_mean_pp": 0.0,
+      "top1_ci": [
+        0.0,
+        0.0
+      ],
+      "jct_mean_pct": 0.0,
+      "throttle_mean_hours": 3,
+      "p_value": 0.506049395060494,
+      "holm_rejected": false,
+      "holm_alpha": 0.016666666666666666
+    },
+    {
+      "zone": "FR",
+      "n_seeds": 3,
+      "carbon_mean_pct": -2.3785216694574447,
+      "carbon_ci": [
+        -5.805985549840069,
+        0.0
+      ],
+      "energy_mean_pct": -2.3223942199360192,
+      "energy_ci": [
+        -5.805985549840056,
+        0.0
+      ],
+      "top1_mean_pp": 0.0,
+      "top1_ci": [
+        0.0,
+        0.0
+      ],
+      "jct_mean_pct": 0.0,
+      "throttle_mean_hours": 2,
+      "p_value": 0.49525047495250474,
+      "holm_rejected": false,
+      "holm_alpha": 0.004545454545454546
+    },
+    {
+      "zone": "GB",
+      "n_seeds": 3,
+      "carbon_mean_pct": -3.5534777667824615,
+      "carbon_ci": [
+        -5.805985549840062,
+        0.0
+      ],
+      "energy_mean_pct": -3.4835913299040366,
+      "energy_ci": [
+        -5.805985549840056,
+        0.0
+      ],
+      "top1_mean_pp": 0.0,
+      "top1_ci": [
+        0.0,
+        0.0
+      ],
+      "jct_mean_pct": 0.0,
+      "throttle_mean_hours": 3,
+      "p_value": 0.49085091490850913,
+      "holm_rejected": false,
+      "holm_alpha": 0.004166666666666667
+    },
+    {
+      "zone": "IN",
+      "n_seeds": 3,
+      "carbon_mean_pct": -1.9881691676739897,
+      "carbon_ci": [
+        -4.707867058123056,
+        0.0
+      ],
+      "energy_mean_pct": -1.9353285166133518,
+      "energy_ci": [
+        -4.644788439872054,
+        0.0
+      ],
+      "top1_mean_pp": 0.0,
+      "top1_ci": [
+        0.0,
+        0.0
+      ],
+      "jct_mean_pct": 0.0,
+      "throttle_mean_hours": 1.6666666666666667,
+      "p_value": 0.4991500849915009,
+      "holm_rejected": false,
+      "holm_alpha": 0.005
+    },
+    {
+      "zone": "JP",
+      "n_seeds": 3,
+      "carbon_mean_pct": -2.3541335453507517,
+      "carbon_ci": [
+        -5.805985549840051,
+        0.0
+      ],
+      "energy_mean_pct": -2.3223942199360192,
+      "energy_ci": [
+        -5.805985549840056,
+        0.0
+      ],
+      "top1_mean_pp": 0.0,
+      "top1_ci": [
+        0.0,
+        0.0
+      ],
+      "jct_mean_pct": 0.0,
+      "throttle_mean_hours": 2,
+      "p_value": 0.49945005499450057,
+      "holm_rejected": false,
+      "holm_alpha": 0.005555555555555556
+    },
+    {
+      "zone": "KR",
+      "n_seeds": 3,
+      "carbon_mean_pct": -2.354957794416768,
+      "carbon_ci": [
+        -5.8059855498400665,
+        0.0
+      ],
+      "energy_mean_pct": -2.3223942199360192,
+      "energy_ci": [
+        -5.805985549840056,
+        0.0
+      ],
+      "top1_mean_pp": 0.0,
+      "top1_ci": [
+        0.0,
+        0.0
+      ],
+      "jct_mean_pct": 0.0,
+      "throttle_mean_hours": 2,
+      "p_value": 0.501949805019498,
+      "holm_rejected": false,
+      "holm_alpha": 0.008333333333333333
+    },
+    {
+      "zone": "NO",
+      "n_seeds": 3,
+      "carbon_mean_pct": -3.166295693677183,
+      "carbon_ci": [
+        -5.074897184001847,
+        -1.7051443728492848
+      ],
+      "energy_mean_pct": -2.7094599232586942,
+      "energy_ci": [
+        -4.644788439872054,
+        -1.161197109968002
+      ],
+      "top1_mean_pp": 0.0,
+      "top1_ci": [
+        0.0,
+        0.0
+      ],
+      "jct_mean_pct": 0.0,
+      "throttle_mean_hours": 2.3333333333333335,
+      "p_value": 0.24597540245975402,
+      "holm_rejected": false,
+      "holm_alpha": 0.0035714285714285718
+    },
+    {
+      "zone": "PL",
+      "n_seeds": 3,
+      "carbon_mean_pct": -0.7879476174188015,
+      "carbon_ci": [
+        -2.3638428522564046,
+        0.0
+      ],
+      "energy_mean_pct": -0.7741314066453423,
+      "energy_ci": [
+        -2.322394219936027,
+        0.0
+      ],
+      "top1_mean_pp": 0.0,
+      "top1_ci": [
+        0.0,
+        0.0
+      ],
+      "jct_mean_pct": 0.0,
+      "throttle_mean_hours": 0.6666666666666666,
+      "p_value": 1.0,
+      "holm_rejected": false,
+      "holm_alpha": 0.025
+    },
+    {
+      "zone": "SG",
+      "n_seeds": 3,
+      "carbon_mean_pct": -1.9715929363135798,
+      "carbon_ci": [
+        -4.69664016246748,
+        0.0
+      ],
+      "energy_mean_pct": -1.9353285166133518,
+      "energy_ci": [
+        -4.644788439872054,
+        0.0
+      ],
+      "top1_mean_pp": 0.0,
+      "top1_ci": [
+        0.0,
+        0.0
+      ],
+      "jct_mean_pct": 0.0,
+      "throttle_mean_hours": 1.6666666666666667,
+      "p_value": 0.5001499850014999,
+      "holm_rejected": false,
+      "holm_alpha": 0.00625
+    },
+    {
+      "zone": "US-CA",
+      "n_seeds": 3,
+      "carbon_mean_pct": -3.549945964205382,
+      "carbon_ci": [
+        -5.8059855498400585,
+        0.0
+      ],
+      "energy_mean_pct": -3.4835913299040366,
+      "energy_ci": [
+        -5.805985549840056,
+        0.0
+      ],
+      "top1_mean_pp": 0.0,
+      "top1_ci": [
+        0.0,
+        0.0
+      ],
+      "jct_mean_pct": 0.0,
+      "throttle_mean_hours": 3,
+      "p_value": 9.999000099990002e-05,
+      "holm_rejected": true,
+      "holm_alpha": 0.0033333333333333335
+    },
+    {
+      "zone": "VN",
+      "n_seeds": 3,
+      "carbon_mean_pct": -2.7541373721497973,
+      "carbon_ci": [
+        -5.805985549840061,
+        0.0
+      ],
+      "energy_mean_pct": -2.7094599232586942,
+      "energy_ci": [
+        -5.805985549840056,
+        0.0
+      ],
+      "top1_mean_pp": 0.0,
+      "top1_ci": [
+        0.0,
+        0.0
+      ],
+      "jct_mean_pct": 0.0,
+      "throttle_mean_hours": 2.3333333333333335,
+      "p_value": 0.5037496250374962,
+      "holm_rejected": false,
+      "holm_alpha": 0.0125
+    },
+    {
+      "zone": "ZA",
+      "n_seeds": 3,
+      "carbon_mean_pct": -0.40302843979593655,
+      "carbon_ci": [
+        -1.2090853193878097,
+        0.0
+      ],
+      "energy_mean_pct": -0.3870657033226674,
+      "energy_ci": [
+        -1.161197109968002,
+        0.0
+      ],
+      "top1_mean_pp": 0.0,
+      "top1_ci": [
+        0.0,
+        0.0
+      ],
+      "jct_mean_pct": 0.0,
+      "throttle_mean_hours": 0.3333333333333333,
+      "p_value": 1.0,
+      "holm_rejected": false,
+      "holm_alpha": 0.05
+    }
+  ],
+  "pooled": {
+    "n": 48,
+    "carbon_mean_pct": -2.4315319777247146,
+    "carbon_ci": [
+      -3.097224633347202,
+      -1.788279845389997
+    ],
+    "energy_mean_pct": -2.346585826393689,
+    "energy_ci": [
+      -2.999759200750697,
+      -1.6934124520366838
+    ],
+    "top1_mean_pp": 0.0,
+    "top1_ci": [
+      0.0,
+      0.0
+    ],
+    "jct_mean_pct": 0.0,
+    "cohens_d_carbon": null,
+    "p_value": null,
+    "_WITHDRAWN_STAT": "cohens_d_carbon and p_value were flat-pooled over n=48 with effective N~3 (3 seeds/zone share one synthetic diurnal phase); they over-state significance for a WITHDRAWN analytical result and have been nulled. Do not cite."
+  }
+}

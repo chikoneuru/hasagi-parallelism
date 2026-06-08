@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: tare
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tare-orchestrator
+  namespace: tare
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {app: tare-orchestrator}
+  template:
+    metadata:
+      labels: {app: tare-orchestrator}
+    spec:
+      containers:
+        - name: orchestrator
+          image: tare-orchestrator:dev
+          ports: [{containerPort: 8000}]
+          env:
+            - {name: HASAGI_REDIS_URL, value: redis://tare-redis:6379/0}
+            - {name: HASAGI_CARBON_TRACE, value: /traces/synthetic_solar.csv}
+            - {name: HASAGI_TICK_SECONDS, value: "30"}
+          volumeMounts:
+            - {name: traces, mountPath: /traces, readOnly: true}
+      volumes:
+        - name: traces
+          configMap: {name: tare-traces}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tare-orchestrator
+  namespace: tare
+spec:
+  selector: {app: tare-orchestrator}
+  ports:
+    - {port: 8000, targetPort: 8000}

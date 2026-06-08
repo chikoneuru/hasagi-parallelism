@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: tare-validation
+---
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: tare-worker-lifecycle
+  namespace: tare-validation
+spec:
+  template:
+    metadata:
+      annotations:
+        # Scale to zero is the default; we shorten the idle window so
+        # cold-start measurements roll back to scratch quickly between runs.
+        autoscaling.knative.dev/class: "kpa.autoscaling.knative.dev"
+        autoscaling.knative.dev/min-scale: "0"
+        autoscaling.knative.dev/max-scale: "4"
+        autoscaling.knative.dev/target: "1"
+        # Idle for 30s → revoke. Production tuning is workload-dependent.
+        autoscaling.knative.dev/scale-to-zero-grace-period: "30s"
+    spec:
+      containerConcurrency: 1
+      timeoutSeconds: 600
+      containers:
+        - name: worker
+          image: dev.local/tare-worker-knative:dev
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
+          env:
+            - {name: HASAGI_MOCK_CUDA_INIT_S, value: "3.0"}
+            - {name: HASAGI_MOCK_WORK_ITER_S, value: "0.05"}
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 1
+            periodSeconds: 2
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "1000m"
+              memory: "512Mi"

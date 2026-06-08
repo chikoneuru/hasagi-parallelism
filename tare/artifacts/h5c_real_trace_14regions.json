@@ -1,0 +1,282 @@
+[
+  {
+    "name": "DE/carbon-aware",
+    "zone": "DE",
+    "threshold_g_per_kwh": 385.82103153828206,
+    "energy_kwh": 20.16152750000004,
+    "emissions_g": 5489.267032804356,
+    "pause_minutes": 4380,
+    "cold_starts": 9,
+    "trace_source": "synthetic-parametric"
+  },
+  {
+    "name": "DE/constant-N",
+    "zone": "DE",
+    "threshold_g_per_kwh": NaN,
+    "energy_kwh": 35.49016972222233,
+    "emissions_g": 12732.314415817948,
+    "pause_minutes": 0,
+    "cold_starts": 1,
+    "trace_source": "synthetic-parametric"
+  },
+  {
+    "name": "US-CA/carbon-aware",
+    "zone": "US-CA",
+    "threshold_g_per_kwh": 259.04970051882543,
+    "energy_kwh": 20.16152750000004,
+    "emissions_g": 3545.913229803632,
+    "pause_minutes": 4380,
+    "cold_starts": 9,
+    "trace_source": "synthetic-parametric"
+  },
+  {
+    "name": "US-CA/constant-N",
+    "zone": "US-CA",
+    "threshold_g_per_kwh": NaN,
+    "energy_kwh": 35.49016972222233,
+    "emissions_g": 8484.93037394448,
+    "pause_minutes": 0,
+    "cold_starts": 1,
+    "trace_source": "synthetic-parametric"
+  },
+  {
+    "name": "FR/carbon-aware",
+    "zone": "FR",
+    "threshold_g_per_kwh": 71.16536913122563,
+    "energy_kwh": 23.31322472222227,
+    "emissions_g": 1335.9389582410292,
+    "pause_minutes": 3480,
+    "cold_starts": 19,
+    "trace_source": "synthetic-parametric"
+  },
+  {
+    "name": "FR/constant-N",
+    "zone": "FR",
+    "threshold_g_per_kwh": NaN,
+    "energy_kwh": 35.49016972222233,
+    "emissions_g": 2299.460407518531,
+    "pause_minutes": 0,
+    "cold_starts": 1,
+    "trace_source": "synthetic-parametric"
+  },
+  {
+    "name": "PL/carbon-aware",
+    "zone": "PL",
+    "threshold_g_per_kwh": 788.0292641088231,
+    "energy_kwh": 33.60169722222232,
+    "emissions_g": 24011.588011227428,
+    "pause_minutes": 540,
+    "cold_starts": 10,
+    "trace_source": "synthetic-parametric"
+  },
+  {
+    "name": "PL/constant-N",
+    "zone": "PL",
+    "threshold_g_per_kwh": NaN,
+    "energy_kwh": 35.49016972222233,
+    "emissions_g": 25527.482829598808,
+    "pause_minutes": 0,
+    "cold_starts": 1,
+    "trace_source": "synthetic-parametric"
+  },
+  {
+    "name": "NO/carbon-aware",
+    "zone": "NO",
+    "threshold_g_per_kwh": 30.46922845026869,
+    "energy_kwh": 20.796619166666694,
+    "emissions_g": 445.55141082147435,
+    "pause_minutes": 4200,
+    "cold_starts": 39,
+    "trace_source": "synthetic-parametric"
+  },
+  {
+    "name": "NO/constant-N",
+    "zone": "NO",
+    "threshold_g_per_kwh": NaN,
+    "energy_kwh": 35.49016972222233,
+    "emissions_g": 986.2391765061873,
+    "pause_minutes": 0,
+    "cold_starts": 1,
+    "trace_source": "synthetic-parametric"
+  },
+  {
+    "name": "GB/carbon-aware",
+    "zone": "GB",
+    "threshold_g_per_kwh": 214.911929098377,
+    "energy_kwh": 19.533224722222254,
+    "emissions_g": 2335.4065632718202,
+    "pause_minutes": 4560,
+    "cold_starts": 19,
+    "trace_source": "synthetic-parametric"
+  },
+  {
+    "name": "GB/constant-N",
+    "zone": "GB",
+    "threshold_g_per_kwh": NaN,
+    "energy_kwh": 35.49016972222233,
+    "emissions_g": 7046.1373726549455,
+    "pause_minutes": 0,
+    "cold_starts": 1,
+    "trace_source": "synthetic-parametric"
+  },
+  {
+    "name": "AU/carbon-aware",
+    "zone": "AU",
+    "threshold_g_per_kwh": 606.0749531495001,
+    "energy_kwh": 22.262206388888938,
+    "emissions_g": 11086.534486593164,
+    "pause_minutes": 3780,
+    "cold_starts": 13,
+    "trace_source": "synthetic-parametric"
+  },
+  {
+    "name": "AU/constant-N",
+    "zone": "AU",
+    "threshold_g_per_kwh": NaN,
+    "energy_kwh": 35.49016972222233,
+    "emissions_g": 19830.13598203709,
+    "pause_minutes": 0,
+    "cold_starts": 1,
+    "trace_source": "synthetic-parametric"
+  },
+  {
+    "name": "JP/carbon-aware",
+    "zone": "JP",
+    "threshold_g_per_kwh": 536.1891936726864,
+    "energy_kwh": 27.93203666666674,
+    "emissions_g": 13054.464707605119,
+    "pause_minutes": 2160,
+    "cold_starts": 12,
+    "trace_source": "synthetic-parametric"
+  },
+  {
+    "name": "JP/constant-N",
+    "zone": "JP",
+    "threshold_g_per_kwh": NaN,
+    "energy_kwh": 35.49016972222233,
+    "emissions_g": 17365.164132932136,
+    "pause_minutes": 0,
+    "cold_starts": 1,
+    "trace_source": "synthetic-parametric"
+  },
+  {
+    "name": "IN/carbon-aware",
+    "zone": "IN",
+    "threshold_g_per_kwh": 678.6999097886726,
+    "energy_kwh": 27.722206388888956,
+    "emissions_g": 16446.10493581105,
+    "pause_minutes": 2220,
+    "cold_starts": 13,
+    "trace_source": "synthetic-parametric"
+  },
+  {
+    "name": "IN/constant-N",
+    "zone": "IN",
+    "threshold_g_per_kwh": NaN,
+    "energy_kwh": 35.49016972222233,
+    "emissions_g": 21966.90210564821,
+    "pause_minutes": 0,
+    "cold_starts": 1,
+    "trace_source": "synthetic-parametric"
+  },
+  {
+    "name": "BR/carbon-aware",
+    "zone": "BR",
+    "threshold_g_per_kwh": 110.60320399491468,
+    "energy_kwh": 22.264752222222263,
+    "emissions_g": 1813.4240694023856,
+    "pause_minutes": 3780,
+    "cold_starts": 28,
+    "trace_source": "synthetic-parametric"
+  },
+  {
+    "name": "BR/constant-N",
+    "zone": "BR",
+    "threshold_g_per_kwh": NaN,
+    "energy_kwh": 35.49016972222233,
+    "emissions_g": 3529.252184321025,
+    "pause_minutes": 0,
+    "cold_starts": 1,
+    "trace_source": "synthetic-parametric"
+  },
+  {
+    "name": "ZA/carbon-aware",
+    "zone": "ZA",
+    "threshold_g_per_kwh": 1035.5445165814772,
+    "energy_kwh": 34.44101833333344,
+    "emissions_g": 32226.862554292024,
+    "pause_minutes": 300,
+    "cold_starts": 6,
+    "trace_source": "synthetic-parametric"
+  },
+  {
+    "name": "ZA/constant-N",
+    "zone": "ZA",
+    "threshold_g_per_kwh": NaN,
+    "energy_kwh": 35.49016972222233,
+    "emissions_g": 33329.01065981487,
+    "pause_minutes": 0,
+    "cold_starts": 1,
+    "trace_source": "synthetic-parametric"
+  },
+  {
+    "name": "SG/carbon-aware",
+    "zone": "SG",
+    "threshold_g_per_kwh": 473.3296748480232,
+    "energy_kwh": 32.34152750000009,
+    "emissions_g": 13718.829054945778,
+    "pause_minutes": 900,
+    "cold_starts": 9,
+    "trace_source": "synthetic-parametric"
+  },
+  {
+    "name": "SG/constant-N",
+    "zone": "SG",
+    "threshold_g_per_kwh": NaN,
+    "energy_kwh": 35.49016972222233,
+    "emissions_g": 15246.474813935216,
+    "pause_minutes": 0,
+    "cold_starts": 1,
+    "trace_source": "synthetic-parametric"
+  },
+  {
+    "name": "KR/carbon-aware",
+    "zone": "KR",
+    "threshold_g_per_kwh": 492.2136710758366,
+    "energy_kwh": 27.51220638888896,
+    "emissions_g": 11761.106073611349,
+    "pause_minutes": 2280,
+    "cold_starts": 13,
+    "trace_source": "synthetic-parametric"
+  },
+  {
+    "name": "KR/constant-N",
+    "zone": "KR",
+    "threshold_g_per_kwh": NaN,
+    "energy_kwh": 35.49016972222233,
+    "emissions_g": 15946.608192654354,
+    "pause_minutes": 0,
+    "cold_starts": 1,
+    "trace_source": "synthetic-parametric"
+  },
+  {
+    "name": "CN/carbon-aware",
+    "zone": "CN",
+    "threshold_g_per_kwh": 658.3128999120146,
+    "energy_kwh": 29.401866944444524,
+    "emissions_g": 17109.068243917965,
+    "pause_minutes": 1740,
+    "cold_starts": 11,
+    "trace_source": "synthetic-parametric"
+  },
+  {
+    "name": "CN/constant-N",
+    "zone": "CN",
+    "threshold_g_per_kwh": NaN,
+    "energy_kwh": 35.49016972222233,
+    "emissions_g": 21264.667029706834,
+    "pause_minutes": 0,
+    "cold_starts": 1,
+    "trace_source": "synthetic-parametric"
+  }
+]

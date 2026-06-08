@@ -1,0 +1,24 @@
+[
+  {
+    "replicate": 1,
+    "warm_pod": "hise-worker-lifecycle-00001-deployment-d85bd77c9-78qdr",
+    "preempt_unix": 1779789833.3553612,
+    "background_succeeded": true,
+    "background_error": null,
+    "follow_up_unix": 1779789836.9987915,
+    "follow_up_wall_s": 3.592611074447632,
+    "recovery_latency_s": 3.643430233001709,
+    "follow_up_pod": "hise-worker-lifecycle-00001-deployment-d85bd77c9-h87qz"
+  },
+  {
+    "replicate": 2,
+    "warm_pod": "hise-worker-lifecycle-00001-deployment-d85bd77c9-5jx84",
+    "preempt_unix": 1779789843.2994742,
+    "background_succeeded": true,
+    "background_error": null,
+    "follow_up_unix": 1779789846.9093478,
+    "follow_up_wall_s": 3.5562496185302734,
+    "recovery_latency_s": 3.6098735332489014,
+    "follow_up_pod": "hise-worker-lifecycle-00001-deployment-d85bd77c9-55v6c"
+  }
+]

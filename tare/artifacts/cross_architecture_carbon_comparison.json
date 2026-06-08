@@ -1,0 +1,55 @@
+{
+  "resnet": {
+    "oracle_signal_pp": {
+      "point": 1.5551649057811994,
+      "ci_lo": 0.9812173492756552,
+      "ci_hi": 2.1687541653065407,
+      "excludes_zero": true
+    },
+    "deployable_signal_pp": {
+      "point": 0.7530318136424827,
+      "ci_lo": -0.03518327725729253,
+      "ci_hi": 1.5900750874269973,
+      "excludes_zero": false
+    },
+    "fair_throttle_vs_pause_gap_pp": {
+      "point": 0.5662230070553546,
+      "ci_lo": -1.9631816172193308,
+      "ci_hi": 2.8488376508829205,
+      "excludes_zero": false
+    },
+    "makespan": {
+      "throttle_online_h": 2.1840973410868814,
+      "online_pause_h": 14.129999999999997,
+      "ratio": 6.46949187391457
+    },
+    "n_zones": 16
+  },
+  "transformer": {
+    "oracle_signal_pp": {
+      "point": 1.0133289605548028,
+      "ci_lo": 0.6632465157000403,
+      "ci_hi": 1.3986393565161737,
+      "excludes_zero": true
+    },
+    "deployable_signal_pp": {
+      "point": 0.7130974835338373,
+      "ci_lo": 0.32116456752892586,
+      "ci_hi": 1.133608122492043,
+      "excludes_zero": true
+    },
+    "fair_throttle_vs_pause_gap_pp": {
+      "point": -4.710367167219193,
+      "ci_lo": -7.479211401967074,
+      "ci_hi": -2.2303540993410427,
+      "excludes_zero": true
+    },
+    "makespan": {
+      "throttle_online_h": 1.8562048232954727,
+      "online_pause_h": 14.13,
+      "ratio": 7.612306477532933
+    },
+    "n_zones": 16
+  },
+  "note": "Architecture-invariant: the carbon-signal magnitude (~1 pp) and throttle's low-latency advantage. Regime-dependent: the matched-budget throttle-vs-pause carbon gap, which is a tie on the CNN but pause-favoring on the compute-bound transformer (throttle still wins latency)."
+}

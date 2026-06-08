@@ -1,0 +1,18 @@
+{
+  "n_zones": 30,
+  "deployable_signal_pp": {
+    "point": 1.034,
+    "ci_lo": 0.509,
+    "ci_hi": 1.557,
+    "excludes_zero": true
+  },
+  "oracle_signal_pp": {
+    "point": 1.871,
+    "ci_lo": 1.334,
+    "ci_hi": 2.441,
+    "excludes_zero": true
+  },
+  "preregistered_primary_n_zones": 16,
+  "expansion_n_zones": 14,
+  "note": "Coverage-driven robustness expansion of the pre-registered 16-zone analysis; zones chosen before fetch on geographic+carbon-profile diversity, not signal."
+}

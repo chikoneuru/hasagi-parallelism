@@ -1,0 +1,804 @@
+{
+  "args": {
+    "seed": 0,
+    "epochs": 30,
+    "zone": "DE",
+    "days": 7,
+    "threshold_multiplier": 1.1,
+    "data_root": "data_cache/cifar10",
+    "out": "artifacts/endtoend_carbon_loop.json"
+  },
+  "continuous": {
+    "condition": "continuous",
+    "seed": 0,
+    "epochs_target": 30,
+    "threshold_g_per_kwh": 385.82103153828206,
+    "final_top1": 93.57,
+    "total_energy_joules": 97515.80494127607,
+    "total_carbon_grams": 10.253443894064436,
+    "total_simulated_hours": 30,
+    "epochs_completed": 30,
+    "epochs_deferred_hours": 0,
+    "epoch_records": [
+      {
+        "epoch_idx": 0,
+        "simulated_hour": 0,
+        "intensity_g_per_kwh": 278.5428851170166,
+        "wall_seconds": 10.999465569009772,
+        "energy_joules": 3078.233377703795,
+        "test_top1": 43.7,
+        "deferred": false
+      },
+      {
+        "epoch_idx": 1,
+        "simulated_hour": 1,
+        "intensity_g_per_kwh": 225.196673439111,
+        "wall_seconds": 10.798048183991341,
+        "energy_joules": 3174.4305611926748,
+        "test_top1": 53.08,
+        "deferred": false
+      },
+      {
+        "epoch_idx": 2,
+        "simulated_hour": 2,
+        "intensity_g_per_kwh": 258.1033282303737,
+        "wall_seconds": 10.859097998996731,
+        "energy_joules": 3209.013900417505,
+        "test_top1": 62.53,
+        "deferred": false
+      },
+      {
+        "epoch_idx": 3,
+        "simulated_hour": 3,
+        "intensity_g_per_kwh": 308.19657200853436,
+        "wall_seconds": 10.892215935018612,
+        "energy_joules": 3209.6880341736264,
+        "test_top1": 70.1,
+        "deferred": false
+      },
+      {
+        "epoch_idx": 4,
+        "simulated_hour": 4,
+        "intensity_g_per_kwh": 304.59127764529825,
+        "wall_seconds": 10.943283690983662,
+        "energy_joules": 3238.3156804325654,
+        "test_top1": 76.35,
+        "deferred": false
+      },
+      {
+        "epoch_idx": 5,
+        "simulated_hour": 5,
+        "intensity_g_per_kwh": 364.37414266499513,
+        "wall_seconds": 10.968022585992003,
+        "energy_joules": 3239.8788616345596,
+        "test_top1": 75.49,
+        "deferred": false
+      },
+      {
+        "epoch_idx": 6,
+        "simulated_hour": 6,
+        "intensity_g_per_kwh": 409.47991218187144,
+        "wall_seconds": 10.97458691499196,
+        "energy_joules": 3239.02927969734,
+        "test_top1": 76.76,
+        "deferred": false
+      },
+      {
+        "epoch_idx": 7,
+        "simulated_hour": 7,
+        "intensity_g_per_kwh": 423.0453763836034,
+        "wall_seconds": 10.982838280993747,
+        "energy_joules": 3239.896287745401,
+        "test_top1": 78.84,
+        "deferred": false
+      },
+      {
+        "epoch_idx": 8,
+        "simulated_hour": 8,
+        "intensity_g_per_kwh": 447.274065888516,
+        "wall_seconds": 10.993102636974072,
+        "energy_joules": 3239.946512931948,
+        "test_top1": 81.76,
+        "deferred": false
+      },
+      {
+        "epoch_idx": 9,
+        "simulated_hour": 9,
+        "intensity_g_per_kwh": 515.9132107092097,
+        "wall_seconds": 11.00967196901911,
+        "energy_joules": 3237.1347719584855,
+        "test_top1": 81.46,
+        "deferred": false
+      },
+      {
+        "epoch_idx": 10,
+        "simulated_hour": 10,
+        "intensity_g_per_kwh": 559.7350531560458,
+        "wall_seconds": 11.035207843990065,
+        "energy_joules": 3269.079761915338,
+        "test_top1": 82.09,
+        "deferred": false
+      },
+      {
+        "epoch_idx": 11,
+        "simulated_hour": 11,
+        "intensity_g_per_kwh": 533.7143331796726,
+        "wall_seconds": 11.037850644002901,
+        "energy_joules": 3274.115192521004,
+        "test_top1": 82.99,
+        "deferred": false
+      },
+      {
+        "epoch_idx": 12,
+        "simulated_hour": 12,
+        "intensity_g_per_kwh": 546.6583004051082,
+        "wall_seconds": 11.041243549989304,
+        "energy_joules": 3266.0219409269453,
+        "test_top1": 83.23,
+        "deferred": false
+      },
+      {
+        "epoch_idx": 13,
+        "simulated_hour": 13,
+        "intensity_g_per_kwh": 591.0306679579272,
+        "wall_seconds": 11.043181120010559,
+        "energy_joules": 3270.0687111535194,
+        "test_top1": 83.39,
+        "deferred": false
+      },
+      {
+        "epoch_idx": 14,
+        "simulated_hour": 14,
+        "intensity_g_per_kwh": 520.931566421459,
+        "wall_seconds": 11.06420018299832,
+        "energy_joules": 3266.2544736892696,
+        "test_top1": 84.2,
+        "deferred": false
+      },
+      {
+        "epoch_idx": 15,
+        "simulated_hour": 15,
+        "intensity_g_per_kwh": 498.21210060166396,
+        "wall_seconds": 11.059998623008141,
+        "energy_joules": 3266.2059432644746,
+        "test_top1": 87.43,
+        "deferred": false
+      },
+      {
+        "epoch_idx": 16,
+        "simulated_hour": 16,
+        "intensity_g_per_kwh": 540.1029833074643,
+        "wall_seconds": 11.059635752986651,
+        "energy_joules": 3267.0379551367914,
+        "test_top1": 86.92,
+        "deferred": false
+      },
+      {
+        "epoch_idx": 17,
+        "simulated_hour": 17,
+        "intensity_g_per_kwh": 405.5457919435373,
+        "wall_seconds": 11.060056020010961,
+        "energy_joules": 3270.021650444436,
+        "test_top1": 87.89,
+        "deferred": false
+      },
+      {
+        "epoch_idx": 18,
+        "simulated_hour": 18,
+        "intensity_g_per_kwh": 424.9116460073388,
+        "wall_seconds": 11.074766848993022,
+        "energy_joules": 3270.385134774783,
+        "test_top1": 88.44,
+        "deferred": false
+      },
+      {
+        "epoch_idx": 19,
+        "simulated_hour": 19,
+        "intensity_g_per_kwh": 316.0859303058368,
+        "wall_seconds": 11.091216595988953,
+        "energy_joules": 3266.7175544386178,
+        "test_top1": 89.35,
+        "deferred": false
+      },
+      {
+        "epoch_idx": 20,
+        "simulated_hour": 20,
+        "intensity_g_per_kwh": 315.07593129785744,
+        "wall_seconds": 11.073787586996332,
+        "energy_joules": 3269.2253764146094,
+        "test_top1": 90.49,
+        "deferred": false
+      },
+      {
+        "epoch_idx": 21,
+        "simulated_hour": 21,
+        "intensity_g_per_kwh": 336.52600488406637,
+        "wall_seconds": 11.086911324993707,
+        "energy_joules": 3274.5385662810304,
+        "test_top1": 91.2,
+        "deferred": false
+      },
+      {
+        "epoch_idx": 22,
+        "simulated_hour": 22,
+        "intensity_g_per_kwh": 305.63209975925105,
+        "wall_seconds": 11.091259628999978,
+        "energy_joules": 3267.995414486805,
+        "test_top1": 91.09,
+        "deferred": false
+      },
+      {
+        "epoch_idx": 23,
+        "simulated_hour": 23,
+        "intensity_g_per_kwh": 237.58312229675516,
+        "wall_seconds": 11.086359520995757,
+        "energy_joules": 3272.173087149345,
+        "test_top1": 91.47,
+        "deferred": false
+      },
+      {
+        "epoch_idx": 24,
+        "simulated_hour": 24,
+        "intensity_g_per_kwh": 226.7145728305276,
+        "wall_seconds": 11.105295668006875,
+        "energy_joules": 3275.930359483377,
+        "test_top1": 92.09,
+        "deferred": false
+      },
+      {
+        "epoch_idx": 25,
+        "simulated_hour": 25,
+        "intensity_g_per_kwh": 245.17399320054807,
+        "wall_seconds": 11.081853537994903,
+        "energy_joules": 3271.693270806228,
+        "test_top1": 92.62,
+        "deferred": false
+      },
+      {
+        "epoch_idx": 26,
+        "simulated_hour": 26,
+        "intensity_g_per_kwh": 226.70064807286548,
+        "wall_seconds": 11.08879572301521,
+        "energy_joules": 3271.6452212317504,
+        "test_top1": 93.46,
+        "deferred": false
+      },
+      {
+        "epoch_idx": 27,
+        "simulated_hour": 27,
+        "intensity_g_per_kwh": 295.79652403218586,
+        "wall_seconds": 11.103490061999764,
+        "energy_joules": 3277.784817862148,
+        "test_top1": 93.39,
+        "deferred": false
+      },
+      {
+        "epoch_idx": 28,
+        "simulated_hour": 28,
+        "intensity_g_per_kwh": 368.74647338539853,
+        "wall_seconds": 11.079996856977232,
+        "energy_joules": 3273.864443760542,
+        "test_top1": 93.47,
+        "deferred": false
+      },
+      {
+        "epoch_idx": 29,
+        "simulated_hour": 29,
+        "intensity_g_per_kwh": 315.3531469794831,
+        "wall_seconds": 11.0732815520023,
+        "energy_joules": 3269.4787976471584,
+        "test_top1": 93.57,
+        "deferred": false
+      }
+    ]
+  },
+  "carbon_aware": {
+    "condition": "carbon_aware",
+    "seed": 0,
+    "epochs_target": 30,
+    "threshold_g_per_kwh": 385.82103153828206,
+    "final_top1": 93.52,
+    "total_energy_joules": 98108.52721869801,
+    "total_carbon_grams": 7.8061040485401305,
+    "total_simulated_hours": 55,
+    "epochs_completed": 30,
+    "epochs_deferred_hours": 25,
+    "epoch_records": [
+      {
+        "epoch_idx": 0,
+        "simulated_hour": 0,
+        "intensity_g_per_kwh": 278.5428851170166,
+        "wall_seconds": 11.099245544988662,
+        "energy_joules": 3304.113186060196,
+        "test_top1": 39.92,
+        "deferred": false
+      },
+      {
+        "epoch_idx": 1,
+        "simulated_hour": 1,
+        "intensity_g_per_kwh": 225.196673439111,
+        "wall_seconds": 11.096052916022018,
+        "energy_joules": 3267.12609539644,
+        "test_top1": 55.53,
+        "deferred": false
+      },
+      {
+        "epoch_idx": 2,
+        "simulated_hour": 2,
+        "intensity_g_per_kwh": 258.1033282303737,
+        "wall_seconds": 11.098978122026892,
+        "energy_joules": 3273.217624105828,
+        "test_top1": 66.76,
+        "deferred": false
+      },
+      {
+        "epoch_idx": 3,
+        "simulated_hour": 3,
+        "intensity_g_per_kwh": 308.19657200853436,
+        "wall_seconds": 11.088798765005777,
+        "energy_joules": 3265.6656576424884,
+        "test_top1": 71.56,
+        "deferred": false
+      },
+      {
+        "epoch_idx": 4,
+        "simulated_hour": 4,
+        "intensity_g_per_kwh": 304.59127764529825,
+        "wall_seconds": 11.103834959998494,
+        "energy_joules": 3274.159149685159,
+        "test_top1": 77.63,
+        "deferred": false
+      },
+      {
+        "epoch_idx": 5,
+        "simulated_hour": 5,
+        "intensity_g_per_kwh": 364.37414266499513,
+        "wall_seconds": 11.105593240004964,
+        "energy_joules": 3273.290857213039,
+        "test_top1": 75.7,
+        "deferred": false
+      },
+      {
+        "epoch_idx": -1,
+        "simulated_hour": 6,
+        "intensity_g_per_kwh": 409.47991218187144,
+        "wall_seconds": 0.0,
+        "energy_joules": 0.0,
+        "test_top1": 0.0,
+        "deferred": true
+      },
+      {
+        "epoch_idx": -1,
+        "simulated_hour": 7,
+        "intensity_g_per_kwh": 423.0453763836034,
+        "wall_seconds": 0.0,
+        "energy_joules": 0.0,
+        "test_top1": 0.0,
+        "deferred": true
+      },
+      {
+        "epoch_idx": -1,
+        "simulated_hour": 8,
+        "intensity_g_per_kwh": 447.274065888516,
+        "wall_seconds": 0.0,
+        "energy_joules": 0.0,
+        "test_top1": 0.0,
+        "deferred": true
+      },
+      {
+        "epoch_idx": -1,
+        "simulated_hour": 9,
+        "intensity_g_per_kwh": 515.9132107092097,
+        "wall_seconds": 0.0,
+        "energy_joules": 0.0,
+        "test_top1": 0.0,
+        "deferred": true
+      },
+      {
+        "epoch_idx": -1,
+        "simulated_hour": 10,
+        "intensity_g_per_kwh": 559.7350531560458,
+        "wall_seconds": 0.0,
+        "energy_joules": 0.0,
+        "test_top1": 0.0,
+        "deferred": true
+      },
+      {
+        "epoch_idx": -1,
+        "simulated_hour": 11,
+        "intensity_g_per_kwh": 533.7143331796726,
+        "wall_seconds": 0.0,
+        "energy_joules": 0.0,
+        "test_top1": 0.0,
+        "deferred": true
+      },
+      {
+        "epoch_idx": -1,
+        "simulated_hour": 12,
+        "intensity_g_per_kwh": 546.6583004051082,
+        "wall_seconds": 0.0,
+        "energy_joules": 0.0,
+        "test_top1": 0.0,
+        "deferred": true
+      },
+      {
+        "epoch_idx": -1,
+        "simulated_hour": 13,
+        "intensity_g_per_kwh": 591.0306679579272,
+        "wall_seconds": 0.0,
+        "energy_joules": 0.0,
+        "test_top1": 0.0,
+        "deferred": true
+      },
+      {
+        "epoch_idx": -1,
+        "simulated_hour": 14,
+        "intensity_g_per_kwh": 520.931566421459,
+        "wall_seconds": 0.0,
+        "energy_joules": 0.0,
+        "test_top1": 0.0,
+        "deferred": true
+      },
+      {
+        "epoch_idx": -1,
+        "simulated_hour": 15,
+        "intensity_g_per_kwh": 498.21210060166396,
+        "wall_seconds": 0.0,
+        "energy_joules": 0.0,
+        "test_top1": 0.0,
+        "deferred": true
+      },
+      {
+        "epoch_idx": -1,
+        "simulated_hour": 16,
+        "intensity_g_per_kwh": 540.1029833074643,
+        "wall_seconds": 0.0,
+        "energy_joules": 0.0,
+        "test_top1": 0.0,
+        "deferred": true
+      },
+      {
+        "epoch_idx": -1,
+        "simulated_hour": 17,
+        "intensity_g_per_kwh": 405.5457919435373,
+        "wall_seconds": 0.0,
+        "energy_joules": 0.0,
+        "test_top1": 0.0,
+        "deferred": true
+      },
+      {
+        "epoch_idx": -1,
+        "simulated_hour": 18,
+        "intensity_g_per_kwh": 424.9116460073388,
+        "wall_seconds": 0.0,
+        "energy_joules": 0.0,
+        "test_top1": 0.0,
+        "deferred": true
+      },
+      {
+        "epoch_idx": 6,
+        "simulated_hour": 19,
+        "intensity_g_per_kwh": 316.0859303058368,
+        "wall_seconds": 11.106279169005575,
+        "energy_joules": 3274.88099954654,
+        "test_top1": 73.95,
+        "deferred": false
+      },
+      {
+        "epoch_idx": 7,
+        "simulated_hour": 20,
+        "intensity_g_per_kwh": 315.07593129785744,
+        "wall_seconds": 11.09000314498553,
+        "energy_joules": 3262.635522895811,
+        "test_top1": 79.65,
+        "deferred": false
+      },
+      {
+        "epoch_idx": 8,
+        "simulated_hour": 21,
+        "intensity_g_per_kwh": 336.52600488406637,
+        "wall_seconds": 11.106786822987488,
+        "energy_joules": 3267.7857741941934,
+        "test_top1": 79.01,
+        "deferred": false
+      },
+      {
+        "epoch_idx": 9,
+        "simulated_hour": 22,
+        "intensity_g_per_kwh": 305.63209975925105,
+        "wall_seconds": 11.10586135101039,
+        "energy_joules": 3267.6390812759964,
+        "test_top1": 83.34,
+        "deferred": false
+      },
+      {
+        "epoch_idx": 10,
+        "simulated_hour": 23,
+        "intensity_g_per_kwh": 237.58312229675516,
+        "wall_seconds": 11.108092770999065,
+        "energy_joules": 3263.603310936017,
+        "test_top1": 84.26,
+        "deferred": false
+      },
+      {
+        "epoch_idx": 11,
+        "simulated_hour": 24,
+        "intensity_g_per_kwh": 226.7145728305276,
+        "wall_seconds": 11.08636479100096,
+        "energy_joules": 3269.8132246141545,
+        "test_top1": 84.79,
+        "deferred": false
+      },
+      {
+        "epoch_idx": 12,
+        "simulated_hour": 25,
+        "intensity_g_per_kwh": 245.17399320054807,
+        "wall_seconds": 11.104856868012575,
+        "energy_joules": 3274.459082709152,
+        "test_top1": 83.97,
+        "deferred": false
+      },
+      {
+        "epoch_idx": 13,
+        "simulated_hour": 26,
+        "intensity_g_per_kwh": 226.70064807286548,
+        "wall_seconds": 11.106375778006623,
+        "energy_joules": 3265.7555605732323,
+        "test_top1": 85.12,
+        "deferred": false
+      },
+      {
+        "epoch_idx": 14,
+        "simulated_hour": 27,
+        "intensity_g_per_kwh": 295.79652403218586,
+        "wall_seconds": 11.101764982013265,
+        "energy_joules": 3270.00617523689,
+        "test_top1": 84.15,
+        "deferred": false
+      },
+      {
+        "epoch_idx": 15,
+        "simulated_hour": 28,
+        "intensity_g_per_kwh": 368.74647338539853,
+        "wall_seconds": 11.102448443009052,
+        "energy_joules": 3269.1456330712085,
+        "test_top1": 85.39,
+        "deferred": false
+      },
+      {
+        "epoch_idx": 16,
+        "simulated_hour": 29,
+        "intensity_g_per_kwh": 315.3531469794831,
+        "wall_seconds": 11.098351699998602,
+        "energy_joules": 3268.498097291606,
+        "test_top1": 87.32,
+        "deferred": false
+      },
+      {
+        "epoch_idx": 17,
+        "simulated_hour": 30,
+        "intensity_g_per_kwh": 338.51871409481083,
+        "wall_seconds": 11.093755520996638,
+        "energy_joules": 3272.4974128977424,
+        "test_top1": 87.84,
+        "deferred": false
+      },
+      {
+        "epoch_idx": -1,
+        "simulated_hour": 31,
+        "intensity_g_per_kwh": 434.08599148854796,
+        "wall_seconds": 0.0,
+        "energy_joules": 0.0,
+        "test_top1": 0.0,
+        "deferred": true
+      },
+      {
+        "epoch_idx": -1,
+        "simulated_hour": 32,
+        "intensity_g_per_kwh": 460.0789583065286,
+        "wall_seconds": 0.0,
+        "energy_joules": 0.0,
+        "test_top1": 0.0,
+        "deferred": true
+      },
+      {
+        "epoch_idx": -1,
+        "simulated_hour": 33,
+        "intensity_g_per_kwh": 539.2313065596136,
+        "wall_seconds": 0.0,
+        "energy_joules": 0.0,
+        "test_top1": 0.0,
+        "deferred": true
+      },
+      {
+        "epoch_idx": -1,
+        "simulated_hour": 34,
+        "intensity_g_per_kwh": 513.9517971748835,
+        "wall_seconds": 0.0,
+        "energy_joules": 0.0,
+        "test_top1": 0.0,
+        "deferred": true
+      },
+      {
+        "epoch_idx": -1,
+        "simulated_hour": 35,
+        "intensity_g_per_kwh": 531.6794221857851,
+        "wall_seconds": 0.0,
+        "energy_joules": 0.0,
+        "test_top1": 0.0,
+        "deferred": true
+      },
+      {
+        "epoch_idx": -1,
+        "simulated_hour": 36,
+        "intensity_g_per_kwh": 533.2851938436114,
+        "wall_seconds": 0.0,
+        "energy_joules": 0.0,
+        "test_top1": 0.0,
+        "deferred": true
+      },
+      {
+        "epoch_idx": -1,
+        "simulated_hour": 37,
+        "intensity_g_per_kwh": 508.18075906829574,
+        "wall_seconds": 0.0,
+        "energy_joules": 0.0,
+        "test_top1": 0.0,
+        "deferred": true
+      },
+      {
+        "epoch_idx": -1,
+        "simulated_hour": 38,
+        "intensity_g_per_kwh": 534.7866012519435,
+        "wall_seconds": 0.0,
+        "energy_joules": 0.0,
+        "test_top1": 0.0,
+        "deferred": true
+      },
+      {
+        "epoch_idx": -1,
+        "simulated_hour": 39,
+        "intensity_g_per_kwh": 461.02099664982455,
+        "wall_seconds": 0.0,
+        "energy_joules": 0.0,
+        "test_top1": 0.0,
+        "deferred": true
+      },
+      {
+        "epoch_idx": -1,
+        "simulated_hour": 40,
+        "intensity_g_per_kwh": 492.2192945396064,
+        "wall_seconds": 0.0,
+        "energy_joules": 0.0,
+        "test_top1": 0.0,
+        "deferred": true
+      },
+      {
+        "epoch_idx": -1,
+        "simulated_hour": 41,
+        "intensity_g_per_kwh": 427.08930233657225,
+        "wall_seconds": 0.0,
+        "energy_joules": 0.0,
+        "test_top1": 0.0,
+        "deferred": true
+      },
+      {
+        "epoch_idx": -1,
+        "simulated_hour": 42,
+        "intensity_g_per_kwh": 400.64779249310567,
+        "wall_seconds": 0.0,
+        "energy_joules": 0.0,
+        "test_top1": 0.0,
+        "deferred": true
+      },
+      {
+        "epoch_idx": 18,
+        "simulated_hour": 43,
+        "intensity_g_per_kwh": 335.4150668902474,
+        "wall_seconds": 11.095843841991154,
+        "energy_joules": 3270.4729747774913,
+        "test_top1": 89.29,
+        "deferred": false
+      },
+      {
+        "epoch_idx": 19,
+        "simulated_hour": 44,
+        "intensity_g_per_kwh": 290.0521993878046,
+        "wall_seconds": 11.08462902600877,
+        "energy_joules": 3274.914851905405,
+        "test_top1": 88.78,
+        "deferred": false
+      },
+      {
+        "epoch_idx": 20,
+        "simulated_hour": 45,
+        "intensity_g_per_kwh": 326.9976079166935,
+        "wall_seconds": 11.086314435000531,
+        "energy_joules": 3266.930018706197,
+        "test_top1": 89.92,
+        "deferred": false
+      },
+      {
+        "epoch_idx": 21,
+        "simulated_hour": 46,
+        "intensity_g_per_kwh": 269.86697507229667,
+        "wall_seconds": 11.094574126007501,
+        "energy_joules": 3267.3791353657566,
+        "test_top1": 90.79,
+        "deferred": false
+      },
+      {
+        "epoch_idx": 22,
+        "simulated_hour": 47,
+        "intensity_g_per_kwh": 273.3432466244164,
+        "wall_seconds": 11.08022083499236,
+        "energy_joules": 3271.7056871001114,
+        "test_top1": 90.56,
+        "deferred": false
+      },
+      {
+        "epoch_idx": 23,
+        "simulated_hour": 48,
+        "intensity_g_per_kwh": 204.66463041696107,
+        "wall_seconds": 11.079284559004009,
+        "energy_joules": 3263.7963393671885,
+        "test_top1": 91.95,
+        "deferred": false
+      },
+      {
+        "epoch_idx": 24,
+        "simulated_hour": 49,
+        "intensity_g_per_kwh": 270.3878722100068,
+        "wall_seconds": 11.076531772007002,
+        "energy_joules": 3262.5066958414664,
+        "test_top1": 91.89,
+        "deferred": false
+      },
+      {
+        "epoch_idx": 25,
+        "simulated_hour": 50,
+        "intensity_g_per_kwh": 229.02024861341042,
+        "wall_seconds": 11.070877499994822,
+        "energy_joules": 3271.104884840752,
+        "test_top1": 92.97,
+        "deferred": false
+      },
+      {
+        "epoch_idx": 26,
+        "simulated_hour": 51,
+        "intensity_g_per_kwh": 218.17542068057384,
+        "wall_seconds": 11.08667292399332,
+        "energy_joules": 3266.252934398891,
+        "test_top1": 93.36,
+        "deferred": false
+      },
+      {
+        "epoch_idx": 27,
+        "simulated_hour": 52,
+        "intensity_g_per_kwh": 294.19928539582037,
+        "wall_seconds": 11.083483648020774,
+        "energy_joules": 3268.540167566022,
+        "test_top1": 93.41,
+        "deferred": false
+      },
+      {
+        "epoch_idx": 28,
+        "simulated_hour": 53,
+        "intensity_g_per_kwh": 321.79617910302886,
+        "wall_seconds": 11.092591243010247,
+        "energy_joules": 3274.1381915348516,
+        "test_top1": 93.4,
+        "deferred": false
+      },
+      {
+        "epoch_idx": 29,
+        "simulated_hour": 54,
+        "intensity_g_per_kwh": 291.9578086346518,
+        "wall_seconds": 11.078578757005744,
+        "energy_joules": 3266.492891948183,
+        "test_top1": 93.52,
+        "deferred": false
+      }
+    ]
+  }
+}

@@ -1,17 +1,17 @@
+# Monorepo-root ignores (tare/ keeps its own .gitignore for the carbon-paper code).
 __pycache__/
 *.py[cod]
-*.egg-info/
 .venv/
+venv/
 .pytest_cache/
-.mypy_cache/
 .ruff_cache/
-build/
-dist/
-.coverage
-htmlcov/
+# transient experiment outputs (model/optimizer checkpoints, logs)
+*.pt
+*.pth
+**/_ckpt/
 *.log
-data_cache/
-checkpoints/
-artifacts/
 .DS_Store
-.env
+tare/research-note.md
+# internal working notes / research plans (keep local, never publish)
+research-note.md
+*-research-plan.md

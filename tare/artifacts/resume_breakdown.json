@@ -1,0 +1,44 @@
+{
+  "batch_size": 32,
+  "steady": {
+    "iters": 200,
+    "throughput_iter_s": 177.93672507955813,
+    "j_per_iter": 0.7461296701995573,
+    "mean_wall_ms": 5.619975300505757,
+    "mean_sm_clock_mhz": 1873.5,
+    "mean_power_w": 132.76387,
+    "mean_data_fetch_ms": 0.48015591368312016
+  },
+  "first_after_resume": {
+    "iters": 15,
+    "throughput_iter_s": 157.0662076334312,
+    "j_per_iter": 0.6630261312671705,
+    "mean_wall_ms": 6.366741866804659,
+    "mean_sm_clock_mhz": 1695,
+    "mean_power_w": 104.139,
+    "mean_data_fetch_ms": 0.6185008639780184
+  },
+  "resumed_tail": {
+    "iters": 100,
+    "throughput_iter_s": 177.6230448940347,
+    "j_per_iter": 0.8290349379375234,
+    "mean_wall_ms": 5.629900110070594,
+    "mean_sm_clock_mhz": 1911.75,
+    "mean_power_w": 147.25571,
+    "mean_data_fetch_ms": 0.47803115798160434
+  },
+  "ckpt_write_s": 0.09201675199437886,
+  "resume_steps_s": {
+    "rebuild_s": 0.09074696101015434,
+    "reload_s": 0.04699071100912988,
+    "first_batch_s": 0.7606931490008719
+  },
+  "discrete_resume_s": 0.990447573014535,
+  "idle_clock_mhz": [
+    1950,
+    1695
+  ],
+  "ramp_overhead_pct_first": -11.137948570006643,
+  "tail_overhead_pct": 11.11137528089353,
+  "ramp_window": 15
+}

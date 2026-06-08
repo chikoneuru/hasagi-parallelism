@@ -1,0 +1,177 @@
+{
+  "gpu_name": "NVIDIA GeForce RTX 3080 Ti",
+  "workload": "transformer",
+  "cap_order": "descending",
+  "repeats": 3,
+  "rows": [
+    {
+      "cap_w_requested": 350.0,
+      "cap_w_observed": 350.0,
+      "iters": 50,
+      "wall_seconds": 6.427116454016262,
+      "throughput_iters_per_s": 7.779539414911795,
+      "avg_power_w": 331.70918,
+      "peak_power_w": 336.081,
+      "avg_sm_clock_mhz": 1557.7,
+      "avg_temp_c": 80.52,
+      "peak_temp_c": 81.0,
+      "energy_per_iter_j": 42.6386686253125,
+      "energy_per_iter_kwh": 1.184407461814236e-05,
+      "samples_count": 150
+    },
+    {
+      "cap_w_requested": 300.0,
+      "cap_w_observed": 300.0,
+      "iters": 50,
+      "wall_seconds": 6.814308944003035,
+      "throughput_iters_per_s": 7.3375160637425525,
+      "avg_power_w": 297.69338,
+      "peak_power_w": 299.562,
+      "avg_sm_clock_mhz": 1402.5,
+      "avg_temp_c": 79.27333333333334,
+      "peak_temp_c": 80.0,
+      "energy_per_iter_j": 40.57147589536995,
+      "energy_per_iter_kwh": 1.1269854415380542e-05,
+      "samples_count": 150
+    },
+    {
+      "cap_w_requested": 250.0,
+      "cap_w_observed": 250.0,
+      "iters": 50,
+      "wall_seconds": 8.165370934642851,
+      "throughput_iters_per_s": 6.123491838431454,
+      "avg_power_w": 249.40478,
+      "peak_power_w": 250.518,
+      "avg_sm_clock_mhz": 1105.0,
+      "avg_temp_c": 76.28,
+      "peak_temp_c": 77.0,
+      "energy_per_iter_j": 40.729703454196205,
+      "energy_per_iter_kwh": 1.13138065150545e-05,
+      "samples_count": 150
+    },
+    {
+      "cap_w_requested": 200.0,
+      "cap_w_observed": 200.0,
+      "iters": 50,
+      "wall_seconds": 11.969960185000673,
+      "throughput_iters_per_s": 4.177328822933344,
+      "avg_power_w": 199.34554666666668,
+      "peak_power_w": 200.369,
+      "avg_sm_clock_mhz": 702.6,
+      "avg_temp_c": 72.0,
+      "peak_temp_c": 73.0,
+      "energy_per_iter_j": 47.72325083117414,
+      "energy_per_iter_kwh": 1.3256458564215039e-05,
+      "samples_count": 150
+    },
+    {
+      "cap_w_requested": 150.0,
+      "cap_w_observed": 150.0,
+      "iters": 50,
+      "wall_seconds": 23.229485983009607,
+      "throughput_iters_per_s": 2.152875375705051,
+      "avg_power_w": 149.72176666666667,
+      "peak_power_w": 150.307,
+      "avg_sm_clock_mhz": 340.8,
+      "avg_temp_c": 67.00666666666666,
+      "peak_temp_c": 69.0,
+      "energy_per_iter_j": 69.55942768102427,
+      "energy_per_iter_kwh": 1.9322063244728965e-05,
+      "samples_count": 150
+    }
+  ],
+  "repeat_stats": [
+    {
+      "cap_w_requested": 350.0,
+      "cap_w_observed_mean": 350.0,
+      "n_repeats": 3,
+      "throughput_mean": 7.779539414911795,
+      "throughput_sd": 0.003239280064655371,
+      "avg_power_mean": 331.70918,
+      "avg_power_sd": 0.10525056579417873,
+      "energy_per_iter_j_mean": 42.6386686253125,
+      "energy_per_iter_j_sd": 0.015776242294822176,
+      "energy_per_iter_cv": 0.0003699984732979348,
+      "energy_per_iter_j_repeats": [
+        42.63029765219807,
+        42.628842155268906,
+        42.65686606847053
+      ],
+      "avg_temp_c_mean": 80.52
+    },
+    {
+      "cap_w_requested": 300.0,
+      "cap_w_observed_mean": 300.0,
+      "n_repeats": 3,
+      "throughput_mean": 7.3375160637425525,
+      "throughput_sd": 0.012789175694290033,
+      "avg_power_mean": 297.69338,
+      "avg_power_sd": 0.13018269162987828,
+      "energy_per_iter_j_mean": 40.57147589536995,
+      "energy_per_iter_j_sd": 0.056666126132306725,
+      "energy_per_iter_cv": 0.0013966986628350267,
+      "energy_per_iter_j_repeats": [
+        40.63666663229845,
+        40.54374629661687,
+        40.53401475719454
+      ],
+      "avg_temp_c_mean": 79.27333333333334
+    },
+    {
+      "cap_w_requested": 250.0,
+      "cap_w_observed_mean": 250.0,
+      "n_repeats": 3,
+      "throughput_mean": 6.123491838431454,
+      "throughput_sd": 0.025582593713039566,
+      "avg_power_mean": 249.40478,
+      "avg_power_sd": 0.11707558071605778,
+      "energy_per_iter_j_mean": 40.729703454196205,
+      "energy_per_iter_j_sd": 0.1892093239906857,
+      "energy_per_iter_cv": 0.004645487394806757,
+      "energy_per_iter_j_repeats": [
+        40.9289368218445,
+        40.707738024042875,
+        40.55243551670123
+      ],
+      "avg_temp_c_mean": 76.28
+    },
+    {
+      "cap_w_requested": 200.0,
+      "cap_w_observed_mean": 200.0,
+      "n_repeats": 3,
+      "throughput_mean": 4.177328822933344,
+      "throughput_sd": 0.03585565161663847,
+      "avg_power_mean": 199.34554666666668,
+      "avg_power_sd": 0.0876775965303302,
+      "energy_per_iter_j_mean": 47.72325083117414,
+      "energy_per_iter_j_sd": 0.42555919017009425,
+      "energy_per_iter_cv": 0.00891722971001186,
+      "energy_per_iter_j_repeats": [
+        48.17931220364779,
+        47.6536709030337,
+        47.33676938684094
+      ],
+      "avg_temp_c_mean": 72.0
+    },
+    {
+      "cap_w_requested": 150.0,
+      "cap_w_observed_mean": 150.0,
+      "n_repeats": 3,
+      "throughput_mean": 2.152875375705051,
+      "throughput_sd": 0.0374763057456453,
+      "avg_power_mean": 149.72176666666667,
+      "avg_power_sd": 0.04600028840490278,
+      "energy_per_iter_j_mean": 69.55942768102427,
+      "energy_per_iter_j_sd": 1.241361653917764,
+      "energy_per_iter_cv": 0.0178460590505463,
+      "energy_per_iter_j_repeats": [
+        70.96856872552323,
+        69.08227724000936,
+        68.62743707754022
+      ],
+      "avg_temp_c_mean": 67.00666666666666
+    }
+  ],
+  "alpha": 1.001737304421967,
+  "p_max_w": 331.70918
+}

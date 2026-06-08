@@ -1,0 +1,92 @@
+{
+  "schedule_g_per_kwh": [
+    200.0,
+    200.0,
+    900.0,
+    900.0
+  ],
+  "threshold_g_per_kwh": 800.0,
+  "total_iters": 4000,
+  "tick_seconds": 3.0,
+  "trace_source": "synthetic-parametric",
+  "energy_source": "nvml-measured-marginal-drift-corrected",
+  "background_w_calibration": 134.27338,
+  "background_w_calibration_sd": 0.20124968472025162,
+  "background_w_drift": 1.983000000000004,
+  "background_w_mean": 135.48433333333332,
+  "background_anchors": 12,
+  "active_marginal_power_w_alwayson": 74.63705178479236,
+  "active_j_per_iter_alwayson": 0.6886199142464045,
+  "active_j_per_iter_aware": 0.7581824263222311,
+  "resume_energy_wh": 5.755868724693829e-05,
+  "dedicated_idle_w_assumed": 30.0,
+  "always_on": {
+    "iters": 4002,
+    "ticks": 9,
+    "pauses": 0,
+    "makespan_s": 28.010061280976515,
+    "energy_by_phase_wh": {
+      "cold_start": 0.0,
+      "active": 0.7655158046705863
+    },
+    "duration_by_phase_s": {
+      "cold_start": 3.1563162559759803,
+      "active": 36.92344259202946
+    },
+    "power_by_phase_w": {
+      "cold_start": 0.0,
+      "active": 74.63705178479236
+    },
+    "total_carbon_g_measured": 0.4060176572140767
+  },
+  "carbon_aware": {
+    "iters": 4002,
+    "ticks": 17,
+    "pauses": 4,
+    "makespan_s": 96.71300372999394,
+    "energy_by_phase_wh": {
+      "cold_start": 5.755868724693829e-05,
+      "active": 0.8428461305948802,
+      "idle": 0.0009750515566278107
+    },
+    "duration_by_phase_s": {
+      "cold_start": 5.415864703070838,
+      "active": 78.90078278491274,
+      "idle": 24.00100157398265
+    },
+    "power_by_phase_w": {
+      "cold_start": 0.03826005364784822,
+      "active": 38.4564761342491,
+      "idle": 0.14625163008468772
+    },
+    "total_carbon_g_measured": 0.16945828425739043
+  },
+  "makespan_cost_s": 68.70294244901743,
+  "regimes": {
+    "dedicated": {
+      "carbon_aware_g": 0.34858824966129526,
+      "always_on_g": 0.4060176572140766,
+      "delta_g": -0.057429407552781364,
+      "delta_pct": -14.144559117659547,
+      "break_even_window_s": 0.0016415416092502785,
+      "idle_power_w_assumed": 30.0
+    },
+    "reallocated": {
+      "carbon_aware_g": 0.1685807378564254,
+      "always_on_g": 0.4060176572140766,
+      "delta_g": -0.2374369193576512,
+      "delta_pct": -58.479456530744024,
+      "break_even_window_s": 0.0007932148946475712,
+      "idle_power_w_assumed": 0.0
+    },
+    "powered_down": {
+      "carbon_aware_g": 0.1685807378564254,
+      "always_on_g": 0.4060176572140766,
+      "delta_g": -0.2374369193576512,
+      "delta_pct": -58.479456530744024,
+      "break_even_window_s": 0.0007932148946475712,
+      "idle_power_w_assumed": 0.0
+    }
+  },
+  "_SUPERSEDED": "Shared-GPU run with a large co-tenant (background ~134W vs only ~74.6W active marginal); magnitudes (-14% dedicated) differ ~3x from the clean run. Authoritative: deferral_clean.json (dedicated, bg ~26W, drift 0, drift_contaminated=false). Do not co-quote."
+}

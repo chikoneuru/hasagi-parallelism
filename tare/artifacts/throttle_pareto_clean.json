@@ -1,0 +1,71 @@
+{
+  "gpu": "NVIDIA GeForce RTX 3080 Ti",
+  "profile": "artifacts/hardware-pareto-3080ti-clean.json",
+  "full_cap_w": 350.0,
+  "throttle_cap_w": 250.0,
+  "schedule_g_per_kwh": [
+    200.0,
+    200.0,
+    900.0,
+    900.0
+  ],
+  "threshold_g_per_kwh": 800.0,
+  "total_iters": 200000,
+  "window_s": 600.0,
+  "resume_energy_wh": 0.07,
+  "dedicated_idle_w": 26.0,
+  "trace_source": "synthetic-parametric",
+  "energy_source": "measured-power-cap-profile",
+  "policies": {
+    "always-on": {
+      "total_carbon_g": 133.56102433423172,
+      "makespan_s": 3550.092566185008,
+      "iters": 200000,
+      "idle_carbon_g": 0.0,
+      "resume_carbon_g": 0.0,
+      "rel_carbon_pct_vs_alwayson": 0.0,
+      "makespan_delta_s": 0.0
+    },
+    "always-on@250W(eco)": {
+      "total_carbon_g": 112.17504982362831,
+      "makespan_s": 3809.402693703172,
+      "iters": 200000,
+      "idle_carbon_g": 0.0,
+      "resume_carbon_g": 0.0,
+      "rel_carbon_pct_vs_alwayson": -16.012137236298642,
+      "makespan_delta_s": 259.31012751816434
+    },
+    "throttle@250W": {
+      "total_carbon_g": 112.61786899741932,
+      "makespan_s": 3634.094126044086,
+      "iters": 200000,
+      "idle_carbon_g": 0.0,
+      "resume_carbon_g": 0.0,
+      "rel_carbon_pct_vs_alwayson": -15.68058903501885,
+      "makespan_delta_s": 84.00155985907804
+    },
+    "pause/reallocated": {
+      "total_carbon_g": 61.208430500898366,
+      "makespan_s": 5950.092566185008,
+      "iters": 200000,
+      "idle_carbon_g": 0.0,
+      "resume_carbon_g": 0.028000000000000004,
+      "rel_carbon_pct_vs_alwayson": -54.17193690598954,
+      "makespan_delta_s": 2400.0
+    },
+    "pause/dedicated": {
+      "total_carbon_g": 76.80843050089835,
+      "makespan_s": 5950.092566185008,
+      "iters": 200000,
+      "idle_carbon_g": 15.6,
+      "resume_carbon_g": 0.028000000000000004,
+      "rel_carbon_pct_vs_alwayson": -42.491882730183335,
+      "makespan_delta_s": 2400.0
+    },
+    "_decomposition": {
+      "throttle_total_pct": 15.68058903501885,
+      "efficiency_pct_carbon_blind": 16.012137236298642,
+      "carbon_awareness_pct": -0.33154820127979256
+    }
+  }
+}

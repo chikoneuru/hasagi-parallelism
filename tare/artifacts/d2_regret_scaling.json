@@ -1,0 +1,1773 @@
+{
+  "args": {
+    "trace": "data_cache/real_traces/de_2024-07-01_2024-07-15_hourly.csv",
+    "t_values": [
+      12,
+      24,
+      48,
+      96,
+      144,
+      192,
+      240,
+      288
+    ],
+    "n_starts": 30,
+    "deadline_multiplier": 1.0,
+    "out": "artifacts/d2_regret_scaling.json"
+  },
+  "trials": [
+    {
+      "t_hours": 12,
+      "start_offset": 197,
+      "offline_cost": 1000372.8,
+      "pd_cost": 1409869.6,
+      "regret": 409496.80000000005
+    },
+    {
+      "t_hours": 12,
+      "start_offset": 215,
+      "offline_cost": 1764209.6,
+      "pd_cost": 2034808.3,
+      "regret": 270598.69999999995
+    },
+    {
+      "t_hours": 12,
+      "start_offset": 20,
+      "offline_cost": 2192586.8,
+      "pd_cost": 2538970.8,
+      "regret": 346384.0
+    },
+    {
+      "t_hours": 12,
+      "start_offset": 132,
+      "offline_cost": 696980.0,
+      "pd_cost": 866898.2,
+      "regret": 169918.19999999995
+    },
+    {
+      "t_hours": 12,
+      "start_offset": 261,
+      "offline_cost": 2699401.2,
+      "pd_cost": 2981676.7999999993,
+      "regret": 282275.59999999916
+    },
+    {
+      "t_hours": 12,
+      "start_offset": 248,
+      "offline_cost": 1293734.0,
+      "pd_cost": 1664514.7999999998,
+      "regret": 370780.7999999998
+    },
+    {
+      "t_hours": 12,
+      "start_offset": 207,
+      "offline_cost": 1289425.0,
+      "pd_cost": 1594304.2000000002,
+      "regret": 304879.2000000002
+    },
+    {
+      "t_hours": 12,
+      "start_offset": 155,
+      "offline_cost": 919030.8,
+      "pd_cost": 1588865.0,
+      "regret": 669834.2
+    },
+    {
+      "t_hours": 12,
+      "start_offset": 244,
+      "offline_cost": 1353932.0,
+      "pd_cost": 1950388.4,
+      "regret": 596456.3999999999
+    },
+    {
+      "t_hours": 12,
+      "start_offset": 183,
+      "offline_cost": 1993755.7999999998,
+      "pd_cost": 2593428.5999999996,
+      "regret": 599672.7999999998
+    },
+    {
+      "t_hours": 12,
+      "start_offset": 298,
+      "offline_cost": 873043.0,
+      "pd_cost": 1169909.7999999998,
+      "regret": 296866.7999999998
+    },
+    {
+      "t_hours": 12,
+      "start_offset": 111,
+      "offline_cost": 1141863.5999999999,
+      "pd_cost": 1466032.0,
+      "regret": 324168.40000000014
+    },
+    {
+      "t_hours": 12,
+      "start_offset": 258,
+      "offline_cost": 2777414.4,
+      "pd_cost": 3156599.8,
+      "regret": 379185.3999999999
+    },
+    {
+      "t_hours": 12,
+      "start_offset": 71,
+      "offline_cost": 912954.0,
+      "pd_cost": 1233675.6,
+      "regret": 320721.6000000001
+    },
+    {
+      "t_hours": 12,
+      "start_offset": 144,
+      "offline_cost": 866778.0,
+      "pd_cost": 977359.5,
+      "regret": 110581.5
+    },
+    {
+      "t_hours": 12,
+      "start_offset": 71,
+      "offline_cost": 912954.0,
+      "pd_cost": 1233675.6,
+      "regret": 320721.6000000001
+    },
+    {
+      "t_hours": 12,
+      "start_offset": 48,
+      "offline_cost": 1891546.4000000004,
+      "pd_cost": 2164073.4999999995,
+      "regret": 272527.09999999916
+    },
+    {
+      "t_hours": 12,
+      "start_offset": 316,
+      "offline_cost": 814306.7999999999,
+      "pd_cost": 1030922.4,
+      "regret": 216615.6000000001
+    },
+    {
+      "t_hours": 12,
+      "start_offset": 128,
+      "offline_cost": 667384.4,
+      "pd_cost": 734259.2000000001,
+      "regret": 66874.80000000005
+    },
+    {
+      "t_hours": 12,
+      "start_offset": 272,
+      "offline_cost": 1303176.4,
+      "pd_cost": 1630144.4,
+      "regret": 326968.0
+    },
+    {
+      "t_hours": 12,
+      "start_offset": 308,
+      "offline_cost": 1527766.7999999998,
+      "pd_cost": 1710489.7,
+      "regret": 182722.90000000014
+    },
+    {
+      "t_hours": 12,
+      "start_offset": 75,
+      "offline_cost": 767512.8,
+      "pd_cost": 886120.9000000001,
+      "regret": 118608.1000000001
+    },
+    {
+      "t_hours": 12,
+      "start_offset": 158,
+      "offline_cost": 1356892.2000000002,
+      "pd_cost": 1981731.2999999998,
+      "regret": 624839.0999999996
+    },
+    {
+      "t_hours": 12,
+      "start_offset": 50,
+      "offline_cost": 1773876.0000000002,
+      "pd_cost": 2010687.5000000002,
+      "regret": 236811.5
+    },
+    {
+      "t_hours": 12,
+      "start_offset": 37,
+      "offline_cost": 1607669.2,
+      "pd_cost": 1859228.2000000002,
+      "regret": 251559.00000000023
+    },
+    {
+      "t_hours": 12,
+      "start_offset": 169,
+      "offline_cost": 1408916.4,
+      "pd_cost": 1966148.8,
+      "regret": 557232.4000000001
+    },
+    {
+      "t_hours": 12,
+      "start_offset": 241,
+      "offline_cost": 1843046.6,
+      "pd_cost": 2537580.4,
+      "regret": 694533.7999999998
+    },
+    {
+      "t_hours": 12,
+      "start_offset": 286,
+      "offline_cost": 1099136.0,
+      "pd_cost": 1259262.2999999998,
+      "regret": 160126.2999999998
+    },
+    {
+      "t_hours": 12,
+      "start_offset": 51,
+      "offline_cost": 1736048.0,
+      "pd_cost": 1942012.9,
+      "regret": 205964.8999999999
+    },
+    {
+      "t_hours": 12,
+      "start_offset": 181,
+      "offline_cost": 1565550.0,
+      "pd_cost": 2297148.3,
+      "regret": 731598.2999999998
+    },
+    {
+      "t_hours": 24,
+      "start_offset": 222,
+      "offline_cost": 3577189.0,
+      "pd_cost": 4526200.5,
+      "regret": 949011.5
+    },
+    {
+      "t_hours": 24,
+      "start_offset": 161,
+      "offline_cost": 2819636.4,
+      "pd_cost": 3749221.7,
+      "regret": 929585.3000000003
+    },
+    {
+      "t_hours": 24,
+      "start_offset": 312,
+      "offline_cost": 1960557.5999999999,
+      "pd_cost": 2655593.6000000006,
+      "regret": 695036.0000000007
+    },
+    {
+      "t_hours": 24,
+      "start_offset": 327,
+      "offline_cost": 2170834.8000000003,
+      "pd_cost": 2864541.8000000003,
+      "regret": 693707.0
+    },
+    {
+      "t_hours": 24,
+      "start_offset": 104,
+      "offline_cost": 1734321.0000000005,
+      "pd_cost": 2194657.0,
+      "regret": 460335.99999999953
+    },
+    {
+      "t_hours": 24,
+      "start_offset": 282,
+      "offline_cost": 1784881.4,
+      "pd_cost": 2052588.7999999998,
+      "regret": 267707.3999999999
+    },
+    {
+      "t_hours": 24,
+      "start_offset": 244,
+      "offline_cost": 3418559.3999999994,
+      "pd_cost": 4458132.0,
+      "regret": 1039572.6000000006
+    },
+    {
+      "t_hours": 24,
+      "start_offset": 226,
+      "offline_cost": 3697898.0,
+      "pd_cost": 4618839.3,
+      "regret": 920941.2999999998
+    },
+    {
+      "t_hours": 24,
+      "start_offset": 266,
+      "offline_cost": 2768255.1999999997,
+      "pd_cost": 3590459.5,
+      "regret": 822204.3000000003
+    },
+    {
+      "t_hours": 24,
+      "start_offset": 133,
+      "offline_cost": 1518565.2000000002,
+      "pd_cost": 1680179.6,
+      "regret": 161614.3999999999
+    },
+    {
+      "t_hours": 24,
+      "start_offset": 31,
+      "offline_cost": 3179958.4,
+      "pd_cost": 3621465.8,
+      "regret": 441507.3999999999
+    },
+    {
+      "t_hours": 24,
+      "start_offset": 280,
+      "offline_cost": 1814931.0000000002,
+      "pd_cost": 2133500.9000000004,
+      "regret": 318569.90000000014
+    },
+    {
+      "t_hours": 24,
+      "start_offset": 7,
+      "offline_cost": 3106318.5999999996,
+      "pd_cost": 3758201.5999999996,
+      "regret": 651883.0
+    },
+    {
+      "t_hours": 24,
+      "start_offset": 47,
+      "offline_cost": 3620203.0,
+      "pd_cost": 4070093.9,
+      "regret": 449890.8999999999
+    },
+    {
+      "t_hours": 24,
+      "start_offset": 204,
+      "offline_cost": 2533402.4000000004,
+      "pd_cost": 3140123.9,
+      "regret": 606721.4999999995
+    },
+    {
+      "t_hours": 24,
+      "start_offset": 320,
+      "offline_cost": 2058587.9999999998,
+      "pd_cost": 2897395.5999999996,
+      "regret": 838807.5999999999
+    },
+    {
+      "t_hours": 24,
+      "start_offset": 0,
+      "offline_cost": 3300940.9999999995,
+      "pd_cost": 3868045.0,
+      "regret": 567104.0000000005
+    },
+    {
+      "t_hours": 24,
+      "start_offset": 313,
+      "offline_cost": 1962548.5999999996,
+      "pd_cost": 2578363.5999999996,
+      "regret": 615815.0
+    },
+    {
+      "t_hours": 24,
+      "start_offset": 252,
+      "offline_cost": 3529101.8,
+      "pd_cost": 4622386.8,
+      "regret": 1093285.0
+    },
+    {
+      "t_hours": 24,
+      "start_offset": 170,
+      "offline_cost": 2961175.0,
+      "pd_cost": 4113800.1,
+      "regret": 1152625.1
+    },
+    {
+      "t_hours": 24,
+      "start_offset": 124,
+      "offline_cost": 1507749.2,
+      "pd_cost": 1671926.6,
+      "regret": 164177.40000000014
+    },
+    {
+      "t_hours": 24,
+      "start_offset": 166,
+      "offline_cost": 2945898.9999999995,
+      "pd_cost": 3935398.2999999993,
+      "regret": 989499.2999999998
+    },
+    {
+      "t_hours": 24,
+      "start_offset": 32,
+      "offline_cost": 3189884.4,
+      "pd_cost": 3735701.8000000003,
+      "regret": 545817.4000000004
+    },
+    {
+      "t_hours": 24,
+      "start_offset": 97,
+      "offline_cost": 1707306.6,
+      "pd_cost": 2260821.2,
+      "regret": 553514.6000000001
+    },
+    {
+      "t_hours": 24,
+      "start_offset": 290,
+      "offline_cost": 1920841.7999999998,
+      "pd_cost": 2578821.6999999997,
+      "regret": 657979.8999999999
+    },
+    {
+      "t_hours": 24,
+      "start_offset": 113,
+      "offline_cost": 1743637.7999999998,
+      "pd_cost": 2176182.5,
+      "regret": 432544.7000000002
+    },
+    {
+      "t_hours": 24,
+      "start_offset": 122,
+      "offline_cost": 1532846.2000000002,
+      "pd_cost": 1756253.5,
+      "regret": 223407.2999999998
+    },
+    {
+      "t_hours": 24,
+      "start_offset": 72,
+      "offline_cost": 1624148.2,
+      "pd_cost": 1911709.1999999997,
+      "regret": 287560.99999999977
+    },
+    {
+      "t_hours": 24,
+      "start_offset": 278,
+      "offline_cost": 1874633.2,
+      "pd_cost": 2248380.3,
+      "regret": 373747.09999999986
+    },
+    {
+      "t_hours": 24,
+      "start_offset": 229,
+      "offline_cost": 3576308.4,
+      "pd_cost": 4399298.9,
+      "regret": 822990.5000000005
+    },
+    {
+      "t_hours": 48,
+      "start_offset": 46,
+      "offline_cost": 4357086.0,
+      "pd_cost": 5767695.500000001,
+      "regret": 1410609.500000001
+    },
+    {
+      "t_hours": 48,
+      "start_offset": 41,
+      "offline_cost": 4694238.0,
+      "pd_cost": 6023764.1,
+      "regret": 1329526.0999999996
+    },
+    {
+      "t_hours": 48,
+      "start_offset": 163,
+      "offline_cost": 5569290.400000001,
+      "pd_cost": 7443431.200000003,
+      "regret": 1874140.8000000017
+    },
+    {
+      "t_hours": 48,
+      "start_offset": 260,
+      "offline_cost": 4666677.399999999,
+      "pd_cost": 6265003.0,
+      "regret": 1598325.6000000006
+    },
+    {
+      "t_hours": 48,
+      "start_offset": 250,
+      "offline_cost": 5290574.4,
+      "pd_cost": 6795411.4,
+      "regret": 1504837.0
+    },
+    {
+      "t_hours": 48,
+      "start_offset": 55,
+      "offline_cost": 3986167.7999999993,
+      "pd_cost": 5000962.600000001,
+      "regret": 1014794.8000000012
+    },
+    {
+      "t_hours": 48,
+      "start_offset": 154,
+      "offline_cost": 5343669.600000001,
+      "pd_cost": 7417623.6000000015,
+      "regret": 2073954.000000001
+    },
+    {
+      "t_hours": 48,
+      "start_offset": 282,
+      "offline_cost": 3716740.0,
+      "pd_cost": 4453047.4,
+      "regret": 736307.4000000004
+    },
+    {
+      "t_hours": 48,
+      "start_offset": 149,
+      "offline_cost": 4805682.399999999,
+      "pd_cost": 7234558.000000002,
+      "regret": 2428875.6000000024
+    },
+    {
+      "t_hours": 48,
+      "start_offset": 63,
+      "offline_cost": 3449650.9999999995,
+      "pd_cost": 4238675.999999999,
+      "regret": 789024.9999999995
+    },
+    {
+      "t_hours": 48,
+      "start_offset": 280,
+      "offline_cost": 3742928.4,
+      "pd_cost": 4511244.000000001,
+      "regret": 768315.600000001
+    },
+    {
+      "t_hours": 48,
+      "start_offset": 170,
+      "offline_cost": 5326249.0,
+      "pd_cost": 7046527.500000001,
+      "regret": 1720278.500000001
+    },
+    {
+      "t_hours": 48,
+      "start_offset": 276,
+      "offline_cost": 3982303.2,
+      "pd_cost": 4600527.6,
+      "regret": 618224.3999999994
+    },
+    {
+      "t_hours": 48,
+      "start_offset": 104,
+      "offline_cost": 3136022.8000000003,
+      "pd_cost": 3845049.7,
+      "regret": 709026.8999999999
+    },
+    {
+      "t_hours": 48,
+      "start_offset": 308,
+      "offline_cost": 4274680.8,
+      "pd_cost": 5528183.400000001,
+      "regret": 1253502.6000000015
+    },
+    {
+      "t_hours": 48,
+      "start_offset": 280,
+      "offline_cost": 3742928.4,
+      "pd_cost": 4511244.000000001,
+      "regret": 768315.600000001
+    },
+    {
+      "t_hours": 48,
+      "start_offset": 300,
+      "offline_cost": 4060414.0,
+      "pd_cost": 5238537.8,
+      "regret": 1178123.7999999998
+    },
+    {
+      "t_hours": 48,
+      "start_offset": 147,
+      "offline_cost": 4684778.399999999,
+      "pd_cost": 6890620.9,
+      "regret": 2205842.500000001
+    },
+    {
+      "t_hours": 48,
+      "start_offset": 227,
+      "offline_cost": 7132460.200000001,
+      "pd_cost": 8750415.600000001,
+      "regret": 1617955.4000000004
+    },
+    {
+      "t_hours": 48,
+      "start_offset": 46,
+      "offline_cost": 4357086.0,
+      "pd_cost": 5767695.500000001,
+      "regret": 1410609.500000001
+    },
+    {
+      "t_hours": 48,
+      "start_offset": 305,
+      "offline_cost": 4167634.8,
+      "pd_cost": 5334170.4,
+      "regret": 1166535.6000000006
+    },
+    {
+      "t_hours": 48,
+      "start_offset": 197,
+      "offline_cost": 5740658.4,
+      "pd_cost": 7175474.1,
+      "regret": 1434815.6999999993
+    },
+    {
+      "t_hours": 48,
+      "start_offset": 162,
+      "offline_cost": 5556040.000000001,
+      "pd_cost": 7587995.300000002,
+      "regret": 2031955.3000000007
+    },
+    {
+      "t_hours": 48,
+      "start_offset": 294,
+      "offline_cost": 3989449.4,
+      "pd_cost": 5183926.800000001,
+      "regret": 1194477.4000000008
+    },
+    {
+      "t_hours": 48,
+      "start_offset": 123,
+      "offline_cost": 3328263.5999999996,
+      "pd_cost": 4796418.6,
+      "regret": 1468155.0
+    },
+    {
+      "t_hours": 48,
+      "start_offset": 148,
+      "offline_cost": 4836298.399999999,
+      "pd_cost": 7061524.000000001,
+      "regret": 2225225.6000000015
+    },
+    {
+      "t_hours": 48,
+      "start_offset": 94,
+      "offline_cost": 3198270.2,
+      "pd_cost": 3878174.4000000004,
+      "regret": 679904.2000000002
+    },
+    {
+      "t_hours": 48,
+      "start_offset": 96,
+      "offline_cost": 3228587.8000000003,
+      "pd_cost": 3906496.8000000003,
+      "regret": 677909.0
+    },
+    {
+      "t_hours": 48,
+      "start_offset": 95,
+      "offline_cost": 3231592.2,
+      "pd_cost": 3841384.000000001,
+      "regret": 609791.8000000007
+    },
+    {
+      "t_hours": 48,
+      "start_offset": 16,
+      "offline_cost": 6519041.399999999,
+      "pd_cost": 7195133.000000001,
+      "regret": 676091.6000000015
+    },
+    {
+      "t_hours": 96,
+      "start_offset": 133,
+      "offline_cost": 8878241.400000004,
+      "pd_cost": 11984893.900000002,
+      "regret": 3106652.499999998
+    },
+    {
+      "t_hours": 96,
+      "start_offset": 243,
+      "offline_cost": 9492533.200000001,
+      "pd_cost": 12020192.2,
+      "regret": 2527658.999999998
+    },
+    {
+      "t_hours": 96,
+      "start_offset": 35,
+      "offline_cost": 8019667.6000000015,
+      "pd_cost": 9903477.4,
+      "regret": 1883809.7999999989
+    },
+    {
+      "t_hours": 96,
+      "start_offset": 45,
+      "offline_cost": 7365722.199999999,
+      "pd_cost": 9339985.300000003,
+      "regret": 1974263.1000000034
+    },
+    {
+      "t_hours": 96,
+      "start_offset": 66,
+      "offline_cost": 6576002.199999999,
+      "pd_cost": 7668414.599999999,
+      "regret": 1092412.3999999994
+    },
+    {
+      "t_hours": 96,
+      "start_offset": 76,
+      "offline_cost": 6657443.6,
+      "pd_cost": 8625668.0,
+      "regret": 1968224.4000000004
+    },
+    {
+      "t_hours": 96,
+      "start_offset": 19,
+      "offline_cost": 8798644.400000004,
+      "pd_cost": 10859742.700000003,
+      "regret": 2061098.2999999989
+    },
+    {
+      "t_hours": 96,
+      "start_offset": 41,
+      "offline_cost": 7542041.3999999985,
+      "pd_cost": 9693129.500000002,
+      "regret": 2151088.1000000034
+    },
+    {
+      "t_hours": 96,
+      "start_offset": 200,
+      "offline_cost": 11260171.0,
+      "pd_cost": 13703011.599999998,
+      "regret": 2442840.5999999978
+    },
+    {
+      "t_hours": 96,
+      "start_offset": 141,
+      "offline_cost": 9730518.600000001,
+      "pd_cost": 12779749.500000004,
+      "regret": 3049230.9000000022
+    },
+    {
+      "t_hours": 96,
+      "start_offset": 120,
+      "offline_cost": 8140346.200000004,
+      "pd_cost": 11320001.000000004,
+      "regret": 3179654.8
+    },
+    {
+      "t_hours": 96,
+      "start_offset": 110,
+      "offline_cost": 7927437.200000005,
+      "pd_cost": 11081962.300000003,
+      "regret": 3154525.0999999978
+    },
+    {
+      "t_hours": 96,
+      "start_offset": 214,
+      "offline_cost": 10788258.4,
+      "pd_cost": 13646298.599999998,
+      "regret": 2858040.1999999974
+    },
+    {
+      "t_hours": 96,
+      "start_offset": 140,
+      "offline_cost": 9547067.800000003,
+      "pd_cost": 12669251.500000004,
+      "regret": 3122183.700000001
+    },
+    {
+      "t_hours": 96,
+      "start_offset": 230,
+      "offline_cost": 10107935.599999998,
+      "pd_cost": 12969871.799999997,
+      "regret": 2861936.1999999993
+    },
+    {
+      "t_hours": 96,
+      "start_offset": 252,
+      "offline_cost": 9035103.0,
+      "pd_cost": 11594712.8,
+      "regret": 2559609.8000000007
+    },
+    {
+      "t_hours": 96,
+      "start_offset": 182,
+      "offline_cost": 12631218.0,
+      "pd_cost": 15464084.999999998,
+      "regret": 2832866.999999998
+    },
+    {
+      "t_hours": 96,
+      "start_offset": 42,
+      "offline_cost": 7558761.3999999985,
+      "pd_cost": 9603138.3,
+      "regret": 2044376.9000000022
+    },
+    {
+      "t_hours": 96,
+      "start_offset": 166,
+      "offline_cost": 12056572.600000001,
+      "pd_cost": 14663570.5,
+      "regret": 2606997.8999999985
+    },
+    {
+      "t_hours": 96,
+      "start_offset": 59,
+      "offline_cost": 6782449.399999998,
+      "pd_cost": 8215646.3999999985,
+      "regret": 1433197.000000001
+    },
+    {
+      "t_hours": 96,
+      "start_offset": 249,
+      "offline_cost": 9316395.799999999,
+      "pd_cost": 11787059.8,
+      "regret": 2470664.000000002
+    },
+    {
+      "t_hours": 96,
+      "start_offset": 171,
+      "offline_cost": 12010616.600000001,
+      "pd_cost": 14887455.3,
+      "regret": 2876838.6999999993
+    },
+    {
+      "t_hours": 96,
+      "start_offset": 97,
+      "offline_cost": 7425069.000000002,
+      "pd_cost": 10342394.000000002,
+      "regret": 2917325.0
+    },
+    {
+      "t_hours": 96,
+      "start_offset": 124,
+      "offline_cost": 8225038.200000004,
+      "pd_cost": 11497249.400000002,
+      "regret": 3272211.1999999983
+    },
+    {
+      "t_hours": 96,
+      "start_offset": 8,
+      "offline_cost": 9707352.200000003,
+      "pd_cost": 11480071.400000002,
+      "regret": 1772719.1999999993
+    },
+    {
+      "t_hours": 96,
+      "start_offset": 138,
+      "offline_cost": 9428361.200000003,
+      "pd_cost": 12299226.900000002,
+      "regret": 2870865.6999999993
+    },
+    {
+      "t_hours": 96,
+      "start_offset": 59,
+      "offline_cost": 6782449.399999998,
+      "pd_cost": 8215646.3999999985,
+      "regret": 1433197.000000001
+    },
+    {
+      "t_hours": 96,
+      "start_offset": 112,
+      "offline_cost": 7996182.8000000045,
+      "pd_cost": 11011819.300000003,
+      "regret": 3015636.499999998
+    },
+    {
+      "t_hours": 96,
+      "start_offset": 190,
+      "offline_cost": 12113776.200000001,
+      "pd_cost": 14486479.6,
+      "regret": 2372703.3999999985
+    },
+    {
+      "t_hours": 96,
+      "start_offset": 87,
+      "offline_cost": 6944864.200000001,
+      "pd_cost": 8929651.3,
+      "regret": 1984787.0999999996
+    },
+    {
+      "t_hours": 144,
+      "start_offset": 85,
+      "offline_cost": 11773177.800000003,
+      "pd_cost": 15517172.100000005,
+      "regret": 3743994.3000000026
+    },
+    {
+      "t_hours": 144,
+      "start_offset": 109,
+      "offline_cost": 13389303.000000006,
+      "pd_cost": 17915849.299999997,
+      "regret": 4526546.299999991
+    },
+    {
+      "t_hours": 144,
+      "start_offset": 208,
+      "offline_cost": 14808936.6,
+      "pd_cost": 18371756.999999996,
+      "regret": 3562820.3999999966
+    },
+    {
+      "t_hours": 144,
+      "start_offset": 15,
+      "offline_cost": 11735998.400000002,
+      "pd_cost": 14705272.3,
+      "regret": 2969273.8999999985
+    },
+    {
+      "t_hours": 144,
+      "start_offset": 25,
+      "offline_cost": 11610465.200000003,
+      "pd_cost": 14827272.000000002,
+      "regret": 3216806.799999999
+    },
+    {
+      "t_hours": 144,
+      "start_offset": 200,
+      "offline_cost": 14977125.6,
+      "pd_cost": 18717524.199999996,
+      "regret": 3740398.599999996
+    },
+    {
+      "t_hours": 144,
+      "start_offset": 37,
+      "offline_cost": 11512369.8,
+      "pd_cost": 14614287.200000001,
+      "regret": 3101917.4000000004
+    },
+    {
+      "t_hours": 144,
+      "start_offset": 178,
+      "offline_cost": 15713844.399999997,
+      "pd_cost": 19647234.300000004,
+      "regret": 3933389.900000008
+    },
+    {
+      "t_hours": 144,
+      "start_offset": 56,
+      "offline_cost": 11549706.399999999,
+      "pd_cost": 15572108.1,
+      "regret": 4022401.700000001
+    },
+    {
+      "t_hours": 144,
+      "start_offset": 11,
+      "offline_cost": 11968536.200000003,
+      "pd_cost": 14908621.200000001,
+      "regret": 2940084.999999998
+    },
+    {
+      "t_hours": 144,
+      "start_offset": 209,
+      "offline_cost": 14857671.0,
+      "pd_cost": 18562305.599999998,
+      "regret": 3704634.5999999978
+    },
+    {
+      "t_hours": 144,
+      "start_offset": 146,
+      "offline_cost": 16111977.200000003,
+      "pd_cost": 20385455.0,
+      "regret": 4273477.799999997
+    },
+    {
+      "t_hours": 144,
+      "start_offset": 162,
+      "offline_cost": 16416362.0,
+      "pd_cost": 20480307.7,
+      "regret": 4063945.6999999993
+    },
+    {
+      "t_hours": 144,
+      "start_offset": 136,
+      "offline_cost": 15545510.200000005,
+      "pd_cost": 20010272.1,
+      "regret": 4464761.899999997
+    },
+    {
+      "t_hours": 144,
+      "start_offset": 154,
+      "offline_cost": 16442154.800000003,
+      "pd_cost": 20642496.700000003,
+      "regret": 4200341.9
+    },
+    {
+      "t_hours": 144,
+      "start_offset": 174,
+      "offline_cost": 16005572.200000001,
+      "pd_cost": 19792957.0,
+      "regret": 3787384.799999999
+    },
+    {
+      "t_hours": 144,
+      "start_offset": 18,
+      "offline_cost": 11692827.000000002,
+      "pd_cost": 14484599.600000001,
+      "regret": 2791772.5999999996
+    },
+    {
+      "t_hours": 144,
+      "start_offset": 6,
+      "offline_cost": 12323221.200000003,
+      "pd_cost": 15160140.9,
+      "regret": 2836919.6999999974
+    },
+    {
+      "t_hours": 144,
+      "start_offset": 31,
+      "offline_cost": 11620222.200000003,
+      "pd_cost": 15051746.5,
+      "regret": 3431524.299999997
+    },
+    {
+      "t_hours": 144,
+      "start_offset": 162,
+      "offline_cost": 16416362.0,
+      "pd_cost": 20480307.7,
+      "regret": 4063945.6999999993
+    },
+    {
+      "t_hours": 144,
+      "start_offset": 48,
+      "offline_cost": 11556296.200000001,
+      "pd_cost": 15302163.900000002,
+      "regret": 3745867.700000001
+    },
+    {
+      "t_hours": 144,
+      "start_offset": 155,
+      "offline_cost": 16446572.400000002,
+      "pd_cost": 20493937.300000004,
+      "regret": 4047364.9000000022
+    },
+    {
+      "t_hours": 144,
+      "start_offset": 212,
+      "offline_cost": 14928853.6,
+      "pd_cost": 18744240.599999994,
+      "regret": 3815386.9999999944
+    },
+    {
+      "t_hours": 144,
+      "start_offset": 147,
+      "offline_cost": 16212524.8,
+      "pd_cost": 20472300.400000002,
+      "regret": 4259775.6000000015
+    },
+    {
+      "t_hours": 144,
+      "start_offset": 30,
+      "offline_cost": 11619642.200000003,
+      "pd_cost": 15023381.100000001,
+      "regret": 3403738.8999999985
+    },
+    {
+      "t_hours": 144,
+      "start_offset": 100,
+      "offline_cost": 12716197.800000003,
+      "pd_cost": 17322601.800000004,
+      "regret": 4606404.000000002
+    },
+    {
+      "t_hours": 144,
+      "start_offset": 23,
+      "offline_cost": 11603226.400000002,
+      "pd_cost": 14813885.000000002,
+      "regret": 3210658.5999999996
+    },
+    {
+      "t_hours": 144,
+      "start_offset": 94,
+      "offline_cost": 12454166.400000002,
+      "pd_cost": 16490771.000000006,
+      "regret": 4036604.6000000034
+    },
+    {
+      "t_hours": 144,
+      "start_offset": 213,
+      "offline_cost": 14944047.6,
+      "pd_cost": 18903391.199999996,
+      "regret": 3959343.599999996
+    },
+    {
+      "t_hours": 144,
+      "start_offset": 29,
+      "offline_cost": 11619144.200000003,
+      "pd_cost": 15009644.700000001,
+      "regret": 3390500.499999998
+    },
+    {
+      "t_hours": 192,
+      "start_offset": 9,
+      "offline_cost": 17086207.600000005,
+      "pd_cost": 22118164.899999995,
+      "regret": 5031957.29999999
+    },
+    {
+      "t_hours": 192,
+      "start_offset": 155,
+      "offline_cost": 20280725.8,
+      "pd_cost": 25324472.500000004,
+      "regret": 5043746.700000003
+    },
+    {
+      "t_hours": 192,
+      "start_offset": 5,
+      "offline_cost": 17141300.600000005,
+      "pd_cost": 22094282.89999999,
+      "regret": 4952982.299999986
+    },
+    {
+      "t_hours": 192,
+      "start_offset": 49,
+      "offline_cost": 16770038.400000002,
+      "pd_cost": 21682774.6,
+      "regret": 4912736.199999999
+    },
+    {
+      "t_hours": 192,
+      "start_offset": 47,
+      "offline_cost": 16812643.200000003,
+      "pd_cost": 21642792.400000006,
+      "regret": 4830149.200000003
+    },
+    {
+      "t_hours": 192,
+      "start_offset": 31,
+      "offline_cost": 16688126.800000004,
+      "pd_cost": 21360004.099999994,
+      "regret": 4671877.29999999
+    },
+    {
+      "t_hours": 192,
+      "start_offset": 122,
+      "offline_cost": 18496406.400000006,
+      "pd_cost": 24296700.60000001,
+      "regret": 5800294.200000003
+    },
+    {
+      "t_hours": 192,
+      "start_offset": 53,
+      "offline_cost": 16814501.200000003,
+      "pd_cost": 22036186.900000002,
+      "regret": 5221685.699999999
+    },
+    {
+      "t_hours": 192,
+      "start_offset": 15,
+      "offline_cost": 16842412.800000004,
+      "pd_cost": 21329484.89999999,
+      "regret": 4487072.099999987
+    },
+    {
+      "t_hours": 192,
+      "start_offset": 5,
+      "offline_cost": 17141300.600000005,
+      "pd_cost": 22094282.89999999,
+      "regret": 4952982.299999986
+    },
+    {
+      "t_hours": 192,
+      "start_offset": 139,
+      "offline_cost": 19018601.800000004,
+      "pd_cost": 24376812.000000007,
+      "regret": 5358210.200000003
+    },
+    {
+      "t_hours": 192,
+      "start_offset": 108,
+      "offline_cost": 18463347.80000001,
+      "pd_cost": 23905240.900000002,
+      "regret": 5441893.099999994
+    },
+    {
+      "t_hours": 192,
+      "start_offset": 158,
+      "offline_cost": 20311578.599999994,
+      "pd_cost": 25176944.3,
+      "regret": 4865365.700000007
+    },
+    {
+      "t_hours": 192,
+      "start_offset": 25,
+      "offline_cost": 16718361.800000004,
+      "pd_cost": 21178316.599999994,
+      "regret": 4459954.79999999
+    },
+    {
+      "t_hours": 192,
+      "start_offset": 66,
+      "offline_cost": 16771045.400000002,
+      "pd_cost": 21470430.600000005,
+      "regret": 4699385.200000003
+    },
+    {
+      "t_hours": 192,
+      "start_offset": 17,
+      "offline_cost": 16777983.200000003,
+      "pd_cost": 21233120.19999999,
+      "regret": 4455136.999999989
+    },
+    {
+      "t_hours": 192,
+      "start_offset": 56,
+      "offline_cost": 16900276.6,
+      "pd_cost": 22204171.1,
+      "regret": 5303894.5
+    },
+    {
+      "t_hours": 192,
+      "start_offset": 18,
+      "offline_cost": 16761936.400000004,
+      "pd_cost": 21245168.999999993,
+      "regret": 4483232.599999988
+    },
+    {
+      "t_hours": 192,
+      "start_offset": 165,
+      "offline_cost": 20424321.999999993,
+      "pd_cost": 25474541.200000003,
+      "regret": 5050219.20000001
+    },
+    {
+      "t_hours": 192,
+      "start_offset": 77,
+      "offline_cost": 17076180.0,
+      "pd_cost": 22958119.400000006,
+      "regret": 5881939.400000006
+    },
+    {
+      "t_hours": 192,
+      "start_offset": 89,
+      "offline_cost": 18168317.000000004,
+      "pd_cost": 23748845.600000005,
+      "regret": 5580528.6000000015
+    },
+    {
+      "t_hours": 192,
+      "start_offset": 111,
+      "offline_cost": 18513763.000000007,
+      "pd_cost": 23709948.30000001,
+      "regret": 5196185.300000001
+    },
+    {
+      "t_hours": 192,
+      "start_offset": 46,
+      "offline_cost": 16833871.200000003,
+      "pd_cost": 21606672.600000005,
+      "regret": 4772801.400000002
+    },
+    {
+      "t_hours": 192,
+      "start_offset": 15,
+      "offline_cost": 16842412.800000004,
+      "pd_cost": 21329484.89999999,
+      "regret": 4487072.099999987
+    },
+    {
+      "t_hours": 192,
+      "start_offset": 128,
+      "offline_cost": 18727392.200000003,
+      "pd_cost": 24387008.500000007,
+      "regret": 5659616.3000000045
+    },
+    {
+      "t_hours": 192,
+      "start_offset": 119,
+      "offline_cost": 18515544.400000006,
+      "pd_cost": 23982296.500000004,
+      "regret": 5466752.099999998
+    },
+    {
+      "t_hours": 192,
+      "start_offset": 10,
+      "offline_cost": 17124213.000000004,
+      "pd_cost": 21964235.399999995,
+      "regret": 4840022.399999991
+    },
+    {
+      "t_hours": 192,
+      "start_offset": 152,
+      "offline_cost": 20102475.4,
+      "pd_cost": 25394611.700000003,
+      "regret": 5292136.3000000045
+    },
+    {
+      "t_hours": 192,
+      "start_offset": 25,
+      "offline_cost": 16718361.800000004,
+      "pd_cost": 21178316.599999994,
+      "regret": 4459954.79999999
+    },
+    {
+      "t_hours": 192,
+      "start_offset": 100,
+      "offline_cost": 18258056.800000004,
+      "pd_cost": 23842007.000000004,
+      "regret": 5583950.199999999
+    },
+    {
+      "t_hours": 240,
+      "start_offset": 25,
+      "offline_cost": 22630404.39999999,
+      "pd_cost": 28889306.399999995,
+      "regret": 6258902.000000004
+    },
+    {
+      "t_hours": 240,
+      "start_offset": 33,
+      "offline_cost": 22824612.59999999,
+      "pd_cost": 29365371.899999995,
+      "regret": 6540759.3000000045
+    },
+    {
+      "t_hours": 240,
+      "start_offset": 45,
+      "offline_cost": 22637502.599999994,
+      "pd_cost": 28819356.80000001,
+      "regret": 6181854.200000014
+    },
+    {
+      "t_hours": 240,
+      "start_offset": 115,
+      "offline_cost": 22707641.800000004,
+      "pd_cost": 28766855.3,
+      "regret": 6059213.499999996
+    },
+    {
+      "t_hours": 240,
+      "start_offset": 93,
+      "offline_cost": 21706606.20000001,
+      "pd_cost": 27698573.000000007,
+      "regret": 5991966.799999997
+    },
+    {
+      "t_hours": 240,
+      "start_offset": 60,
+      "offline_cost": 21801962.599999998,
+      "pd_cost": 27535850.900000006,
+      "regret": 5733888.300000008
+    },
+    {
+      "t_hours": 240,
+      "start_offset": 107,
+      "offline_cost": 22380308.00000001,
+      "pd_cost": 28320171.10000001,
+      "regret": 5939863.099999998
+    },
+    {
+      "t_hours": 240,
+      "start_offset": 115,
+      "offline_cost": 22707641.800000004,
+      "pd_cost": 28766855.3,
+      "regret": 6059213.499999996
+    },
+    {
+      "t_hours": 240,
+      "start_offset": 117,
+      "offline_cost": 22747077.200000007,
+      "pd_cost": 28824246.5,
+      "regret": 6077169.299999993
+    },
+    {
+      "t_hours": 240,
+      "start_offset": 72,
+      "offline_cost": 21200088.600000005,
+      "pd_cost": 27403793.200000007,
+      "regret": 6203704.6000000015
+    },
+    {
+      "t_hours": 240,
+      "start_offset": 21,
+      "offline_cost": 22587682.79999999,
+      "pd_cost": 28582962.199999988,
+      "regret": 5995279.3999999985
+    },
+    {
+      "t_hours": 240,
+      "start_offset": 89,
+      "offline_cost": 21610527.600000013,
+      "pd_cost": 27307409.20000001,
+      "regret": 5696881.599999998
+    },
+    {
+      "t_hours": 240,
+      "start_offset": 86,
+      "offline_cost": 21556249.200000014,
+      "pd_cost": 27372288.800000012,
+      "regret": 5816039.599999998
+    },
+    {
+      "t_hours": 240,
+      "start_offset": 26,
+      "offline_cost": 22750428.19999999,
+      "pd_cost": 28806622.0,
+      "regret": 6056193.800000008
+    },
+    {
+      "t_hours": 240,
+      "start_offset": 98,
+      "offline_cost": 21911516.00000001,
+      "pd_cost": 28166969.400000006,
+      "regret": 6255453.399999995
+    },
+    {
+      "t_hours": 240,
+      "start_offset": 7,
+      "offline_cost": 22672168.59999999,
+      "pd_cost": 28601593.49999999,
+      "regret": 5929424.8999999985
+    },
+    {
+      "t_hours": 240,
+      "start_offset": 100,
+      "offline_cost": 22024803.20000001,
+      "pd_cost": 28485424.000000004,
+      "regret": 6460620.799999993
+    },
+    {
+      "t_hours": 240,
+      "start_offset": 86,
+      "offline_cost": 21556249.200000014,
+      "pd_cost": 27372288.800000012,
+      "regret": 5816039.599999998
+    },
+    {
+      "t_hours": 240,
+      "start_offset": 20,
+      "offline_cost": 22608381.79999999,
+      "pd_cost": 28372520.39999999,
+      "regret": 5764138.6000000015
+    },
+    {
+      "t_hours": 240,
+      "start_offset": 108,
+      "offline_cost": 22407350.400000006,
+      "pd_cost": 28369413.30000001,
+      "regret": 5962062.900000002
+    },
+    {
+      "t_hours": 240,
+      "start_offset": 20,
+      "offline_cost": 22608381.79999999,
+      "pd_cost": 28372520.39999999,
+      "regret": 5764138.6000000015
+    },
+    {
+      "t_hours": 240,
+      "start_offset": 43,
+      "offline_cost": 22718716.59999999,
+      "pd_cost": 28850476.000000004,
+      "regret": 6131759.400000013
+    },
+    {
+      "t_hours": 240,
+      "start_offset": 67,
+      "offline_cost": 21232808.000000004,
+      "pd_cost": 26957891.800000004,
+      "regret": 5725083.800000001
+    },
+    {
+      "t_hours": 240,
+      "start_offset": 32,
+      "offline_cost": 22817755.59999999,
+      "pd_cost": 29370908.099999994,
+      "regret": 6553152.500000004
+    },
+    {
+      "t_hours": 240,
+      "start_offset": 15,
+      "offline_cost": 22520138.199999988,
+      "pd_cost": 28211943.49999999,
+      "regret": 5691805.300000001
+    },
+    {
+      "t_hours": 240,
+      "start_offset": 76,
+      "offline_cost": 21372078.400000002,
+      "pd_cost": 27732632.800000012,
+      "regret": 6360554.40000001
+    },
+    {
+      "t_hours": 240,
+      "start_offset": 117,
+      "offline_cost": 22747077.200000007,
+      "pd_cost": 28824246.5,
+      "regret": 6077169.299999993
+    },
+    {
+      "t_hours": 240,
+      "start_offset": 56,
+      "offline_cost": 22205238.2,
+      "pd_cost": 27863577.3,
+      "regret": 5658339.1000000015
+    },
+    {
+      "t_hours": 240,
+      "start_offset": 85,
+      "offline_cost": 21544809.200000014,
+      "pd_cost": 27392453.20000001,
+      "regret": 5847643.999999996
+    },
+    {
+      "t_hours": 240,
+      "start_offset": 22,
+      "offline_cost": 22704715.59999999,
+      "pd_cost": 28684338.99999999,
+      "regret": 5979623.3999999985
+    },
+    {
+      "t_hours": 288,
+      "start_offset": 1,
+      "offline_cost": 28413937.799999986,
+      "pd_cost": 35064810.09999999,
+      "regret": 6650872.300000001
+    },
+    {
+      "t_hours": 288,
+      "start_offset": 60,
+      "offline_cost": 25846245.000000004,
+      "pd_cost": 32060146.90000001,
+      "regret": 6213901.900000006
+    },
+    {
+      "t_hours": 288,
+      "start_offset": 52,
+      "offline_cost": 26065970.8,
+      "pd_cost": 32795913.40000001,
+      "regret": 6729942.600000009
+    },
+    {
+      "t_hours": 288,
+      "start_offset": 72,
+      "offline_cost": 25574862.400000002,
+      "pd_cost": 32394572.600000005,
+      "regret": 6819710.200000003
+    },
+    {
+      "t_hours": 288,
+      "start_offset": 65,
+      "offline_cost": 25524230.2,
+      "pd_cost": 31852814.200000003,
+      "regret": 6328584.000000004
+    },
+    {
+      "t_hours": 288,
+      "start_offset": 39,
+      "offline_cost": 26443531.000000004,
+      "pd_cost": 32809282.100000013,
+      "regret": 6365751.100000009
+    },
+    {
+      "t_hours": 288,
+      "start_offset": 45,
+      "offline_cost": 26097643.8,
+      "pd_cost": 32754140.400000017,
+      "regret": 6656496.600000016
+    },
+    {
+      "t_hours": 288,
+      "start_offset": 49,
+      "offline_cost": 26086969.8,
+      "pd_cost": 32808883.400000013,
+      "regret": 6721913.600000013
+    },
+    {
+      "t_hours": 288,
+      "start_offset": 32,
+      "offline_cost": 26938994.799999993,
+      "pd_cost": 33263939.1,
+      "regret": 6324944.300000008
+    },
+    {
+      "t_hours": 288,
+      "start_offset": 19,
+      "offline_cost": 27213978.59999999,
+      "pd_cost": 33750049.19999999,
+      "regret": 6536070.599999998
+    },
+    {
+      "t_hours": 288,
+      "start_offset": 71,
+      "offline_cost": 25575507.400000002,
+      "pd_cost": 32409394.500000007,
+      "regret": 6833887.100000005
+    },
+    {
+      "t_hours": 288,
+      "start_offset": 1,
+      "offline_cost": 28413937.799999986,
+      "pd_cost": 35064810.09999999,
+      "regret": 6650872.300000001
+    },
+    {
+      "t_hours": 288,
+      "start_offset": 58,
+      "offline_cost": 25991576.400000002,
+      "pd_cost": 32603536.700000007,
+      "regret": 6611960.3000000045
+    },
+    {
+      "t_hours": 288,
+      "start_offset": 10,
+      "offline_cost": 27914194.399999987,
+      "pd_cost": 34197367.09999999,
+      "regret": 6283172.699999999
+    },
+    {
+      "t_hours": 288,
+      "start_offset": 42,
+      "offline_cost": 26151679.200000007,
+      "pd_cost": 32685535.400000013,
+      "regret": 6533856.200000007
+    },
+    {
+      "t_hours": 288,
+      "start_offset": 5,
+      "offline_cost": 28167208.99999999,
+      "pd_cost": 34787204.599999994,
+      "regret": 6619995.600000005
+    },
+    {
+      "t_hours": 288,
+      "start_offset": 69,
+      "offline_cost": 25578168.200000003,
+      "pd_cost": 32238495.400000002,
+      "regret": 6660327.199999999
+    },
+    {
+      "t_hours": 288,
+      "start_offset": 35,
+      "offline_cost": 26669251.199999996,
+      "pd_cost": 32914634.100000005,
+      "regret": 6245382.90000001
+    },
+    {
+      "t_hours": 288,
+      "start_offset": 17,
+      "offline_cost": 27307904.599999994,
+      "pd_cost": 33800085.39999999,
+      "regret": 6492180.799999997
+    },
+    {
+      "t_hours": 288,
+      "start_offset": 30,
+      "offline_cost": 27025276.799999993,
+      "pd_cost": 33594538.6,
+      "regret": 6569261.800000008
+    },
+    {
+      "t_hours": 288,
+      "start_offset": 61,
+      "offline_cost": 25735973.200000003,
+      "pd_cost": 31855499.000000007,
+      "regret": 6119525.8000000045
+    },
+    {
+      "t_hours": 288,
+      "start_offset": 45,
+      "offline_cost": 26097643.8,
+      "pd_cost": 32754140.400000017,
+      "regret": 6656496.600000016
+    },
+    {
+      "t_hours": 288,
+      "start_offset": 36,
+      "offline_cost": 26653047.8,
+      "pd_cost": 32994843.300000004,
+      "regret": 6341795.500000004
+    },
+    {
+      "t_hours": 288,
+      "start_offset": 45,
+      "offline_cost": 26097643.8,
+      "pd_cost": 32754140.400000017,
+      "regret": 6656496.600000016
+    },
+    {
+      "t_hours": 288,
+      "start_offset": 16,
+      "offline_cost": 27376911.799999993,
+      "pd_cost": 34105116.39999999,
+      "regret": 6728204.599999998
+    },
+    {
+      "t_hours": 288,
+      "start_offset": 39,
+      "offline_cost": 26443531.000000004,
+      "pd_cost": 32809282.100000013,
+      "regret": 6365751.100000009
+    },
+    {
+      "t_hours": 288,
+      "start_offset": 49,
+      "offline_cost": 26086969.8,
+      "pd_cost": 32808883.400000013,
+      "regret": 6721913.600000013
+    },
+    {
+      "t_hours": 288,
+      "start_offset": 53,
+      "offline_cost": 26060532.8,
+      "pd_cost": 32796924.200000007,
+      "regret": 6736391.400000006
+    },
+    {
+      "t_hours": 288,
+      "start_offset": 10,
+      "offline_cost": 27914194.399999987,
+      "pd_cost": 34197367.09999999,
+      "regret": 6283172.699999999
+    },
+    {
+      "t_hours": 288,
+      "start_offset": 0,
+      "offline_cost": 28430090.199999984,
+      "pd_cost": 35322153.499999985,
+      "regret": 6892063.300000001
+    }
+  ],
+  "summaries": [
+    {
+      "t_hours": 12,
+      "n_starts": 30,
+      "mean_regret": 347317.4599999999,
+      "ci_lo": 283972.9066666666,
+      "ci_hi": 415588.7733333332,
+      "median_regret": 312800.40000000014
+    },
+    {
+      "t_hours": 24,
+      "n_starts": 30,
+      "mean_regret": 624238.8133333334,
+      "ci_lo": 525369.1766666666,
+      "ci_hi": 728695.2733333334,
+      "median_regret": 611268.2499999998
+    },
+    {
+      "t_hours": 48,
+      "n_starts": 30,
+      "mean_regret": 1305848.393333334,
+      "ci_lo": 1126728.7600000005,
+      "ci_hi": 1498985.103333334,
+      "median_regret": 1291514.3500000006
+    },
+    {
+      "t_hours": 96,
+      "n_starts": 30,
+      "mean_regret": 2463253.8499999996,
+      "ci_lo": 2262595.07,
+      "ci_hi": 2671691.74,
+      "median_regret": 2543634.3999999994
+    },
+    {
+      "t_hours": 144,
+      "n_starts": 30,
+      "mean_regret": 3728399.6233333326,
+      "ci_lo": 3543422.5066666664,
+      "ci_hi": 3903045.7333333325,
+      "median_regret": 3766626.25
+    },
+    {
+      "t_hours": 192,
+      "n_starts": 30,
+      "mean_regret": 5041457.816666664,
+      "ci_lo": 4893457.949999996,
+      "ci_hi": 5193257.373333332,
+      "median_regret": 4992469.799999988
+    },
+    {
+      "t_hours": 240,
+      "n_starts": 30,
+      "mean_regret": 6019597.966666668,
+      "ci_lo": 5933555.286666666,
+      "ci_hi": 6111878.423333333,
+      "median_regret": 5993623.099999998
+    },
+    {
+      "t_hours": 288,
+      "n_starts": 30,
+      "mean_regret": 6545029.843333339,
+      "ci_lo": 6470197.163333339,
+      "ci_hi": 6615612.273333338,
+      "median_regret": 6615977.950000005
+    }
+  ],
+  "fit": {
+    "slope": 0.9532500736998936,
+    "intercept": 10.369982247830754,
+    "slope_ci_lo": 0.9133972644419104,
+    "slope_ci_hi": 0.9911138443141734,
+    "verdict": "\u03b1 \u2208 (0.75, 1.0] \u21d2 worse than T^{3/4}, better than linear"
+  }
+}

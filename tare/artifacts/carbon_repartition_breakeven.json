@@ -1,0 +1,646 @@
+{
+  "cutpoint_energy_gap": {
+    "fast_cuts": [
+      4,
+      7,
+      10
+    ],
+    "eco_cuts": [
+      1,
+      4,
+      14
+    ],
+    "fast_energy_per_iter": 0.5828571428571429,
+    "eco_energy_per_iter": 0.5828571428571429,
+    "energy_ratio_eco_over_fast": 1.0,
+    "fast_throughput": 1699.0291262135922,
+    "eco_throughput": 849.5145631067961
+  },
+  "heterogeneous_cutpoint_energy_gap": {
+    "stage_powers_w": [
+      180.0,
+      250.0,
+      320.0,
+      400.0
+    ],
+    "fast_cuts": [
+      4,
+      7,
+      10
+    ],
+    "eco_cuts": [
+      12,
+      13,
+      14
+    ],
+    "fast_energy_per_iter": 0.6703428571428571,
+    "eco_energy_per_iter": 0.5589142857142857,
+    "energy_ratio_eco_over_fast": 0.8337737618276362,
+    "fast_throughput": 1699.0291262135922,
+    "eco_throughput": 784.7533632286995
+  },
+  "headline": {
+    "static_fast": {
+      "policy": "static_fast",
+      "carbon_g": 18.666666666666668,
+      "energy_j": 168000.0,
+      "makespan_h": 46.666666666666664,
+      "switches": 0
+    },
+    "static_eco": {
+      "policy": "static_eco",
+      "carbon_g": 14.93333333333335,
+      "energy_j": 134400.0,
+      "makespan_h": 77.77777777777766,
+      "switches": 0
+    },
+    "throttle": {
+      "policy": "throttle",
+      "carbon_g": 17.10194368797257,
+      "energy_j": 158400.0,
+      "makespan_h": 54.285714285714285,
+      "switches": 0
+    },
+    "repartition": {
+      "policy": "repartition",
+      "carbon_g": 17.545501780275448,
+      "energy_j": 162340.0,
+      "makespan_h": 58.53835185185182,
+      "switches": 14
+    }
+  },
+  "breakeven_rows": [
+    {
+      "swing": 0.2,
+      "state_gb": 1.0,
+      "bw_gbps": 10.0,
+      "carbon_throttle_g": 17.433981229324175,
+      "carbon_repartition_g": 17.940399480184198,
+      "delta_g": 0.5064182508600226,
+      "repartition_wins": false,
+      "repartition_makespan_h": 58.53990740740736,
+      "throttle_makespan_h": 54.285714285714285,
+      "switches": 14
+    },
+    {
+      "swing": 0.2,
+      "state_gb": 1.0,
+      "bw_gbps": 100.0,
+      "carbon_throttle_g": 17.433981229324175,
+      "carbon_repartition_g": 17.820314817351218,
+      "delta_g": 0.38633358802704265,
+      "repartition_wins": false,
+      "repartition_makespan_h": 58.53710740740736,
+      "throttle_makespan_h": 54.285714285714285,
+      "switches": 14
+    },
+    {
+      "swing": 0.2,
+      "state_gb": 1.0,
+      "bw_gbps": 600.0,
+      "carbon_throttle_g": 17.433981229324175,
+      "carbon_repartition_g": 17.809195867088903,
+      "delta_g": 0.37521463776472785,
+      "repartition_wins": false,
+      "repartition_makespan_h": 58.53684814814813,
+      "throttle_makespan_h": 54.285714285714285,
+      "switches": 14
+    },
+    {
+      "swing": 0.2,
+      "state_gb": 5.0,
+      "bw_gbps": 10.0,
+      "carbon_throttle_g": 17.433981229324175,
+      "carbon_repartition_g": 18.474109092775244,
+      "delta_g": 1.040127863451069,
+      "repartition_wins": false,
+      "repartition_makespan_h": 58.552351851851824,
+      "throttle_makespan_h": 54.285714285714285,
+      "switches": 14
+    },
+    {
+      "swing": 0.2,
+      "state_gb": 5.0,
+      "bw_gbps": 100.0,
+      "carbon_throttle_g": 17.433981229324175,
+      "carbon_repartition_g": 17.87368577861032,
+      "delta_g": 0.43970454928614444,
+      "repartition_wins": false,
+      "repartition_makespan_h": 58.53835185185182,
+      "throttle_makespan_h": 54.285714285714285,
+      "switches": 14
+    },
+    {
+      "swing": 0.2,
+      "state_gb": 5.0,
+      "bw_gbps": 600.0,
+      "carbon_throttle_g": 17.433981229324175,
+      "carbon_repartition_g": 17.818091027298752,
+      "delta_g": 0.38410979797457756,
+      "repartition_wins": false,
+      "repartition_makespan_h": 58.537055555555504,
+      "throttle_makespan_h": 54.285714285714285,
+      "switches": 14
+    },
+    {
+      "swing": 0.2,
+      "state_gb": 20.0,
+      "bw_gbps": 10.0,
+      "carbon_throttle_g": 17.433981229324175,
+      "carbon_repartition_g": 20.475520139991648,
+      "delta_g": 3.041538910667473,
+      "repartition_wins": false,
+      "repartition_makespan_h": 58.59901851851849,
+      "throttle_makespan_h": 54.285714285714285,
+      "switches": 14
+    },
+    {
+      "swing": 0.2,
+      "state_gb": 20.0,
+      "bw_gbps": 100.0,
+      "carbon_throttle_g": 17.433981229324175,
+      "carbon_repartition_g": 18.07382688333196,
+      "delta_g": 0.6398456540077859,
+      "repartition_wins": false,
+      "repartition_makespan_h": 58.54301851851847,
+      "throttle_makespan_h": 54.285714285714285,
+      "switches": 14
+    },
+    {
+      "swing": 0.2,
+      "state_gb": 20.0,
+      "bw_gbps": 600.0,
+      "carbon_throttle_g": 17.433981229324175,
+      "carbon_repartition_g": 17.85144787808569,
+      "delta_g": 0.41746664876151485,
+      "repartition_wins": false,
+      "repartition_makespan_h": 58.537833333333296,
+      "throttle_makespan_h": 54.285714285714285,
+      "switches": 14
+    },
+    {
+      "swing": 0.4,
+      "state_gb": 1.0,
+      "bw_gbps": 10.0,
+      "carbon_throttle_g": 17.231178204713668,
+      "carbon_repartition_g": 17.719531066233277,
+      "delta_g": 0.48835286151960844,
+      "repartition_wins": false,
+      "repartition_makespan_h": 58.910277777777736,
+      "throttle_makespan_h": 54.52380952380952,
+      "switches": 14
+    },
+    {
+      "swing": 0.4,
+      "state_gb": 1.0,
+      "bw_gbps": 100.0,
+      "carbon_throttle_g": 17.231178204713668,
+      "carbon_repartition_g": 17.592961740567308,
+      "delta_g": 0.36178353585363965,
+      "repartition_wins": false,
+      "repartition_makespan_h": 58.907477777777736,
+      "throttle_makespan_h": 54.52380952380952,
+      "switches": 14
+    },
+    {
+      "swing": 0.4,
+      "state_gb": 1.0,
+      "bw_gbps": 600.0,
+      "carbon_throttle_g": 17.231178204713668,
+      "carbon_repartition_g": 17.581242358561195,
+      "delta_g": 0.3500641538475264,
+      "repartition_wins": false,
+      "repartition_makespan_h": 58.907218518518505,
+      "throttle_makespan_h": 54.52380952380952,
+      "switches": 14
+    },
+    {
+      "swing": 0.4,
+      "state_gb": 5.0,
+      "bw_gbps": 10.0,
+      "carbon_throttle_g": 17.231178204713668,
+      "carbon_repartition_g": 18.282061402526466,
+      "delta_g": 1.050883197812798,
+      "repartition_wins": false,
+      "repartition_makespan_h": 58.9227222222222,
+      "throttle_makespan_h": 54.52380952380952,
+      "switches": 14
+    },
+    {
+      "swing": 0.4,
+      "state_gb": 5.0,
+      "bw_gbps": 100.0,
+      "carbon_throttle_g": 17.231178204713668,
+      "carbon_repartition_g": 17.649214774196622,
+      "delta_g": 0.418036569482954,
+      "repartition_wins": false,
+      "repartition_makespan_h": 58.908722222222195,
+      "throttle_makespan_h": 54.52380952380952,
+      "switches": 14
+    },
+    {
+      "swing": 0.4,
+      "state_gb": 5.0,
+      "bw_gbps": 600.0,
+      "carbon_throttle_g": 17.231178204713668,
+      "carbon_repartition_g": 17.590617864166084,
+      "delta_g": 0.3594396594524163,
+      "repartition_wins": false,
+      "repartition_makespan_h": 58.90742592592588,
+      "throttle_makespan_h": 54.52380952380952,
+      "switches": 14
+    },
+    {
+      "swing": 0.4,
+      "state_gb": 20.0,
+      "bw_gbps": 10.0,
+      "carbon_throttle_g": 17.231178204713668,
+      "carbon_repartition_g": 20.391550163625936,
+      "delta_g": 3.1603719589122683,
+      "repartition_wins": false,
+      "repartition_makespan_h": 58.96938888888886,
+      "throttle_makespan_h": 54.52380952380952,
+      "switches": 14
+    },
+    {
+      "swing": 0.4,
+      "state_gb": 20.0,
+      "bw_gbps": 100.0,
+      "carbon_throttle_g": 17.231178204713668,
+      "carbon_repartition_g": 17.86016365030657,
+      "delta_g": 0.6289854455929031,
+      "repartition_wins": false,
+      "repartition_makespan_h": 58.91338888888883,
+      "throttle_makespan_h": 54.52380952380952,
+      "switches": 14
+    },
+    {
+      "swing": 0.4,
+      "state_gb": 20.0,
+      "bw_gbps": 600.0,
+      "carbon_throttle_g": 17.231178204713668,
+      "carbon_repartition_g": 17.625776010184406,
+      "delta_g": 0.3945978054707382,
+      "repartition_wins": false,
+      "repartition_makespan_h": 58.90820370370367,
+      "throttle_makespan_h": 54.52380952380952,
+      "switches": 14
+    },
+    {
+      "swing": 0.6,
+      "state_gb": 1.0,
+      "bw_gbps": 10.0,
+      "carbon_throttle_g": 17.10194368797257,
+      "carbon_repartition_g": 17.621198440552647,
+      "delta_g": 0.5192547525800748,
+      "repartition_wins": false,
+      "repartition_makespan_h": 58.53990740740736,
+      "throttle_makespan_h": 54.285714285714285,
+      "switches": 14
+    },
+    {
+      "swing": 0.6,
+      "state_gb": 1.0,
+      "bw_gbps": 100.0,
+      "carbon_throttle_g": 17.10194368797257,
+      "carbon_repartition_g": 17.484944452053686,
+      "delta_g": 0.38300076408111394,
+      "repartition_wins": false,
+      "repartition_makespan_h": 58.53710740740736,
+      "throttle_makespan_h": 54.285714285714285,
+      "switches": 14
+    },
+    {
+      "swing": 0.6,
+      "state_gb": 1.0,
+      "bw_gbps": 600.0,
+      "carbon_throttle_g": 17.10194368797257,
+      "carbon_repartition_g": 17.47232834200749,
+      "delta_g": 0.37038465403491827,
+      "repartition_wins": false,
+      "repartition_makespan_h": 58.53684814814813,
+      "throttle_makespan_h": 54.285714285714285,
+      "switches": 14
+    },
+    {
+      "swing": 0.6,
+      "state_gb": 5.0,
+      "bw_gbps": 10.0,
+      "carbon_throttle_g": 17.10194368797257,
+      "carbon_repartition_g": 18.226771722770206,
+      "delta_g": 1.124828034797634,
+      "repartition_wins": false,
+      "repartition_makespan_h": 58.552351851851824,
+      "throttle_makespan_h": 54.285714285714285,
+      "switches": 14
+    },
+    {
+      "swing": 0.6,
+      "state_gb": 5.0,
+      "bw_gbps": 100.0,
+      "carbon_throttle_g": 17.10194368797257,
+      "carbon_repartition_g": 17.545501780275448,
+      "delta_g": 0.4435580923028759,
+      "repartition_wins": false,
+      "repartition_makespan_h": 58.53835185185182,
+      "throttle_makespan_h": 54.285714285714285,
+      "switches": 14
+    },
+    {
+      "swing": 0.6,
+      "state_gb": 5.0,
+      "bw_gbps": 600.0,
+      "carbon_throttle_g": 17.10194368797257,
+      "carbon_repartition_g": 17.482421230044448,
+      "delta_g": 0.38047754207187623,
+      "repartition_wins": false,
+      "repartition_makespan_h": 58.537055555555504,
+      "throttle_makespan_h": 54.285714285714285,
+      "switches": 14
+    },
+    {
+      "swing": 0.6,
+      "state_gb": 20.0,
+      "bw_gbps": 10.0,
+      "carbon_throttle_g": 17.10194368797257,
+      "carbon_repartition_g": 20.497671531086088,
+      "delta_g": 3.395727843113516,
+      "repartition_wins": false,
+      "repartition_makespan_h": 58.59901851851849,
+      "throttle_makespan_h": 54.285714285714285,
+      "switches": 14
+    },
+    {
+      "swing": 0.6,
+      "state_gb": 20.0,
+      "bw_gbps": 100.0,
+      "carbon_throttle_g": 17.10194368797257,
+      "carbon_repartition_g": 17.772591761107034,
+      "delta_g": 0.670648073134462,
+      "repartition_wins": false,
+      "repartition_makespan_h": 58.54301851851847,
+      "throttle_makespan_h": 54.285714285714285,
+      "switches": 14
+    },
+    {
+      "swing": 0.6,
+      "state_gb": 20.0,
+      "bw_gbps": 600.0,
+      "carbon_throttle_g": 17.10194368797257,
+      "carbon_repartition_g": 17.52026956018305,
+      "delta_g": 0.41832587221047746,
+      "repartition_wins": false,
+      "repartition_makespan_h": 58.537833333333296,
+      "throttle_makespan_h": 54.285714285714285,
+      "switches": 14
+    },
+    {
+      "swing": 0.8,
+      "state_gb": 1.0,
+      "bw_gbps": 10.0,
+      "carbon_throttle_g": 16.935924917296752,
+      "carbon_repartition_g": 17.461597920736867,
+      "delta_g": 0.5256730034401151,
+      "repartition_wins": false,
+      "repartition_makespan_h": 58.53990740740736,
+      "throttle_makespan_h": 54.285714285714285,
+      "switches": 14
+    },
+    {
+      "swing": 0.8,
+      "state_gb": 1.0,
+      "bw_gbps": 100.0,
+      "carbon_throttle_g": 16.935924917296752,
+      "carbon_repartition_g": 17.317259269404932,
+      "delta_g": 0.3813343521081798,
+      "repartition_wins": false,
+      "repartition_makespan_h": 58.53710740740736,
+      "throttle_makespan_h": 54.285714285714285,
+      "switches": 14
+    },
+    {
+      "swing": 0.8,
+      "state_gb": 1.0,
+      "bw_gbps": 600.0,
+      "carbon_throttle_g": 16.935924917296752,
+      "carbon_repartition_g": 17.30389457946679,
+      "delta_g": 0.36796966217003657,
+      "repartition_wins": false,
+      "repartition_makespan_h": 58.53684814814813,
+      "throttle_makespan_h": 54.285714285714285,
+      "switches": 14
+    },
+    {
+      "swing": 0.8,
+      "state_gb": 5.0,
+      "bw_gbps": 10.0,
+      "carbon_throttle_g": 16.935924917296752,
+      "carbon_repartition_g": 18.1031030377677,
+      "delta_g": 1.1671781204709468,
+      "repartition_wins": false,
+      "repartition_makespan_h": 58.552351851851824,
+      "throttle_makespan_h": 54.285714285714285,
+      "switches": 14
+    },
+    {
+      "swing": 0.8,
+      "state_gb": 5.0,
+      "bw_gbps": 100.0,
+      "carbon_throttle_g": 16.935924917296752,
+      "carbon_repartition_g": 17.381409781108015,
+      "delta_g": 0.44548486381126295,
+      "repartition_wins": false,
+      "repartition_makespan_h": 58.53835185185182,
+      "throttle_makespan_h": 54.285714285714285,
+      "switches": 14
+    },
+    {
+      "swing": 0.8,
+      "state_gb": 5.0,
+      "bw_gbps": 600.0,
+      "carbon_throttle_g": 16.935924917296752,
+      "carbon_repartition_g": 17.314586331417303,
+      "delta_g": 0.37866141412055043,
+      "repartition_wins": false,
+      "repartition_makespan_h": 58.537055555555504,
+      "throttle_makespan_h": 54.285714285714285,
+      "switches": 14
+    },
+    {
+      "swing": 0.8,
+      "state_gb": 20.0,
+      "bw_gbps": 10.0,
+      "carbon_throttle_g": 16.935924917296752,
+      "carbon_repartition_g": 20.50874722663331,
+      "delta_g": 3.5728223093365585,
+      "repartition_wins": false,
+      "repartition_makespan_h": 58.59901851851849,
+      "throttle_makespan_h": 54.285714285714285,
+      "switches": 14
+    },
+    {
+      "swing": 0.8,
+      "state_gb": 20.0,
+      "bw_gbps": 100.0,
+      "carbon_throttle_g": 16.935924917296752,
+      "carbon_repartition_g": 17.62197419999458,
+      "delta_g": 0.6860492826978266,
+      "repartition_wins": false,
+      "repartition_makespan_h": 58.54301851851847,
+      "throttle_makespan_h": 54.285714285714285,
+      "switches": 14
+    },
+    {
+      "swing": 0.8,
+      "state_gb": 20.0,
+      "bw_gbps": 600.0,
+      "carbon_throttle_g": 16.935924917296752,
+      "carbon_repartition_g": 17.35468040123173,
+      "delta_g": 0.4187554839349765,
+      "repartition_wins": false,
+      "repartition_makespan_h": 58.537833333333296,
+      "throttle_makespan_h": 54.285714285714285,
+      "switches": 14
+    }
+  ],
+  "repartition_win_cells": 0,
+  "total_cells": 36,
+  "eco_strength_breakeven": {
+    "throttle_carbon_g": 17.10194368797257,
+    "throttle_energy_frac": 0.85,
+    "crossover_eco_frac": 0.75,
+    "rows": [
+      {
+        "eco_energy_frac": 0.85,
+        "carbon_repartition_g": 18.067076106506814,
+        "wins": false
+      },
+      {
+        "eco_energy_frac": 0.8,
+        "carbon_repartition_g": 17.545501780275448,
+        "wins": false
+      },
+      {
+        "eco_energy_frac": 0.75,
+        "carbon_repartition_g": 17.023927454044074,
+        "wins": true
+      },
+      {
+        "eco_energy_frac": 0.7,
+        "carbon_repartition_g": 16.502353127812704,
+        "wins": true
+      },
+      {
+        "eco_energy_frac": 0.65,
+        "carbon_repartition_g": 15.980778801581346,
+        "wins": true
+      },
+      {
+        "eco_energy_frac": 0.6,
+        "carbon_repartition_g": 15.459204475349974,
+        "wins": true
+      },
+      {
+        "eco_energy_frac": 0.55,
+        "carbon_repartition_g": 14.937630149118611,
+        "wins": true
+      },
+      {
+        "eco_energy_frac": 0.5,
+        "carbon_repartition_g": 14.416055822887243,
+        "wins": true
+      },
+      {
+        "eco_energy_frac": 0.45,
+        "carbon_repartition_g": 13.894481496655873,
+        "wins": true
+      },
+      {
+        "eco_energy_frac": 0.4,
+        "carbon_repartition_g": 13.37290717042451,
+        "wins": true
+      },
+      {
+        "eco_energy_frac": 0.35,
+        "carbon_repartition_g": 12.851332844193145,
+        "wins": true
+      },
+      {
+        "eco_energy_frac": 0.3,
+        "carbon_repartition_g": 12.329758517961784,
+        "wins": true
+      }
+    ]
+  },
+  "switchcost_breakeven": {
+    "throttle_carbon_g": 17.10194368797257,
+    "eco_energy_frac": 0.8,
+    "crossover_cold_start_s": 2.0,
+    "rows": [
+      {
+        "cold_start_s": 4.7,
+        "carbon_repartition_g": 17.545501780275448,
+        "carbon_throttle_g": 17.10194368797257,
+        "delta_g": 0.4435580923028759,
+        "repartition_wins": false,
+        "switches": 14
+      },
+      {
+        "cold_start_s": 3.0,
+        "carbon_repartition_g": 17.223790974097366,
+        "carbon_throttle_g": 17.10194368797257,
+        "delta_g": 0.1218472861247939,
+        "repartition_wins": false,
+        "switches": 14
+      },
+      {
+        "cold_start_s": 2.0,
+        "carbon_repartition_g": 17.034549323404374,
+        "carbon_throttle_g": 17.10194368797257,
+        "delta_g": -0.06739436456819803,
+        "repartition_wins": true,
+        "switches": 14
+      },
+      {
+        "cold_start_s": 1.0,
+        "carbon_repartition_g": 16.845307672711385,
+        "carbon_throttle_g": 17.10194368797257,
+        "delta_g": -0.2566360152611864,
+        "repartition_wins": true,
+        "switches": 14
+      },
+      {
+        "cold_start_s": 0.5,
+        "carbon_repartition_g": 16.750686847364886,
+        "carbon_throttle_g": 17.10194368797257,
+        "delta_g": -0.3512568406076859,
+        "repartition_wins": true,
+        "switches": 14
+      },
+      {
+        "cold_start_s": 0.3,
+        "carbon_repartition_g": 16.712838517226288,
+        "carbon_throttle_g": 17.10194368797257,
+        "delta_g": -0.3891051707462836,
+        "repartition_wins": true,
+        "switches": 14
+      },
+      {
+        "cold_start_s": 0.1,
+        "carbon_repartition_g": 16.674990187087694,
+        "carbon_throttle_g": 17.10194368797257,
+        "delta_g": -0.4269535008848777,
+        "repartition_wins": true,
+        "switches": 14
+      },
+      {
+        "cold_start_s": 0.0,
+        "carbon_repartition_g": 16.656066022018397,
+        "carbon_throttle_g": 17.10194368797257,
+        "delta_g": -0.4458776659541748,
+        "repartition_wins": true,
+        "switches": 14
+      }
+    ]
+  }
+}

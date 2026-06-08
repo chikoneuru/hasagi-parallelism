@@ -1,0 +1,53 @@
+{
+  "profiles": [
+    "artifacts/cap_robust_resnet_asc.json",
+    "artifacts/cap_robust_resnet_desc.json",
+    "artifacts/cap_robust_transformer_asc.json",
+    "artifacts/cap_robust_transformer_desc.json"
+  ],
+  "summary": {
+    "resnet": {
+      "ascending_opt_w": 250.0,
+      "ascending_plateau_w": [
+        200.0,
+        250.0
+      ],
+      "descending_opt_w": 250.0,
+      "descending_plateau_w": [
+        250.0,
+        250.0
+      ],
+      "plateaus_overlap": true,
+      "point_optima_match": true,
+      "order_invariant": true,
+      "max_cv_pct": 4.220055051046406
+    },
+    "transformer": {
+      "ascending_opt_w": 250.0,
+      "ascending_plateau_w": [
+        250.0,
+        300.0
+      ],
+      "descending_opt_w": 300.0,
+      "descending_plateau_w": [
+        250.0,
+        300.0
+      ],
+      "plateaus_overlap": true,
+      "point_optima_match": false,
+      "order_invariant": true,
+      "max_cv_pct": 1.7846059050546301
+    },
+    "_workload_optimum_regions": {
+      "resnet": [
+        200.0,
+        250.0
+      ],
+      "transformer": [
+        250.0,
+        300.0
+      ]
+    },
+    "_disjoint_workload_pairs": []
+  }
+}

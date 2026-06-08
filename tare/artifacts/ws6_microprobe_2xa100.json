@@ -1,0 +1,46 @@
+{
+  "world_size": 2,
+  "d_model": 1024,
+  "layers": 8,
+  "batch": 8,
+  "seq": 512,
+  "steps": 30,
+  "energy_source": "nvml-total-energy",
+  "layouts": {
+    "ddp": {
+      "energy_per_iter_j": 59.59636666662991,
+      "mean_power_w": 184.93403333333333,
+      "iters_per_s": 3.862422094683632,
+      "elapsed_s": 7.767146951984614,
+      "energy_source": "nvml-total-energy",
+      "cluster_energy_per_iter_j": 119.6820999999841,
+      "cluster_mean_power_w": 375.74323333333336
+    },
+    "fsdp": {
+      "energy_per_iter_j": 62.04176666662097,
+      "mean_power_w": 148.81663333333333,
+      "iters_per_s": 3.505477284652591,
+      "elapsed_s": 8.558035772002768,
+      "energy_source": "nvml-total-energy",
+      "cluster_energy_per_iter_j": 124.38973333326479,
+      "cluster_mean_power_w": 284.7081
+    },
+    "fsdp_offload": {
+      "energy_per_iter_j": 65.59419999991854,
+      "mean_power_w": 233.44250000000002,
+      "iters_per_s": 3.0443859408246827,
+      "elapsed_s": 9.854203962022439,
+      "energy_source": "nvml-total-energy",
+      "cluster_energy_per_iter_j": 131.7320333333065,
+      "cluster_mean_power_w": 455.05656666666664
+    }
+  },
+  "E_eco": {
+    "fsdp": 1.0393344813742516,
+    "fsdp_offload": 1.1006828367259933
+  },
+  "verdict": {
+    "fsdp": "DEAD (>0.85)",
+    "fsdp_offload": "DEAD (>0.85)"
+  }
+}

@@ -1,0 +1,82 @@
+[
+  {
+    "name": "DE/carbon-aware",
+    "zone": "DE",
+    "threshold_g_per_kwh": 385.82103153828206,
+    "energy_kwh": 20.16152750000004,
+    "emissions_g": 5489.267032804356,
+    "pause_minutes": 4380,
+    "cold_starts": 9,
+    "trace_source": "synthetic-parametric"
+  },
+  {
+    "name": "DE/constant-N",
+    "zone": "DE",
+    "threshold_g_per_kwh": NaN,
+    "energy_kwh": 35.49016972222233,
+    "emissions_g": 12732.314415817948,
+    "pause_minutes": 0,
+    "cold_starts": 1,
+    "trace_source": "synthetic-parametric"
+  },
+  {
+    "name": "US-CA/carbon-aware",
+    "zone": "US-CA",
+    "threshold_g_per_kwh": 259.04970051882543,
+    "energy_kwh": 20.16152750000004,
+    "emissions_g": 3545.913229803632,
+    "pause_minutes": 4380,
+    "cold_starts": 9,
+    "trace_source": "synthetic-parametric"
+  },
+  {
+    "name": "US-CA/constant-N",
+    "zone": "US-CA",
+    "threshold_g_per_kwh": NaN,
+    "energy_kwh": 35.49016972222233,
+    "emissions_g": 8484.93037394448,
+    "pause_minutes": 0,
+    "cold_starts": 1,
+    "trace_source": "synthetic-parametric"
+  },
+  {
+    "name": "FR/carbon-aware",
+    "zone": "FR",
+    "threshold_g_per_kwh": 71.16536913122563,
+    "energy_kwh": 23.31322472222227,
+    "emissions_g": 1335.9389582410292,
+    "pause_minutes": 3480,
+    "cold_starts": 19,
+    "trace_source": "synthetic-parametric"
+  },
+  {
+    "name": "FR/constant-N",
+    "zone": "FR",
+    "threshold_g_per_kwh": NaN,
+    "energy_kwh": 35.49016972222233,
+    "emissions_g": 2299.460407518531,
+    "pause_minutes": 0,
+    "cold_starts": 1,
+    "trace_source": "synthetic-parametric"
+  },
+  {
+    "name": "PL/carbon-aware",
+    "zone": "PL",
+    "threshold_g_per_kwh": 788.0292641088231,
+    "energy_kwh": 33.60169722222232,
+    "emissions_g": 24011.588011227428,
+    "pause_minutes": 540,
+    "cold_starts": 10,
+    "trace_source": "synthetic-parametric"
+  },
+  {
+    "name": "PL/constant-N",
+    "zone": "PL",
+    "threshold_g_per_kwh": NaN,
+    "energy_kwh": 35.49016972222233,
+    "emissions_g": 25527.482829598808,
+    "pause_minutes": 0,
+    "cold_starts": 1,
+    "trace_source": "synthetic-parametric"
+  }
+]

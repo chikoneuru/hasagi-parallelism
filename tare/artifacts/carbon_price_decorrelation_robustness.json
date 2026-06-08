@@ -1,0 +1,27 @@
+{
+  "cases": {
+    "summer_all": {
+      "n_zones": 16,
+      "spearman_rho": -0.06764705882352941,
+      "spearman_p": 0.8034203137966693
+    },
+    "winter_all": {
+      "n_zones": 16,
+      "spearman_rho": -0.1323529411764706,
+      "spearman_p": 0.6251064291516133
+    },
+    "summer_weekday": {
+      "n_zones": 16,
+      "spearman_rho": -0.06764705882352941,
+      "spearman_p": 0.8034203137966693
+    },
+    "summer_weekend": {
+      "n_zones": 16,
+      "spearman_rho": -0.09117647058823529,
+      "spearman_p": 0.7370049501736591
+    }
+  },
+  "price_source": "static per-zone business tariff (same as headline)",
+  "carbon_source": "ElectricityMaps real hourly LCA traces, per-zone mean",
+  "note": "Decorrelation is robust: every case has small |rho| and a large p-value, so carbon intensity does not co-rank with price in any season or day type."
+}

@@ -1,0 +1,54 @@
+{
+  "workload": "resnet",
+  "regime": "time-sliced co-location (no MPS daemon)",
+  "config": {
+    "workload": "resnet",
+    "iters": 300,
+    "warmup": 30,
+    "batch_size": 128,
+    "spatial": 32,
+    "channels": 128,
+    "seq_len": 256,
+    "d_model": 512,
+    "layers": 6,
+    "vocab": 32000
+  },
+  "tenants": [
+    1,
+    2,
+    3
+  ],
+  "repeats": 3,
+  "rows": [
+    {
+      "tenants": 1,
+      "per_tenant_mean": 21.81350477297948,
+      "per_tenant_sd": 0.10219091220070534,
+      "n_samples": 3,
+      "per_tenant_iters_per_s": 21.81350477297948,
+      "contention_factor": 1.0,
+      "aggregate_iters_per_s": 21.81350477297948,
+      "aggregate_scaling": 1.0
+    },
+    {
+      "tenants": 2,
+      "per_tenant_mean": 9.998743232527794,
+      "per_tenant_sd": 0.008613945550641551,
+      "n_samples": 6,
+      "per_tenant_iters_per_s": 9.998743232527794,
+      "contention_factor": 0.45837399063507195,
+      "aggregate_iters_per_s": 19.997486465055587,
+      "aggregate_scaling": 0.9167479812701439
+    },
+    {
+      "tenants": 3,
+      "per_tenant_mean": 6.6618199242164655,
+      "per_tenant_sd": 0.0018291108044271936,
+      "n_samples": 9,
+      "per_tenant_iters_per_s": 6.6618199242164655,
+      "contention_factor": 0.3053988798933632,
+      "aggregate_iters_per_s": 19.985459772649396,
+      "aggregate_scaling": 0.9161966396800896
+    }
+  ]
+}

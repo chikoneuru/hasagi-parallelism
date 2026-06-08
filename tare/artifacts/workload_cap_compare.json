@@ -1,0 +1,64 @@
+{
+  "profiles": {
+    "resnet": "artifacts/hardware-pareto-3080ti.json",
+    "transformer": "artifacts/hardware-pareto-3080ti-transformer.json"
+  },
+  "per_workload": {
+    "resnet": {
+      "alpha_binding_fit": 1.0472310423478381,
+      "energy_optimal_cap_w": 200.0,
+      "energy_optimal_plateau_w": [
+        200.0,
+        200.0
+      ],
+      "energy_per_iter_j_at_opt": 4.292275430372752,
+      "throughput_max_cap_w": 350.0,
+      "energy_per_iter_j_at_throughput_max": 5.461074528657271,
+      "interior_minimum_check": {
+        "energy_optimal_cap_w": 200.0,
+        "throughput_elasticity_below_opt": 2.0585803987181697,
+        "throughput_elasticity_above_opt": 0.8467986538591785,
+        "power_elasticity_below_opt": 0.7807480813010356,
+        "power_elasticity_above_opt": 0.9425902503361794,
+        "optimum_is_interior": true
+      }
+    },
+    "transformer": {
+      "alpha_binding_fit": 1.0028948418679398,
+      "energy_optimal_cap_w": 250.0,
+      "energy_optimal_plateau_w": [
+        250.0,
+        300.0
+      ],
+      "energy_per_iter_j_at_opt": 39.94333793018689,
+      "throughput_max_cap_w": 350.0,
+      "energy_per_iter_j_at_throughput_max": 43.06879668633619,
+      "interior_minimum_check": {
+        "energy_optimal_cap_w": 250.0,
+        "throughput_elasticity_below_opt": 1.8050893294798813,
+        "throughput_elasticity_above_opt": 0.9106823564291723,
+        "power_elasticity_below_opt": 1.003408035833506,
+        "power_elasticity_above_opt": 0.9747355937077645,
+        "optimum_is_interior": true
+      }
+    }
+  },
+  "energy_optimal_cap_is_workload_dependent": null,
+  "cross_application_penalty": {
+    "resnet_at_transformer_cap": {
+      "own_cap_w": 200.0,
+      "forced_cap_w": 250.0,
+      "energy_j_own": 4.292275430372752,
+      "energy_j_forced": 4.3850116065660485,
+      "penalty_pct": 2.1605364729644885
+    },
+    "transformer_at_resnet_cap": {
+      "own_cap_w": 250.0,
+      "forced_cap_w": 200.0,
+      "energy_j_own": 39.94333793018689,
+      "energy_j_forced": 47.76780652816514,
+      "penalty_pct": 19.588920214063933
+    }
+  },
+  "_SUPERSEDED": "Single-sweep; the workload-dependent-optimum claim did NOT survive repeats and is WITHDRAWN. Authoritative: cap_robustness.json (3 repeats x both cap-orders, _disjoint_workload_pairs=[]). Do not cite energy_optimal_cap_is_workload_dependent or the single-sweep cross-application penalty; use the repeated-sweep ~+17% under-cap penalty."
+}

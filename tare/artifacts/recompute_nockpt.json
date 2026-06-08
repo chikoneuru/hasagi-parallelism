@@ -1,0 +1,40 @@
+{
+  "probe": "tier1a-multigpu",
+  "world_size": 4,
+  "optimizer": "adam",
+  "act_ckpt": "none",
+  "d_model": 2048,
+  "layers": 24,
+  "batch": 2,
+  "seq": 3072,
+  "steps": 30,
+  "warmup": 8,
+  "seeds": 3,
+  "device_capacity_gb": 42.405855232,
+  "break_even_estar": 0.75,
+  "ddp_baseline": "true torch.nn.parallel.DistributedDataParallel",
+  "ddp_feasible": false,
+  "layouts": {
+    "ddp": {
+      "feasible": false,
+      "note": "OOM at this scale (memory-pressured)"
+    },
+    "fsdp": {
+      "feasible": true,
+      "n_seeds": 3,
+      "cluster_energy_per_iter_j": 4912.411355555389,
+      "cluster_energy_ci_lo": 4448.527388210846,
+      "cluster_energy_ci_hi": 5376.295322899931,
+      "cluster_mean_power_w": 1067.1843111111111,
+      "iters_per_s": 0.24686543742800668,
+      "peak_mem_gb_per_device": 36.250541568,
+      "capacity_frac": 0.8548475527654228,
+      "energy_source": "nvml-total-energy"
+    }
+  },
+  "E_eco": {},
+  "verdict": {
+    "_global": "FEASIBILITY regime: true DDP infeasible at this scale; sharding mandatory, E_eco vs DDP undefined. Report smallest-feasible layout."
+  },
+  "smoke": false
+}

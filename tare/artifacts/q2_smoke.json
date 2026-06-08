@@ -1,0 +1,53 @@
+{
+  "args": {
+    "trace": null,
+    "seeds": 1,
+    "timesteps": 10000,
+    "n_envs": 2,
+    "n_steps": 512,
+    "target_iters": 200000,
+    "episode_hours": 24,
+    "energy_budget_kwh": 5.0,
+    "min_gpus": 1,
+    "max_gpus": 8,
+    "output": "artifacts/q2_smoke.json"
+  },
+  "results": [
+    {
+      "seed": 0,
+      "policy": "static-max",
+      "energy_kwh": 4.602000000000002,
+      "iters_done": 201886,
+      "emissions_g": 3176.783165738498
+    },
+    {
+      "seed": 0,
+      "policy": "rule-based",
+      "energy_kwh": 3.630999999999994,
+      "iters_done": 206156,
+      "emissions_g": 1650.7096183421254
+    },
+    {
+      "seed": 0,
+      "policy": "mpc",
+      "energy_kwh": 3.349999999999992,
+      "iters_done": 201000,
+      "emissions_g": 1575.6788476286963
+    },
+    {
+      "seed": 0,
+      "policy": "ppo",
+      "energy_kwh": 3.551999999999995,
+      "iters_done": 202776,
+      "emissions_g": 1648.8801098918018
+    }
+  ],
+  "decision": {
+    "n_seeds": 1,
+    "ppo_mean_kwh": 3.551999999999995,
+    "mpc_mean_kwh": 3.349999999999992,
+    "delta_pct_ppo_vs_mpc": -6.029850746268763,
+    "cohens_d_mpc_minus_ppo": NaN,
+    "keep_ppo": false
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "probe": "tier1a-multigpu",
+  "world_size": 4,
+  "optimizer": "sgd",
+  "d_model": 2816,
+  "layers": 28,
+  "batch": 1,
+  "seq": 256,
+  "steps": 200,
+  "warmup": 40,
+  "seeds": 5,
+  "device_capacity_gb": 85.094825984,
+  "break_even_estar": 0.75,
+  "ddp_baseline": "true torch.nn.parallel.DistributedDataParallel",
+  "ddp_feasible": true,
+  "layouts": {
+    "ddp": {
+      "feasible": true,
+      "n_seeds": 5,
+      "cluster_energy_per_iter_j": 468.2004149997234,
+      "cluster_energy_ci_lo": 465.76123008851664,
+      "cluster_energy_ci_hi": 470.6395999109302,
+      "cluster_mean_power_w": 1435.316993,
+      "iters_per_s": 2.982172311797398,
+      "peak_mem_gb_per_device": 35.786454016,
+      "capacity_frac": 0.4205479428646904,
+      "energy_source": "nvml-total-energy"
+    },
+    "fsdp": {
+      "feasible": true,
+      "n_seeds": 5,
+      "cluster_energy_per_iter_j": 463.36400700020783,
+      "cluster_energy_ci_lo": 463.1187479432334,
+      "cluster_energy_ci_hi": 463.60926605718225,
+      "cluster_mean_power_w": 1196.230422,
+      "iters_per_s": 2.732284923692688,
+      "peak_mem_gb_per_device": 56.163985408,
+      "capacity_frac": 0.6600164552726187,
+      "energy_source": "nvml-total-energy"
+    }
+  },
+  "E_eco": {
+    "fsdp": {
+      "ratio": 0.9896702184693312,
+      "ci_lo": 0.989146384980259,
+      "ci_hi": 0.9901940519584036
+    }
+  },
+  "verdict": {
+    "fsdp": "DEAD (>0.85)"
+  },
+  "smoke": false
+}
