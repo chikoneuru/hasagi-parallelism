@@ -128,6 +128,24 @@ class HostTrainer:
             torch.cuda.synchronize()
         self.train_iters_count(self.warmup_iters)   # clock-ramp / first-iter warmup
 
+    def reshard(self, to_world: int):
+        """Move the in-memory training state to a ``to_world``-way sharded layout.
+
+        Driven by a control-loop ``ReshardEvent``. Uses ``ReshardController``
+        (capture, verify-before-commit, commit) so the layout change preserves the
+        parameters exactly or aborts to the last verified state. The state
+        transport runs here on the resident model; the real FSDP rewrap onto the
+        new device topology is applied by the caller on a distributed backend.
+        Returns the ``ReshardCertificate``.
+        """
+        if self._model is None:
+            raise RuntimeError("model must be built (cold_init/resume) before reshard()")
+        from tare.state.reshard import ReshardController
+
+        rc = ReshardController()
+        rc.capture(self._model)
+        return rc.reshard_and_commit(self._model, to_world=to_world)
+
     def train_iters_count(self, n: int) -> int:
         """Run exactly ``n`` real training iterations on the GPU."""
         import torch

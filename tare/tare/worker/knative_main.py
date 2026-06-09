@@ -46,6 +46,10 @@ class LifecycleTimestamps:
     first_work_request_completed_offset_s: float | None = None
     work_request_count: int = 0
     work_request_history: list[dict[str, Any]] = field(default_factory=list)
+    first_reshard_received_offset_s: float | None = None
+    first_reshard_completed_offset_s: float | None = None
+    reshard_count: int = 0
+    reshard_history: list[dict[str, Any]] = field(default_factory=list)
 
 
 CONTAINER_START_MONO = time.monotonic()
@@ -64,6 +68,9 @@ def _offset_now() -> float:
 CUDA_INIT_S = float(os.environ.get("HASAGI_MOCK_CUDA_INIT_S", "3.0"))
 # Per-request "work" cost in seconds; mimics a single training iteration.
 WORK_ITER_S = float(os.environ.get("HASAGI_MOCK_WORK_ITER_S", "0.05"))
+# Mock layout-reconfiguration (reshard) cost in seconds; the real state-transport
+# latency is metered host-side via NVML, this only stamps the lifecycle event.
+RESHARD_S = float(os.environ.get("HASAGI_MOCK_RESHARD_S", "0.5"))
 
 
 def _mock_cuda_init_once() -> None:
@@ -134,6 +141,47 @@ def work(req: WorkRequest) -> dict[str, Any]:
     }
 
 
+class ReshardRequest(BaseModel):
+    job_id: str = "unknown"
+    from_world: int = 1
+    to_world: int = 1
+
+
+@app.post("/reshard")
+def reshard(req: ReshardRequest) -> dict[str, Any]:
+    """Mock layout-reconfiguration endpoint, mirroring ``/work``.
+
+    Stamps the reconfiguration as a lifecycle event the harness correlates with
+    the host NVML stream; the real state transport runs in the host trainer on a
+    GPU via ReshardController. Triggers CUDA init on first call, like ``/work``.
+    """
+    received_offset = _offset_now()
+    if TIMESTAMPS.first_reshard_received_offset_s is None:
+        TIMESTAMPS.first_reshard_received_offset_s = received_offset
+    _mock_cuda_init_once()
+    start = time.monotonic()
+    while time.monotonic() - start < RESHARD_S:
+        pass
+    completed_offset = _offset_now()
+    if TIMESTAMPS.first_reshard_completed_offset_s is None:
+        TIMESTAMPS.first_reshard_completed_offset_s = completed_offset
+    TIMESTAMPS.reshard_count += 1
+    record = {
+        "job_id": req.job_id,
+        "from_world": req.from_world,
+        "to_world": req.to_world,
+        "received_offset_s": received_offset,
+        "completed_offset_s": completed_offset,
+        "wall_s": completed_offset - received_offset,
+    }
+    TIMESTAMPS.reshard_history.append(record)
+    return {
+        "status": "ok",
+        "lifecycle": _lifecycle_payload(),
+        "request": record,
+    }
+
+
 @app.get("/lifecycle")
 def lifecycle() -> dict[str, Any]:
     """Return the full lifecycle-timestamp record."""
@@ -152,8 +200,12 @@ def _lifecycle_payload() -> dict[str, Any]:
         "first_work_request_completed_offset_s":
             TIMESTAMPS.first_work_request_completed_offset_s,
         "work_request_count": TIMESTAMPS.work_request_count,
+        "first_reshard_received_offset_s": TIMESTAMPS.first_reshard_received_offset_s,
+        "first_reshard_completed_offset_s": TIMESTAMPS.first_reshard_completed_offset_s,
+        "reshard_count": TIMESTAMPS.reshard_count,
         "cuda_init_s_target": CUDA_INIT_S,
         "work_iter_s_target": WORK_ITER_S,
+        "reshard_s_target": RESHARD_S,
     }
 
 

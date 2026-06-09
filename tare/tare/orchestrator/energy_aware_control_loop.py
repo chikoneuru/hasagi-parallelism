@@ -91,6 +91,30 @@ class RepartitionContext:
 
 
 @dataclass
+class ReshardEvent:
+    """A layout transition that requires moving training state across devices.
+
+    Emitted when a tick changes the world size of a job that was ALREADY running,
+    so the worker can drive the reshard (capture, verify-before-commit, resume)
+    via ``tare.state.reshard.ReshardController``. The control loop only DECIDES
+    the transition; the state transport runs on the worker and is gated on a real
+    distributed backend. Two cases deliberately do NOT emit: a job being paused or
+    resumed this tick reconfigures through the pause/resume checkpoint path, and a
+    constant-world-size tick is a no-op for ``HostTrainer.reshard(to_world)``,
+    which can only actuate a world-size change (under the runtime planner the
+    parallelism shape is a function of world size, so it never changes alone).
+    ``from_strategy``/``to_strategy`` are carried as observability metadata.
+    """
+
+    job_id: str
+    from_world: int
+    to_world: int
+    from_strategy: tuple[int, int]   # (data_parallel, model_parallel) before
+    to_strategy: tuple[int, int]     # (data_parallel, model_parallel) after
+    reason: str
+
+
+@dataclass
 class TickResult:
     """What the energy-aware control loop produced this tick."""
 
@@ -103,6 +127,7 @@ class TickResult:
     fallbacks: dict[str, str] = field(default_factory=dict)   # job_id → reason
     deadline_floors: dict[str, DeadlineFloor] = field(default_factory=dict)
     deadline_overrides: dict[str, str] = field(default_factory=dict)   # job_id → reason
+    reshard_events: dict[str, ReshardEvent] = field(default_factory=dict)   # job_id → transition
 
 
 @dataclass
@@ -252,6 +277,7 @@ class EnergyAwareControlLoop:
         )
         for job in jobs:
             current_gpus = max(1, job.allocated_gpus or 1)
+            was_running = job.state == JobState.RUNNING
             decision = self._invoke_policy(current_gpus)
             result.decisions[job.job_id] = decision
 
@@ -284,6 +310,23 @@ class EnergyAwareControlLoop:
                 cached = self._partitions.get(job.job_id)
                 if cached is not None:
                     result.partitions[job.job_id] = cached
+
+            # A world-size change on an ALREADY-running job needs the training
+            # state moved across the new topology: emit a reshard event the worker
+            # drives via ReshardController. A job paused or resumed this tick
+            # reconfigures through the pause/resume checkpoint path, and a
+            # constant-world tick is a no-op for reshard(to_world); both are
+            # excluded (see ReshardEvent). from_/to_strategy are observability only.
+            from_strategy = job.parallelism
+            to_strategy = (strategy.data_parallel, strategy.model_parallel)
+            if was_running and not decision.pause and target != current_gpus:
+                result.reshard_events[job.job_id] = ReshardEvent(
+                    job_id=job.job_id,
+                    from_world=current_gpus, to_world=target,
+                    from_strategy=from_strategy, to_strategy=to_strategy,
+                    reason=(f"layout {current_gpus}x{from_strategy} -> "
+                            f"{target}x{to_strategy}"),
+                )
 
             self.job_store.update(
                 job.job_id,
