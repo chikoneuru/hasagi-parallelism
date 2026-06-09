@@ -1,6 +1,6 @@
-# HASAGI Testbed
+# Tare Testbed
 
-Reference implementation for **HASAGI — Hybrid Architecture for Serverless AI Training under Grid Intensity**.
+Reference implementation for **Tare: A Falsification Map for Carbon-Aware Serverless AI Training**.
 
 > **What is actually measured vs modelled (read first).** On the single-GPU
 > testbed (RTX 3080 Ti) the **energy** results are real NVML measurements; **carbon**
