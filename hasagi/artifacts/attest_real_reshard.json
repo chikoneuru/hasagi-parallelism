@@ -1,0 +1,973 @@
+{
+  "summary": {
+    "preset": "tiny",
+    "n_transitions": 5,
+    "n_clean_pass": 5,
+    "n_false_aborts": 0,
+    "n_faults_injected": 50,
+    "n_faults_caught": 50,
+    "detection_rate": 1.0,
+    "certificate_mean_s": 0.04329013399017805,
+    "reshard_mean_s": 0.3437431810169735,
+    "certificate_over_reshard": 0.12593743347025246,
+    "wall_s": 286.39411640167236,
+    "gate": "PASS"
+  },
+  "results": [
+    {
+      "transition": "shard(2) -> full(1) [tiny]",
+      "fault": null,
+      "committed": true,
+      "violations": [],
+      "timings_s": {
+        "snapshot_pre_s": 0.005337226903066039,
+        "dcp_save_s": 0.134140120819211,
+        "snapshot_post_s": 0.004688123939558864,
+        "dcp_load_s": 0.14790227892808616,
+        "certificate_check_s": 0.0001497629564255476,
+        "certificate_total_s": 0.01017511379905045,
+        "reshard_total_s": 0.28204239974729717
+      }
+    },
+    {
+      "transition": "shard(2) -> full(1) [tiny] fault=silent_unloaded_param",
+      "fault": "silent_unloaded_param",
+      "committed": false,
+      "violations": [
+        "[content_equivalence] blocks.0.attn.in_proj_weight: fingerprint changed 7484d8759e19 -> 2dc03ecc22b4",
+        "[content_equivalence] blocks.0.attn.in_proj_weight: independent checksum diverged: numel 49152->49152, l2 1.386727e+01->4.418652e+00"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 0.005388037068769336,
+        "dcp_save_s": 0.13356716302223504,
+        "snapshot_post_s": 0.0047302041202783585,
+        "dcp_load_s": 0.14557956508360803,
+        "certificate_check_s": 0.00010745180770754814,
+        "certificate_total_s": 0.010225692996755242,
+        "reshard_total_s": 0.27914672810584307
+      }
+    },
+    {
+      "transition": "shard(2) -> full(1) [tiny] fault=value_corruption",
+      "fault": "value_corruption",
+      "committed": false,
+      "violations": [
+        "[content_equivalence] blocks.0.attn.out_proj.bias: fingerprint changed 5c9df64e88c8 -> 9afc1ef0a5a3",
+        "[content_equivalence] blocks.0.attn.out_proj.bias: independent checksum diverged: numel 128->128, l2 1.698673e-02->2.166644e-02"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 0.0050466100219637156,
+        "dcp_save_s": 0.131067818030715,
+        "snapshot_post_s": 0.005103489849716425,
+        "dcp_load_s": 0.14876399002969265,
+        "certificate_check_s": 0.00010579219087958336,
+        "certificate_total_s": 0.010255892062559724,
+        "reshard_total_s": 0.27983180806040764
+      }
+    },
+    {
+      "transition": "shard(2) -> full(1) [tiny] fault=permuted_values",
+      "fault": "permuted_values",
+      "committed": false,
+      "violations": [
+        "[content_equivalence] blocks.0.attn.in_proj_weight: fingerprint changed 7484d8759e19 -> df73427f6dd2"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 0.005237933015450835,
+        "dcp_save_s": 0.15163416997529566,
+        "snapshot_post_s": 0.004752172855660319,
+        "dcp_load_s": 0.1504667189437896,
+        "certificate_check_s": 9.861215949058533e-05,
+        "certificate_total_s": 0.01008871803060174,
+        "reshard_total_s": 0.30210088891908526
+      }
+    },
+    {
+      "transition": "shard(2) -> full(1) [tiny] fault=cross_param_overwrite",
+      "fault": "cross_param_overwrite",
+      "committed": false,
+      "violations": [
+        "[content_equivalence] blocks.0.ln1.weight: fingerprint changed 734868fb5087 -> f621f0b460be",
+        "[content_equivalence] blocks.0.ln1.weight: independent checksum diverged: numel 128->128, l2 1.131122e+01->1.775522e-02"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 0.007194611011072993,
+        "dcp_save_s": 0.14100872701965272,
+        "snapshot_post_s": 0.004694811999797821,
+        "dcp_load_s": 0.14948562602512538,
+        "certificate_check_s": 9.840214625000954e-05,
+        "certificate_total_s": 0.011987825157120824,
+        "reshard_total_s": 0.2904943530447781
+      }
+    },
+    {
+      "transition": "shard(2) -> full(1) [tiny] fault=stale_optimizer_moment",
+      "fault": "stale_optimizer_moment",
+      "committed": false,
+      "violations": [
+        "[optimizer_accounting] blocks.0.attn.in_proj_bias: slot 'exp_avg' changed (16d25267bef5d46b0d -> 490e1c2dd141e89014)",
+        "[optimizer_accounting] blocks.0.attn.in_proj_bias: slot 'exp_avg_sq' changed (d0fa80b80d4eec3714 -> 490e1c2dd141e89014)"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 0.0051699799951165915,
+        "dcp_save_s": 0.1347828800790012,
+        "snapshot_post_s": 0.004800013964995742,
+        "dcp_load_s": 0.147685183910653,
+        "certificate_check_s": 7.596099749207497e-05,
+        "certificate_total_s": 0.010045954957604408,
+        "reshard_total_s": 0.2824680639896542
+      }
+    },
+    {
+      "transition": "shard(2) -> full(1) [tiny] fault=step_counter_reset",
+      "fault": "step_counter_reset",
+      "committed": false,
+      "violations": [
+        "[optimizer_accounting] blocks.0.attn.in_proj_bias: slot 'step' changed (scalar:2 -> scalar:0)"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 0.005304792197421193,
+        "dcp_save_s": 0.12944437400437891,
+        "snapshot_post_s": 0.005384854041039944,
+        "dcp_load_s": 0.15445624105632305,
+        "certificate_check_s": 9.736092761158943e-05,
+        "certificate_total_s": 0.010787007166072726,
+        "reshard_total_s": 0.28390061506070197
+      }
+    },
+    {
+      "transition": "shard(2) -> full(1) [tiny] fault=precision_cast",
+      "fault": "precision_cast",
+      "committed": false,
+      "violations": [
+        "[content_equivalence] blocks.0.ln1.bias: fingerprint changed f621f0b460be -> 55a0495cbee9",
+        "[content_equivalence] blocks.0.ln1.bias: independent checksum diverged: numel 128->128, l2 1.775522e-02->1.775450e-02"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 0.007370992098003626,
+        "dcp_save_s": 0.13272424298338592,
+        "snapshot_post_s": 0.004608528921380639,
+        "dcp_load_s": 0.1484079270157963,
+        "certificate_check_s": 9.733112528920174e-05,
+        "certificate_total_s": 0.012076852144673467,
+        "reshard_total_s": 0.2811321699991822
+      }
+    },
+    {
+      "transition": "shard(2) -> full(1) [tiny] fault=progress_reset",
+      "fault": "progress_reset",
+      "committed": false,
+      "violations": [
+        "[progress_invariant] global_step: 2 -> 0"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 0.0066396568436175585,
+        "dcp_save_s": 0.13465958717279136,
+        "snapshot_post_s": 0.004796820925548673,
+        "dcp_load_s": 0.14830737211741507,
+        "certificate_check_s": 8.869217708706856e-05,
+        "certificate_total_s": 0.0115251699462533,
+        "reshard_total_s": 0.28296695929020643
+      }
+    },
+    {
+      "transition": "shard(2) -> full(1) [tiny] fault=dropped_fqn",
+      "fault": "dropped_fqn",
+      "committed": false,
+      "violations": [
+        "[param_residency] blocks.0.attn.in_proj_bias: parameter lost in transition",
+        "[reduction_order_bound] <order>: post order is not a permutation of pre order"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 0.008145454805344343,
+        "dcp_save_s": 0.1324435300193727,
+        "snapshot_post_s": 0.004823700990527868,
+        "dcp_load_s": 0.1473842679988593,
+        "certificate_check_s": 8.867192082107067e-05,
+        "certificate_total_s": 0.013057827716693282,
+        "reshard_total_s": 0.279827798018232
+      }
+    },
+    {
+      "transition": "shard(2) -> full(1) [tiny] fault=reduction_order_swap",
+      "fault": "reduction_order_swap",
+      "committed": false,
+      "violations": [
+        "[reduction_order_bound] <order>: declared reduction order changed silently across the transition"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 0.006278339074924588,
+        "dcp_save_s": 0.13827715814113617,
+        "snapshot_post_s": 0.005260799080133438,
+        "dcp_load_s": 0.15562455006875098,
+        "certificate_check_s": 8.614198304712772e-05,
+        "certificate_total_s": 0.011625280138105154,
+        "reshard_total_s": 0.29390170820988715
+      }
+    },
+    {
+      "transition": "full(1) -> shard(2) [tiny]",
+      "fault": null,
+      "committed": true,
+      "violations": [],
+      "timings_s": {
+        "snapshot_pre_s": 0.005115817068144679,
+        "dcp_save_s": 0.10070578707382083,
+        "snapshot_post_s": 0.029452773043885827,
+        "dcp_load_s": 0.1838733560871333,
+        "certificate_check_s": 0.00010932190343737602,
+        "certificate_total_s": 0.03467791201546788,
+        "reshard_total_s": 0.2845791431609541
+      }
+    },
+    {
+      "transition": "full(1) -> shard(2) [tiny] fault=silent_unloaded_param",
+      "fault": "silent_unloaded_param",
+      "committed": false,
+      "violations": [
+        "[content_equivalence] blocks.0.attn.in_proj_weight: fingerprint changed 0737544a825b -> 2908472c5226",
+        "[content_equivalence] blocks.0.attn.in_proj_weight: independent checksum diverged: numel 49152->49152, l2 1.386727e+01->4.400459e+00"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 0.005034224828705192,
+        "dcp_save_s": 0.1035771721508354,
+        "snapshot_post_s": 0.029764415929093957,
+        "dcp_load_s": 0.18832107400521636,
+        "certificate_check_s": 9.953184053301811e-05,
+        "certificate_total_s": 0.03489817259833217,
+        "reshard_total_s": 0.29189824615605175
+      }
+    },
+    {
+      "transition": "full(1) -> shard(2) [tiny] fault=value_corruption",
+      "fault": "value_corruption",
+      "committed": false,
+      "violations": [
+        "[content_equivalence] blocks.0.attn.out_proj.bias: fingerprint changed 825a3146205a -> 49431b54ae43",
+        "[content_equivalence] blocks.0.attn.out_proj.bias: independent checksum diverged: numel 128->128, l2 1.698673e-02->2.166644e-02"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 0.004751489032059908,
+        "dcp_save_s": 0.09561525494791567,
+        "snapshot_post_s": 0.02464732783846557,
+        "dcp_load_s": 0.1814043279737234,
+        "certificate_check_s": 0.00010048202238976955,
+        "certificate_total_s": 0.02949929889291525,
+        "reshard_total_s": 0.2770195829216391
+      }
+    },
+    {
+      "transition": "full(1) -> shard(2) [tiny] fault=permuted_values",
+      "fault": "permuted_values",
+      "committed": false,
+      "violations": [
+        "[content_equivalence] blocks.0.attn.in_proj_weight: fingerprint changed 0737544a825b -> 3c9f4287df92"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 0.005740816937759519,
+        "dcp_save_s": 0.12044977489858866,
+        "snapshot_post_s": 0.02428223006427288,
+        "dcp_load_s": 0.1803093277849257,
+        "certificate_check_s": 0.00011312193237245083,
+        "certificate_total_s": 0.03013616893440485,
+        "reshard_total_s": 0.30075910268351436
+      }
+    },
+    {
+      "transition": "full(1) -> shard(2) [tiny] fault=cross_param_overwrite",
+      "fault": "cross_param_overwrite",
+      "committed": false,
+      "violations": [
+        "[content_equivalence] blocks.0.ln1.weight: fingerprint changed 734868fb5087 -> dd4fa777c1b4",
+        "[content_equivalence] blocks.0.ln1.weight: independent checksum diverged: numel 128->128, l2 1.131122e+01->1.775522e-02"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 0.004567674128338695,
+        "dcp_save_s": 0.0997456219047308,
+        "snapshot_post_s": 0.03484589094296098,
+        "dcp_load_s": 0.18663042597472668,
+        "certificate_check_s": 0.00010154186747968197,
+        "certificate_total_s": 0.039515106938779354,
+        "reshard_total_s": 0.2863760478794575
+      }
+    },
+    {
+      "transition": "full(1) -> shard(2) [tiny] fault=stale_optimizer_moment",
+      "fault": "stale_optimizer_moment",
+      "committed": false,
+      "violations": [
+        "[optimizer_accounting] blocks.0.attn.in_proj_bias: slot 'exp_avg' changed (3d39836bd0d26a069f -> 490e1c2dd141e89014)",
+        "[optimizer_accounting] blocks.0.attn.in_proj_bias: slot 'exp_avg_sq' changed (0720d2802ffc6b4912 -> 490e1c2dd141e89014)"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 0.004781397059559822,
+        "dcp_save_s": 0.10332848690450191,
+        "snapshot_post_s": 0.025795343099161983,
+        "dcp_load_s": 0.17919880314730108,
+        "certificate_check_s": 8.967099711298943e-05,
+        "certificate_total_s": 0.030666411155834794,
+        "reshard_total_s": 0.282527290051803
+      }
+    },
+    {
+      "transition": "full(1) -> shard(2) [tiny] fault=step_counter_reset",
+      "fault": "step_counter_reset",
+      "committed": false,
+      "violations": [
+        "[optimizer_accounting] blocks.0.attn.in_proj_bias: slot 'step' changed (scalar:2 -> scalar:0)"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 0.00493708997964859,
+        "dcp_save_s": 0.10495226900093257,
+        "snapshot_post_s": 0.028824255103245378,
+        "dcp_load_s": 0.18451060610823333,
+        "certificate_check_s": 8.164090104401112e-05,
+        "certificate_total_s": 0.03384298598393798,
+        "reshard_total_s": 0.2894628751091659
+      }
+    },
+    {
+      "transition": "full(1) -> shard(2) [tiny] fault=precision_cast",
+      "fault": "precision_cast",
+      "committed": false,
+      "violations": [
+        "[content_equivalence] blocks.0.ln1.bias: fingerprint changed dd4fa777c1b4 -> 55a0495cbee9",
+        "[content_equivalence] blocks.0.ln1.bias: independent checksum diverged: numel 128->128, l2 1.775522e-02->1.775450e-02"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 0.004678765079006553,
+        "dcp_save_s": 0.10056815994903445,
+        "snapshot_post_s": 0.025421731173992157,
+        "dcp_load_s": 0.1804839768446982,
+        "certificate_check_s": 0.00010007200762629509,
+        "certificate_total_s": 0.030200568260625005,
+        "reshard_total_s": 0.28105213679373264
+      }
+    },
+    {
+      "transition": "full(1) -> shard(2) [tiny] fault=progress_reset",
+      "fault": "progress_reset",
+      "committed": false,
+      "violations": [
+        "[progress_invariant] global_step: 2 -> 0"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 0.005229935050010681,
+        "dcp_save_s": 0.1044916920363903,
+        "snapshot_post_s": 0.025294076884165406,
+        "dcp_load_s": 0.17881704890169203,
+        "certificate_check_s": 7.519102655351162e-05,
+        "certificate_total_s": 0.0305992029607296,
+        "reshard_total_s": 0.28330874093808234
+      }
+    },
+    {
+      "transition": "full(1) -> shard(2) [tiny] fault=dropped_fqn",
+      "fault": "dropped_fqn",
+      "committed": false,
+      "violations": [
+        "[param_residency] blocks.0.attn.in_proj_bias: parameter lost in transition",
+        "[reduction_order_bound] <order>: post order is not a permutation of pre order"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 0.0047093951143324375,
+        "dcp_save_s": 0.10488937911577523,
+        "snapshot_post_s": 0.03058467898517847,
+        "dcp_load_s": 0.1873933570459485,
+        "certificate_check_s": 8.927215822041035e-05,
+        "certificate_total_s": 0.03538334625773132,
+        "reshard_total_s": 0.29228273616172373
+      }
+    },
+    {
+      "transition": "full(1) -> shard(2) [tiny] fault=reduction_order_swap",
+      "fault": "reduction_order_swap",
+      "committed": false,
+      "violations": [
+        "[reduction_order_bound] <order>: declared reduction order changed silently across the transition"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 0.004711434943601489,
+        "dcp_save_s": 0.1100988641846925,
+        "snapshot_post_s": 0.02516134991310537,
+        "dcp_load_s": 0.18155851820483804,
+        "certificate_check_s": 0.00010013207793235779,
+        "certificate_total_s": 0.029972916934639215,
+        "reshard_total_s": 0.29165738238953054
+      }
+    },
+    {
+      "transition": "shard(4) -> shard(2) [tiny]",
+      "fault": null,
+      "committed": true,
+      "violations": [],
+      "timings_s": {
+        "snapshot_pre_s": 0.009926456026732922,
+        "dcp_save_s": 0.16941686416976154,
+        "snapshot_post_s": 0.02593930996954441,
+        "dcp_load_s": 0.20011690095998347,
+        "certificate_check_s": 7.241102866828442e-05,
+        "certificate_total_s": 0.03593817702494562,
+        "reshard_total_s": 0.369533765129745
+      }
+    },
+    {
+      "transition": "shard(4) -> shard(2) [tiny] fault=silent_unloaded_param",
+      "fault": "silent_unloaded_param",
+      "committed": false,
+      "violations": [
+        "[content_equivalence] blocks.0.attn.in_proj_weight: fingerprint changed fe56b793a3da -> 2908472c5226",
+        "[content_equivalence] blocks.0.attn.in_proj_weight: independent checksum diverged: numel 49152->49152, l2 1.386727e+01->4.400459e+00"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 0.051544429967179894,
+        "dcp_save_s": 0.20798575412482023,
+        "snapshot_post_s": 0.023814078886061907,
+        "dcp_load_s": 0.2509760679677129,
+        "certificate_check_s": 0.00010226201266050339,
+        "certificate_total_s": 0.0754607708659023,
+        "reshard_total_s": 0.4589618220925331
+      }
+    },
+    {
+      "transition": "shard(4) -> shard(2) [tiny] fault=value_corruption",
+      "fault": "value_corruption",
+      "committed": false,
+      "violations": [
+        "[content_equivalence] blocks.0.attn.out_proj.bias: fingerprint changed d0bcf736ae5c -> 65c33270298e",
+        "[content_equivalence] blocks.0.attn.out_proj.bias: independent checksum diverged: numel 128->128, l2 1.698673e-02->2.166643e-02"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 0.01633967598900199,
+        "dcp_save_s": 0.15798235591500998,
+        "snapshot_post_s": 0.026389640057459474,
+        "dcp_load_s": 0.20114008896052837,
+        "certificate_check_s": 8.689216338098049e-05,
+        "certificate_total_s": 0.04281620820984244,
+        "reshard_total_s": 0.35912244487553835
+      }
+    },
+    {
+      "transition": "shard(4) -> shard(2) [tiny] fault=permuted_values",
+      "fault": "permuted_values",
+      "committed": false,
+      "violations": [
+        "[content_equivalence] blocks.0.attn.in_proj_weight: fingerprint changed fe56b793a3da -> 9eca4c572e61"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 0.007757063955068588,
+        "dcp_save_s": 0.16641417983919382,
+        "snapshot_post_s": 0.025489561026915908,
+        "dcp_load_s": 0.1963197491131723,
+        "certificate_check_s": 9.49010718613863e-05,
+        "certificate_total_s": 0.03334152605384588,
+        "reshard_total_s": 0.3627339289523661
+      }
+    },
+    {
+      "transition": "shard(4) -> shard(2) [tiny] fault=cross_param_overwrite",
+      "fault": "cross_param_overwrite",
+      "committed": false,
+      "violations": [
+        "[content_equivalence] blocks.0.ln1.weight: fingerprint changed 734868fb5087 -> 7a041286626a",
+        "[content_equivalence] blocks.0.ln1.weight: independent checksum diverged: numel 128->128, l2 1.131122e+01->1.775522e-02"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 0.008219591109082103,
+        "dcp_save_s": 0.2275682019535452,
+        "snapshot_post_s": 0.03626909316517413,
+        "dcp_load_s": 0.20404247590340674,
+        "certificate_check_s": 8.424208499491215e-05,
+        "certificate_total_s": 0.04457292635925114,
+        "reshard_total_s": 0.43161067785695195
+      }
+    },
+    {
+      "transition": "shard(4) -> shard(2) [tiny] fault=stale_optimizer_moment",
+      "fault": "stale_optimizer_moment",
+      "committed": false,
+      "violations": [
+        "[optimizer_accounting] blocks.0.attn.in_proj_bias: slot 'exp_avg' changed (b67650c348626dd340 -> 490e1c2dd141e89014)",
+        "[optimizer_accounting] blocks.0.attn.in_proj_bias: slot 'exp_avg_sq' changed (0ed262caa36b291622 -> 490e1c2dd141e89014)"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 0.028217402985319495,
+        "dcp_save_s": 0.1630003780592233,
+        "snapshot_post_s": 0.029105617199093103,
+        "dcp_load_s": 0.19576988113112748,
+        "certificate_check_s": 7.921201176941395e-05,
+        "certificate_total_s": 0.05740223219618201,
+        "reshard_total_s": 0.35877025919035077
+      }
+    },
+    {
+      "transition": "shard(4) -> shard(2) [tiny] fault=step_counter_reset",
+      "fault": "step_counter_reset",
+      "committed": false,
+      "violations": [
+        "[optimizer_accounting] blocks.0.attn.in_proj_bias: slot 'step' changed (scalar:2 -> scalar:0)"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 0.00525629916228354,
+        "dcp_save_s": 0.16702996799722314,
+        "snapshot_post_s": 0.025849177967756987,
+        "dcp_load_s": 0.19762303703464568,
+        "certificate_check_s": 7.53309577703476e-05,
+        "certificate_total_s": 0.031180808087810874,
+        "reshard_total_s": 0.3646530050318688
+      }
+    },
+    {
+      "transition": "shard(4) -> shard(2) [tiny] fault=precision_cast",
+      "fault": "precision_cast",
+      "committed": false,
+      "violations": [
+        "[content_equivalence] blocks.0.ln1.bias: fingerprint changed 7a041286626a -> 55a0495cbee9",
+        "[content_equivalence] blocks.0.ln1.bias: independent checksum diverged: numel 128->128, l2 1.775522e-02->1.775450e-02"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 0.006260334979742765,
+        "dcp_save_s": 0.1610185420140624,
+        "snapshot_post_s": 0.027937489096075296,
+        "dcp_load_s": 0.1993318300228566,
+        "certificate_check_s": 9.87309031188488e-05,
+        "certificate_total_s": 0.03429655497893691,
+        "reshard_total_s": 0.360350372036919
+      }
+    },
+    {
+      "transition": "shard(4) -> shard(2) [tiny] fault=progress_reset",
+      "fault": "progress_reset",
+      "committed": false,
+      "violations": [
+        "[progress_invariant] global_step: 2 -> 0"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 0.04535772907547653,
+        "dcp_save_s": 0.20957800699397922,
+        "snapshot_post_s": 0.029970429837703705,
+        "dcp_load_s": 0.19542733998969197,
+        "certificate_check_s": 7.430114783346653e-05,
+        "certificate_total_s": 0.0754024600610137,
+        "reshard_total_s": 0.4050053469836712
+      }
+    },
+    {
+      "transition": "shard(4) -> shard(2) [tiny] fault=dropped_fqn",
+      "fault": "dropped_fqn",
+      "committed": false,
+      "violations": [
+        "[param_residency] blocks.0.attn.in_proj_bias: parameter lost in transition",
+        "[reduction_order_bound] <order>: post order is not a permutation of pre order"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 0.052930968115106225,
+        "dcp_save_s": 0.1741973201278597,
+        "snapshot_post_s": 0.02583479695022106,
+        "dcp_load_s": 0.19954954413697124,
+        "certificate_check_s": 7.601198740303516e-05,
+        "certificate_total_s": 0.07884177705273032,
+        "reshard_total_s": 0.37374686426483095
+      }
+    },
+    {
+      "transition": "shard(4) -> shard(2) [tiny] fault=reduction_order_swap",
+      "fault": "reduction_order_swap",
+      "committed": false,
+      "violations": [
+        "[reduction_order_bound] <order>: declared reduction order changed silently across the transition"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 0.05378276598639786,
+        "dcp_save_s": 0.17319090315140784,
+        "snapshot_post_s": 0.02544149779714644,
+        "dcp_load_s": 0.202555667841807,
+        "certificate_check_s": 8.991104550659657e-05,
+        "certificate_total_s": 0.0793141748290509,
+        "reshard_total_s": 0.37574657099321485
+      }
+    },
+    {
+      "transition": "shard(2) -> shard(4) [tiny]",
+      "fault": null,
+      "committed": true,
+      "violations": [],
+      "timings_s": {
+        "snapshot_pre_s": 0.015222359914332628,
+        "dcp_save_s": 0.135051263961941,
+        "snapshot_post_s": 0.042686267057433724,
+        "dcp_load_s": 0.8285315660759807,
+        "certificate_check_s": 8.986098691821098e-05,
+        "certificate_total_s": 0.057998487958684564,
+        "reshard_total_s": 0.9635828300379217
+      }
+    },
+    {
+      "transition": "shard(2) -> shard(4) [tiny] fault=silent_unloaded_param",
+      "fault": "silent_unloaded_param",
+      "committed": false,
+      "violations": [
+        "[content_equivalence] blocks.0.attn.in_proj_weight: fingerprint changed 7484d8759e19 -> e6da5698f49b",
+        "[content_equivalence] blocks.0.attn.in_proj_weight: independent checksum diverged: numel 49152->49152, l2 1.386727e+01->4.434187e+00"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 0.006132839946076274,
+        "dcp_save_s": 0.13148603099398315,
+        "snapshot_post_s": 0.08539011585526168,
+        "dcp_load_s": 0.2403330230154097,
+        "certificate_check_s": 9.094108827412128e-05,
+        "certificate_total_s": 0.09161389688961208,
+        "reshard_total_s": 0.37181905400939286
+      }
+    },
+    {
+      "transition": "shard(2) -> shard(4) [tiny] fault=value_corruption",
+      "fault": "value_corruption",
+      "committed": false,
+      "violations": [
+        "[content_equivalence] blocks.0.attn.out_proj.bias: fingerprint changed 5c9df64e88c8 -> 9afc1ef0a5a3",
+        "[content_equivalence] blocks.0.attn.out_proj.bias: independent checksum diverged: numel 128->128, l2 1.698673e-02->2.166644e-02"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 0.005613611079752445,
+        "dcp_save_s": 0.13164794095791876,
+        "snapshot_post_s": 0.06379986018873751,
+        "dcp_load_s": 0.24681351683102548,
+        "certificate_check_s": 0.00012100185267627239,
+        "certificate_total_s": 0.06953447312116623,
+        "reshard_total_s": 0.37846145778894424
+      }
+    },
+    {
+      "transition": "shard(2) -> shard(4) [tiny] fault=permuted_values",
+      "fault": "permuted_values",
+      "committed": false,
+      "violations": [
+        "[content_equivalence] blocks.0.attn.in_proj_weight: fingerprint changed 7484d8759e19 -> 618b0e141708"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 0.0053831159602850676,
+        "dcp_save_s": 0.13232465996406972,
+        "snapshot_post_s": 0.09517531795427203,
+        "dcp_load_s": 0.26824340713210404,
+        "certificate_check_s": 9.502214379608631e-05,
+        "certificate_total_s": 0.10065345605835319,
+        "reshard_total_s": 0.40056806709617376
+      }
+    },
+    {
+      "transition": "shard(2) -> shard(4) [tiny] fault=cross_param_overwrite",
+      "fault": "cross_param_overwrite",
+      "committed": false,
+      "violations": [
+        "[content_equivalence] blocks.0.ln1.weight: fingerprint changed 734868fb5087 -> f621f0b460be",
+        "[content_equivalence] blocks.0.ln1.weight: independent checksum diverged: numel 128->128, l2 1.131122e+01->1.775522e-02"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 0.005432097008451819,
+        "dcp_save_s": 0.13247668207623065,
+        "snapshot_post_s": 0.09564490686170757,
+        "dcp_load_s": 0.32022176403552294,
+        "certificate_check_s": 0.00010339193977415562,
+        "certificate_total_s": 0.10118039580993354,
+        "reshard_total_s": 0.4526984461117536
+      }
+    },
+    {
+      "transition": "shard(2) -> shard(4) [tiny] fault=stale_optimizer_moment",
+      "fault": "stale_optimizer_moment",
+      "committed": false,
+      "violations": [
+        "[optimizer_accounting] blocks.0.attn.in_proj_bias: slot 'exp_avg' changed (16d25267bef5d46b0d -> 490e1c2dd141e89014)",
+        "[optimizer_accounting] blocks.0.attn.in_proj_bias: slot 'exp_avg_sq' changed (d0fa80b80d4eec3714 -> 490e1c2dd141e89014)"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 0.008600147208198905,
+        "dcp_save_s": 0.13098743511363864,
+        "snapshot_post_s": 0.06972323614172637,
+        "dcp_load_s": 0.30110110295936465,
+        "certificate_check_s": 0.00010182196274399757,
+        "certificate_total_s": 0.07842520531266928,
+        "reshard_total_s": 0.4320885380730033
+      }
+    },
+    {
+      "transition": "shard(2) -> shard(4) [tiny] fault=step_counter_reset",
+      "fault": "step_counter_reset",
+      "committed": false,
+      "violations": [
+        "[optimizer_accounting] blocks.0.attn.in_proj_bias: slot 'step' changed (scalar:2 -> scalar:0)"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 0.005310534033924341,
+        "dcp_save_s": 0.13272658013738692,
+        "snapshot_post_s": 0.10676943394355476,
+        "dcp_load_s": 0.2974453018978238,
+        "certificate_check_s": 7.904088124632835e-05,
+        "certificate_total_s": 0.11215900885872543,
+        "reshard_total_s": 0.43017188203521073
+      }
+    },
+    {
+      "transition": "shard(2) -> shard(4) [tiny] fault=precision_cast",
+      "fault": "precision_cast",
+      "committed": false,
+      "violations": [
+        "[content_equivalence] blocks.0.ln1.bias: fingerprint changed f621f0b460be -> 55a0495cbee9",
+        "[content_equivalence] blocks.0.ln1.bias: independent checksum diverged: numel 128->128, l2 1.775522e-02->1.775450e-02"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 0.005195861915126443,
+        "dcp_save_s": 0.13167520007118583,
+        "snapshot_post_s": 0.06593541288748384,
+        "dcp_load_s": 0.28462637192569673,
+        "certificate_check_s": 0.00010434095747768879,
+        "certificate_total_s": 0.07123561576008797,
+        "reshard_total_s": 0.41630157199688256
+      }
+    },
+    {
+      "transition": "shard(2) -> shard(4) [tiny] fault=progress_reset",
+      "fault": "progress_reset",
+      "committed": false,
+      "violations": [
+        "[progress_invariant] global_step: 2 -> 0"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 0.00594846298918128,
+        "dcp_save_s": 0.1315997689962387,
+        "snapshot_post_s": 0.1053031119517982,
+        "dcp_load_s": 0.2997639349196106,
+        "certificate_check_s": 8.978205733001232e-05,
+        "certificate_total_s": 0.1113413569983095,
+        "reshard_total_s": 0.43136370391584933
+      }
+    },
+    {
+      "transition": "shard(2) -> shard(4) [tiny] fault=dropped_fqn",
+      "fault": "dropped_fqn",
+      "committed": false,
+      "violations": [
+        "[param_residency] blocks.0.attn.in_proj_bias: parameter lost in transition",
+        "[reduction_order_bound] <order>: post order is not a permutation of pre order"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 0.0051088889595121145,
+        "dcp_save_s": 0.13403689418919384,
+        "snapshot_post_s": 0.059838718036189675,
+        "dcp_load_s": 0.3366185869090259,
+        "certificate_check_s": 8.852197788655758e-05,
+        "certificate_total_s": 0.06503612897358835,
+        "reshard_total_s": 0.47065548109821975
+      }
+    },
+    {
+      "transition": "shard(2) -> shard(4) [tiny] fault=reduction_order_swap",
+      "fault": "reduction_order_swap",
+      "committed": false,
+      "violations": [
+        "[reduction_order_bound] <order>: declared reduction order changed silently across the transition"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 0.007871090900152922,
+        "dcp_save_s": 0.13155149295926094,
+        "snapshot_post_s": 0.07856040098704398,
+        "dcp_load_s": 0.24065821105614305,
+        "certificate_check_s": 7.440103217959404e-05,
+        "certificate_total_s": 0.08650589291937649,
+        "reshard_total_s": 0.372209704015404
+      }
+    },
+    {
+      "transition": "full(2) -> shard(2) [tiny]",
+      "fault": null,
+      "committed": true,
+      "violations": [],
+      "timings_s": {
+        "snapshot_pre_s": 0.005203970009461045,
+        "dcp_save_s": 0.11315632006153464,
+        "snapshot_post_s": 0.03305988688953221,
+        "dcp_load_s": 0.18319588992744684,
+        "certificate_check_s": 7.392093539237976e-05,
+        "certificate_total_s": 0.03833777783438563,
+        "reshard_total_s": 0.2963522099889815
+      }
+    },
+    {
+      "transition": "full(2) -> shard(2) [tiny] fault=silent_unloaded_param",
+      "fault": "silent_unloaded_param",
+      "committed": false,
+      "violations": [
+        "[content_equivalence] blocks.0.attn.in_proj_weight: fingerprint changed 7484d8759e19 -> 2908472c5226",
+        "[content_equivalence] blocks.0.attn.in_proj_weight: independent checksum diverged: numel 49152->49152, l2 1.386727e+01->4.400459e+00"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 0.0053872219286859035,
+        "dcp_save_s": 0.11000671284273267,
+        "snapshot_post_s": 0.025660571875050664,
+        "dcp_load_s": 0.18192498805001378,
+        "certificate_check_s": 9.525218047201633e-05,
+        "certificate_total_s": 0.031143045984208584,
+        "reshard_total_s": 0.29193170089274645
+      }
+    },
+    {
+      "transition": "full(2) -> shard(2) [tiny] fault=value_corruption",
+      "fault": "value_corruption",
+      "committed": false,
+      "violations": [
+        "[content_equivalence] blocks.0.attn.out_proj.bias: fingerprint changed 5c9df64e88c8 -> 9afc1ef0a5a3",
+        "[content_equivalence] blocks.0.attn.out_proj.bias: independent checksum diverged: numel 128->128, l2 1.698673e-02->2.166644e-02"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 0.008371057221665978,
+        "dcp_save_s": 0.1117665208876133,
+        "snapshot_post_s": 0.02568205981515348,
+        "dcp_load_s": 0.17873171507380903,
+        "certificate_check_s": 8.422089740633965e-05,
+        "certificate_total_s": 0.0341373379342258,
+        "reshard_total_s": 0.2904982359614223
+      }
+    },
+    {
+      "transition": "full(2) -> shard(2) [tiny] fault=permuted_values",
+      "fault": "permuted_values",
+      "committed": false,
+      "violations": [
+        "[content_equivalence] blocks.0.attn.in_proj_weight: fingerprint changed 7484d8759e19 -> 4f9b652e0534"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 0.013799399137496948,
+        "dcp_save_s": 0.10996807599440217,
+        "snapshot_post_s": 0.02515198104083538,
+        "dcp_load_s": 0.1774971028789878,
+        "certificate_check_s": 9.210105054080486e-05,
+        "certificate_total_s": 0.039043481228873134,
+        "reshard_total_s": 0.28746517887338996
+      }
+    },
+    {
+      "transition": "full(2) -> shard(2) [tiny] fault=cross_param_overwrite",
+      "fault": "cross_param_overwrite",
+      "committed": false,
+      "violations": [
+        "[content_equivalence] blocks.0.ln1.weight: fingerprint changed 734868fb5087 -> f621f0b460be",
+        "[content_equivalence] blocks.0.ln1.weight: independent checksum diverged: numel 128->128, l2 1.131122e+01->1.775522e-02"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 0.005230948096141219,
+        "dcp_save_s": 0.1116594448685646,
+        "snapshot_post_s": 0.027510864194482565,
+        "dcp_load_s": 0.18457080703228712,
+        "certificate_check_s": 0.00010229204781353474,
+        "certificate_total_s": 0.03284410433843732,
+        "reshard_total_s": 0.2962302519008517
+      }
+    },
+    {
+      "transition": "full(2) -> shard(2) [tiny] fault=stale_optimizer_moment",
+      "fault": "stale_optimizer_moment",
+      "committed": false,
+      "violations": [
+        "[optimizer_accounting] blocks.0.attn.in_proj_bias: slot 'exp_avg' changed (16d25267bef5d46b0d -> 490e1c2dd141e89014)",
+        "[optimizer_accounting] blocks.0.attn.in_proj_bias: slot 'exp_avg_sq' changed (d0fa80b80d4eec3714 -> 490e1c2dd141e89014)"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 0.005053816130384803,
+        "dcp_save_s": 0.1194438231177628,
+        "snapshot_post_s": 0.025127906119450927,
+        "dcp_load_s": 0.17945978906936944,
+        "certificate_check_s": 7.679103873670101e-05,
+        "certificate_total_s": 0.03025851328857243,
+        "reshard_total_s": 0.29890361218713224
+      }
+    },
+    {
+      "transition": "full(2) -> shard(2) [tiny] fault=step_counter_reset",
+      "fault": "step_counter_reset",
+      "committed": false,
+      "violations": [
+        "[optimizer_accounting] blocks.0.attn.in_proj_bias: slot 'step' changed (scalar:2 -> scalar:0)"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 0.006458975840359926,
+        "dcp_save_s": 0.11393521400168538,
+        "snapshot_post_s": 0.02666630782186985,
+        "dcp_load_s": 0.18155093910172582,
+        "certificate_check_s": 7.632095366716385e-05,
+        "certificate_total_s": 0.03320160461589694,
+        "reshard_total_s": 0.2954861531034112
+      }
+    },
+    {
+      "transition": "full(2) -> shard(2) [tiny] fault=precision_cast",
+      "fault": "precision_cast",
+      "committed": false,
+      "violations": [
+        "[content_equivalence] blocks.0.ln1.bias: fingerprint changed f621f0b460be -> 55a0495cbee9",
+        "[content_equivalence] blocks.0.ln1.bias: independent checksum diverged: numel 128->128, l2 1.775522e-02->1.775450e-02"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 0.0051730971317738295,
+        "dcp_save_s": 0.1267187457997352,
+        "snapshot_post_s": 0.02568111103028059,
+        "dcp_load_s": 0.18731361301615834,
+        "certificate_check_s": 8.551101200282574e-05,
+        "certificate_total_s": 0.030939719174057245,
+        "reshard_total_s": 0.31403235881589353
+      }
+    },
+    {
+      "transition": "full(2) -> shard(2) [tiny] fault=progress_reset",
+      "fault": "progress_reset",
+      "committed": false,
+      "violations": [
+        "[progress_invariant] global_step: 2 -> 0"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 0.0046383480075746775,
+        "dcp_save_s": 0.10793795995414257,
+        "snapshot_post_s": 0.02514675189740956,
+        "dcp_load_s": 0.18198740086518228,
+        "certificate_check_s": 8.838111534714699e-05,
+        "certificate_total_s": 0.029873481020331383,
+        "reshard_total_s": 0.28992536081932485
+      }
+    },
+    {
+      "transition": "full(2) -> shard(2) [tiny] fault=dropped_fqn",
+      "fault": "dropped_fqn",
+      "committed": false,
+      "violations": [
+        "[param_residency] blocks.0.attn.in_proj_bias: parameter lost in transition",
+        "[reduction_order_bound] <order>: post order is not a permutation of pre order"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 0.009622751967981458,
+        "dcp_save_s": 0.11250382009893656,
+        "snapshot_post_s": 0.024914316833019257,
+        "dcp_load_s": 0.19079818902537227,
+        "certificate_check_s": 7.857102900743484e-05,
+        "certificate_total_s": 0.03461563983000815,
+        "reshard_total_s": 0.3033020091243088
+      }
+    },
+    {
+      "transition": "full(2) -> shard(2) [tiny] fault=reduction_order_swap",
+      "fault": "reduction_order_swap",
+      "committed": false,
+      "violations": [
+        "[reduction_order_bound] <order>: declared reduction order changed silently across the transition"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 0.005221566883847117,
+        "dcp_save_s": 0.1171763320453465,
+        "snapshot_post_s": 0.025761246914044023,
+        "dcp_load_s": 0.185678981943056,
+        "certificate_check_s": 8.489098399877548e-05,
+        "certificate_total_s": 0.031067704781889915,
+        "reshard_total_s": 0.3028553139884025
+      }
+    }
+  ]
+}
