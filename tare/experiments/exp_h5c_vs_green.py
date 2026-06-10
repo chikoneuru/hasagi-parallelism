@@ -55,9 +55,9 @@ from rich.table import Table
 from experiments.baselines.green import (
     green_offline_optimal_mask,
     green_online_percentile_mask,
+    pause_fraction,
     tare_threshold_mask,
     tare_threshold_online_mask,
-    pause_fraction,
 )
 from tare.energy.carbon_trace import published_grid_trace
 

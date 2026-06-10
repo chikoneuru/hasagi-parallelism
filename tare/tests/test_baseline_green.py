@@ -6,9 +6,9 @@ import pytest
 from experiments.baselines.green import (
     green_offline_optimal_mask,
     green_online_percentile_mask,
+    pause_fraction,
     tare_threshold_mask,
     tare_threshold_online_mask,
-    pause_fraction,
 )
 
 # --- green_offline_optimal_mask ---

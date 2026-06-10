@@ -58,8 +58,8 @@ from experiments.exp_scheduler_head_to_head import (
     cohens_d,
     draw_workload,
     run_elasticflow,
-    run_tare_eb,
     run_powerflow,
+    run_tare_eb,
 )
 
 
