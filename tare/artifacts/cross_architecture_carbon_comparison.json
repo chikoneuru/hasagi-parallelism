@@ -1,10 +1,11 @@
 {
   "resnet": {
     "oracle_signal_pp": {
-      "point": 1.5551649057811994,
-      "ci_lo": 0.9812173492756552,
-      "ci_hi": 2.1687541653065407,
-      "excludes_zero": true
+      "point": 1.5551649057811991,
+      "ci_lo": 0.9863831131466685,
+      "ci_hi": 2.154760067942131,
+      "excludes_zero": true,
+      "source": "realtrace_pareto.json:cross_zone_real_only (authoritative)"
     },
     "deployable_signal_pp": {
       "point": 0.7530318136424827,

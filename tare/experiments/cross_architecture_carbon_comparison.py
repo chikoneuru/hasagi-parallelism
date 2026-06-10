@@ -59,6 +59,17 @@ def run(_args):
                  "carbon gap, which is a tie on the CNN but pause-favoring on the compute-bound "
                  "transformer (throttle still wins latency)."),
     }
+    # Single-source the ResNet (headline) oracle CI from the authoritative artifact so
+    # this comparison reports the same interval the paper headlines; an independent
+    # re-draw resamples the same zone means in a different order and would differ only by
+    # bootstrap Monte-Carlo noise at the rounding boundary. The transformer oracle stays
+    # the value computed here, which is the one the cross-architecture comparison reports.
+    headline = _load("realtrace_pareto.json")["cross_zone_real_only"]["carbon_signal_value_pp_ci_mean_lo_hi"]
+    out["resnet"]["oracle_signal_pp"] = {
+        "point": headline[0], "ci_lo": headline[1], "ci_hi": headline[2],
+        "excludes_zero": (headline[1] > 0.0 or headline[2] < 0.0),
+        "source": "realtrace_pareto.json:cross_zone_real_only (authoritative)",
+    }
     dest = os.path.join(ART, "cross_architecture_carbon_comparison.json")
     with open(dest, "w") as fh:
         json.dump(out, fh, indent=2)

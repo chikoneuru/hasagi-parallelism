@@ -2,7 +2,8 @@
   "source_artifacts": [
     "realtrace_pareto.json",
     "throttle_pareto_clean.json",
-    "marginal_intensity_sensitivity.json"
+    "marginal_intensity_sensitivity.json",
+    "headline_stats.json"
   ],
   "oracle_signal": {
     "n_zones": 16,
@@ -27,6 +28,24 @@
     },
     "check_jackknife_lo": "ok",
     "check_jackknife_hi": "ok",
+    "check_cluster_t_lo": "ok",
+    "check_cluster_t_hi": "ok"
+  },
+  "decision_rule_margin": {
+    "n_zones": 16,
+    "mean_pp": 1.9875246946952432,
+    "cluster_t_95ci_pp": [
+      1.7571041941940926,
+      2.2179451951963935
+    ],
+    "paper_claims": {
+      "mean_pp": 1.99,
+      "cluster_t": [
+        1.76,
+        2.22
+      ]
+    },
+    "check_mean": "ok",
     "check_cluster_t_lo": "ok",
     "check_cluster_t_hi": "ok"
   },
@@ -78,7 +97,7 @@
     "e_star_with_migration": 0.75,
     "paper_claims": {
       "e_star_absent_migration": 0.84,
-      "migration": 0.1,
+      "migration": 0.09,
       "e_star": 0.75
     },
     "check_no_migration": "ok",

@@ -18,10 +18,11 @@
     "excludes_zero": false
   },
   "oracle_signal_pp": {
-    "point": 1.5551649057811994,
-    "ci_lo": 0.9778259227920852,
-    "ci_hi": 2.172384931393063,
-    "excludes_zero": true
+    "point": 1.5551649057811991,
+    "ci_lo": 0.9863831131466685,
+    "ci_hi": 2.154760067942131,
+    "excludes_zero": true,
+    "source": "realtrace_pareto.json:cross_zone_real_only (authoritative)"
   },
   "n_zones": 16,
   "makespan": {

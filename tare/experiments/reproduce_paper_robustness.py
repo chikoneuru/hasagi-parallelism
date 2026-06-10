@@ -61,7 +61,7 @@ def _approx(a: float, b: float, tol: float = 0.01) -> str:
 def run() -> int:
     out: dict = {"source_artifacts": [
         "realtrace_pareto.json", "throttle_pareto_clean.json",
-        "marginal_intensity_sensitivity.json",
+        "marginal_intensity_sensitivity.json", "headline_stats.json",
     ]}
 
     # --- 1. jackknife and cluster-t on the 16 real-zone oracle signal means ---
@@ -77,6 +77,19 @@ def run() -> int:
         "paper_claims": {"jackknife": [1.38, 1.71], "cluster_t": [0.89, 2.22]},
         "check_jackknife_lo": _approx(jk_lo, 1.38), "check_jackknife_hi": _approx(jk_hi, 1.71),
         "check_cluster_t_lo": _approx(ct_lo, 0.89), "check_cluster_t_hi": _approx(ct_hi, 2.22),
+    }
+
+    # --- 1b. cluster-t of the decision-rule margin over the 16 zones ---
+    drm = [r["mean_pp_gap"] for r in _load("headline_stats.json")["h5c"]["rows"]]
+    drm_ct_lo, drm_ct_hi = cluster_t_interval(drm)
+    out["decision_rule_margin"] = {
+        "n_zones": len(drm),
+        "mean_pp": statistics.mean(drm),
+        "cluster_t_95ci_pp": [drm_ct_lo, drm_ct_hi],
+        "paper_claims": {"mean_pp": 1.99, "cluster_t": [1.76, 2.22]},
+        "check_mean": _approx(statistics.mean(drm), 1.99, tol=0.02),
+        "check_cluster_t_lo": _approx(drm_ct_lo, 1.76, tol=0.02),
+        "check_cluster_t_hi": _approx(drm_ct_hi, 2.22, tol=0.02),
     }
 
     # --- 2. carbon-blind efficiency vs carbon-awareness decomposition ---
@@ -112,9 +125,9 @@ def run() -> int:
         "e_star_absent_migration": e_star_no_migration,
         "migration_term": migration,
         "e_star_with_migration": e_star,
-        "paper_claims": {"e_star_absent_migration": 0.84, "migration": 0.10, "e_star": 0.75},
+        "paper_claims": {"e_star_absent_migration": 0.84, "migration": 0.09, "e_star": 0.75},
         "check_no_migration": _approx(e_star_no_migration, 0.84, tol=0.01),
-        "check_migration": _approx(migration, 0.10, tol=0.015),
+        "check_migration": _approx(migration, 0.09, tol=0.015),
     }
 
     dest = os.path.join(ART, "paper_robustness_repro.json")
@@ -126,6 +139,7 @@ def run() -> int:
     print(f"  oracle signal mean        : {out['oracle_signal']['mean_pp']:.2f}pp over {len(oracle)} zones")
     print(f"  jackknife (leave-one-zone): [{jk_lo:.2f}, {jk_hi:.2f}]  vs paper [1.38, 1.71]")
     print(f"  cluster-t 95% interval    : [{ct_lo:.2f}, {ct_hi:.2f}]  vs paper [0.89, 2.22]")
+    print(f"  decision-rule margin ct   : [{drm_ct_lo:.2f}, {drm_ct_hi:.2f}]  vs paper [1.76, 2.22]")
     print(f"  throttle decomposition    : total {s_theta_pct:.2f}% = efficiency {dec['efficiency_pct_carbon_blind']:+.2f}pp + awareness {dec['carbon_awareness_pct']:+.2f}pp")
     print(f"  break-even e*             : 1 - {s_theta:.3f} (= {e_star_no_migration:.3f}) - migration {migration:.3f} = {e_star:.2f}")
     print(f"  written -> {os.path.relpath(dest)}")
