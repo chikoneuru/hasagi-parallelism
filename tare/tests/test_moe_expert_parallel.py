@@ -101,3 +101,47 @@ def test_balanced_router_uses_all_experts() -> None:
     router, _ = _build(d, e, ffn_mult=2, seed=4)
     _, _, stats = top1_route(router(torch.randn(t, d)), e, capacity=t)
     assert stats["active_experts"] == e
+
+
+# --- multi-rank: expert-parallel must equal the local routed forward ---------- #
+def _ep_two_rank_worker(rank: int, world: int, port: int, results) -> None:
+    import torch.distributed as dist
+
+    dist.init_process_group("gloo", init_method=f"tcp://127.0.0.1:{port}",
+                            rank=rank, world_size=world)
+    # the probe's torchrun path keys on these (see _is_distributed)
+    import os
+
+    os.environ["RANK"], os.environ["WORLD_SIZE"] = str(rank), str(world)
+    try:
+        d, e, t = 32, 4, 64
+        router, experts = _build(d, e, ffn_mult=2, seed=7)  # identical on all ranks
+        torch.manual_seed(100 + rank)                       # per-rank tokens
+        x = torch.randn(t, d)
+        out_ep, stats = moe_dispatch_combine(x, router, experts, capacity=t,
+                                             expert_parallel=True)
+        out_local, _ = moe_dispatch_combine(x, router, experts, capacity=t,
+                                            expert_parallel=False)
+        results[rank] = {
+            "max_dev": float((out_ep - out_local).abs().max().item()),
+            "drop_frac": stats["drop_frac"],
+        }
+    finally:
+        dist.destroy_process_group()
+
+
+def test_expert_parallel_two_ranks_matches_local_forward() -> None:
+    """With identical experts on every rank and non-binding capacity, the
+    all-to-all expert-parallel forward must reproduce each rank's local routed
+    forward exactly: every source rank's slice must be processed by the owning
+    expert (a path the world=1 identity all-to-all cannot exercise)."""
+    import torch.multiprocessing as mp
+
+    with mp.Manager() as manager:
+        results = manager.dict()
+        mp.spawn(_ep_two_rank_worker, args=(2, 29561, results), nprocs=2, join=True)
+        res = dict(results)
+    assert set(res) == {0, 1}
+    for r in res.values():
+        assert r["drop_frac"] == 0.0
+        assert r["max_dev"] < 1e-5, r

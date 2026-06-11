@@ -53,6 +53,7 @@ Logic smoke-test (1 process, CPU; NOT a real measurement)::
 from __future__ import annotations
 
 import argparse
+import gc
 import json
 import math
 import os
@@ -166,13 +167,16 @@ def moe_dispatch_combine(
         dist.all_to_all_single(recv, dispatched.contiguous())
         rank = dist.get_rank()
         my = experts[rank * local_e:(rank + 1) * local_e]
-        # recv is [E, C, M] laid out so this rank owns a contiguous expert block.
-        processed = recv.clone()
+        # recv[k*local_e + j] holds SOURCE RANK k's capacity slice for my j-th
+        # local expert: every position belongs to one of my experts, and each
+        # expert must process the slices from ALL world source ranks (this is
+        # what keeps per-rank expert FLOPs at E*C, matching dense at fixed work).
+        recv_v = recv.view(world, local_e, capacity, -1)
+        processed_v = torch.empty_like(recv_v)
         for j, expert in enumerate(my):
-            e = rank * local_e + j
-            processed[e] = expert(recv[e])
-        out_disp = torch.empty_like(processed)
-        dist.all_to_all_single(out_disp, processed.contiguous())
+            processed_v[:, j] = expert(recv_v[:, j])
+        out_disp = torch.empty_like(recv)
+        dist.all_to_all_single(out_disp, processed_v.reshape_as(recv).contiguous())
     else:
         out_disp = torch.stack([experts[e](dispatched[e]) for e in range(n_experts)], dim=0)
 
@@ -324,14 +328,33 @@ def run(args: argparse.Namespace) -> int:
 
     for layout in layouts:
         kept, excluded = [], 0
+        oom = None
         for seed in range(args.seeds):
-            m = _measure_layout(layout, device, handle, args, seed)
+            try:
+                m = _measure_layout(layout, device, handle, args, seed)
+            except torch.cuda.OutOfMemoryError as exc:
+                # the pre-registered FEASIBILITY outcome: this layout cannot hold
+                # the model at all (OOM is identical on every rank, so all ranks
+                # take this branch together and stay collective-aligned)
+                oom = str(exc).split("\n")[0]
+                torch.cuda.empty_cache()
+                break
             if m is None:
                 excluded += 1
                 continue
             kept.append(m)
             if _is_distributed() and dist.get_world_size() > 1:
                 dist.barrier()
+        if oom is not None:
+            # the except block has exited, so the exception's traceback (which
+            # pins the OOMed layout's tensors via frame references) is gone —
+            # only now can the cache actually drain; without this the next
+            # layout's NCCL buffer allocation fails (ncclUnhandledCudaError)
+            gc.collect()
+            if torch.cuda.is_available():
+                torch.cuda.empty_cache()
+            results[layout] = {"feasible": False, "note": f"CUDA OOM: {oom}", "excluded": excluded}
+            continue
         if not kept:
             results[layout] = {"feasible": False, "note": "all seeds degenerate", "excluded": excluded}
             continue
