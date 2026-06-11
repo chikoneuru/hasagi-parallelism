@@ -118,11 +118,15 @@ def measure_active(size, gpu, device, steps=40, batch=8, seq=128):
     model, opt, d = _build(size, device)
     x = torch.randn(batch, seq, d, device=device)
     for _ in range(5):  # warmup
-        opt.zero_grad(); model(x).mean().backward(); opt.step()
+        opt.zero_grad()
+        model(x).mean().backward()
+        opt.step()
     torch.cuda.synchronize()
     with PowerMonitor(gpu) as pm:
         for _ in range(steps):
-            opt.zero_grad(); model(x).mean().backward(); opt.step()
+            opt.zero_grad()
+            model(x).mean().backward()
+            opt.step()
         torch.cuda.synchronize()
     del model, opt, x
     torch.cuda.empty_cache()
@@ -145,12 +149,14 @@ def measure_reload_energy(size, gpu, device, ckpt_dir):
     torch.cuda.synchronize()
     torch.save({"model": model.state_dict(), "opt": opt.state_dict()}, path)
     del model, opt
-    torch.cuda.empty_cache(); torch.cuda.synchronize()
+    torch.cuda.empty_cache()
+    torch.cuda.synchronize()
     # measure the cold reload: rebuild + load weights+optimizer onto the device
     with PowerMonitor(gpu) as pm:
         m2, o2, _ = _build(size, device)
         sd = torch.load(path, map_location=device)
-        m2.load_state_dict(sd["model"]); o2.load_state_dict(sd["opt"])
+        m2.load_state_dict(sd["model"])
+        o2.load_state_dict(sd["opt"])
         torch.cuda.synchronize()
     e = pm.energy_j
     ckpt_bytes = os.path.getsize(path)

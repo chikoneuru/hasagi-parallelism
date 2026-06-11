@@ -23,7 +23,7 @@ Run:  python attest_kill_test.py
 """
 from __future__ import annotations
 import copy
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Dict, List, Tuple
 
 
@@ -135,19 +135,31 @@ def _reduction_drift_estimate(order_a: List[int], order_b: List[int]) -> float:
 
 # ---------------------------------------------------------------- fault suite (reconfig mis-ops)
 def fault_drop_shard(s: TrainingState) -> TrainingState:
-    s = copy.deepcopy(s); b = next(iter(s.params)); del s.params[b]; return s
+    s = copy.deepcopy(s)
+    b = next(iter(s.params))
+    del s.params[b]
+    return s
 
 
 def fault_corrupt_content(s: TrainingState) -> TrainingState:
-    s = copy.deepcopy(s); b = next(iter(s.params)); o, h = s.params[b]; s.params[b] = (o, h ^ 0xDEAD); return s
+    s = copy.deepcopy(s)
+    b = next(iter(s.params))
+    o, h = s.params[b]
+    s.params[b] = (o, h ^ 0xDEAD)
+    return s
 
 
 def fault_stale_optimizer(s: TrainingState) -> TrainingState:
-    s = copy.deepcopy(s); b = next(iter(s.opt_slots)); s.opt_slots[b] = s.opt_slots[b] + 1; return s
+    s = copy.deepcopy(s)
+    b = next(iter(s.opt_slots))
+    s.opt_slots[b] = s.opt_slots[b] + 1
+    return s
 
 
 def fault_lose_microbatch(s: TrainingState) -> TrainingState:
-    s = copy.deepcopy(s); s.microbatch_count -= 1; return s
+    s = copy.deepcopy(s)
+    s.microbatch_count -= 1
+    return s
 
 
 def fault_wrong_reduction_order(s: TrainingState) -> TrainingState:
