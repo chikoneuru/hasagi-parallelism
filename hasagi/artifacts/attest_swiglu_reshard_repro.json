@@ -1,0 +1,56 @@
+{
+  "exp": "attest-swiglu-reshard-repro",
+  "bug": {
+    "fix_pr": "NVIDIA/Megatron-LM#520",
+    "base_commit": "ab0336a5",
+    "mechanism": "fused SwiGLU gate/up weight declared as one contiguous TP-sharded tensor; a TP-degree-changing load re-splits rows at wrong boundaries, interleaving gate and up blocks",
+    "injected_faults": 0
+  },
+  "megatron_core_version": "0.17.1",
+  "geometry": {
+    "hidden": 6,
+    "ffn": 8,
+    "tp_save": 2
+  },
+  "arms": {
+    "buggy_tp2_to_tp1": {
+      "committed": false,
+      "expected_committed": false,
+      "as_expected": true,
+      "n_violations": 1,
+      "violations_by_invariant": [
+        "content_equivalence"
+      ],
+      "sample_violation": "[content_equivalence] mlp.linear_fc1.weight: fingerprint changed d1caa0324709 -> 4bb3596eed32",
+      "check_seconds": 4.1451072320342064e-05,
+      "max_abs_dev": 996.0000610351562,
+      "values_preserved_as_multiset": true,
+      "fc1_matches_predicted_missplit": true
+    },
+    "buggy_tp2_roundtrip": {
+      "committed": true,
+      "expected_committed": true,
+      "as_expected": true,
+      "n_violations": 0,
+      "violations_by_invariant": [],
+      "sample_violation": null,
+      "check_seconds": 1.985998824238777e-05,
+      "max_abs_dev": 0.0,
+      "values_preserved_as_multiset": true,
+      "fc1_matches_predicted_missplit": false
+    },
+    "fixed_tp2_to_tp1": {
+      "committed": true,
+      "expected_committed": true,
+      "as_expected": true,
+      "n_violations": 0,
+      "violations_by_invariant": [],
+      "sample_violation": null,
+      "check_seconds": 9.950017556548119e-06,
+      "max_abs_dev": 0.0,
+      "values_preserved_as_multiset": true,
+      "fc1_matches_predicted_missplit": false
+    }
+  },
+  "natural_bug_caught_blind": true
+}
