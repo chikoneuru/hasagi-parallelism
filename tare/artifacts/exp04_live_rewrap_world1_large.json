@@ -1,0 +1,164 @@
+{
+  "exp": "exp04-live-reconfig",
+  "mode": "live-rewrap",
+  "device": "cuda",
+  "world": 1,
+  "momentum": 0.9,
+  "d_model": 2048,
+  "layers": 16,
+  "phase_iters": 10,
+  "latency_includes": "snapshot + rank-local flat-plan transport+verify + commit/wrap + post-rewrap gather+verify + optimizer rebuild",
+  "transport_mechanism": "rank-local flat plan; cross-rank movement is the wrapper's own (FSDP full-state gather/shard, DDP rank0 broadcast) \u2014 an upper-bound pipe, not flat-shard transport; world=1 contains no interconnect cost",
+  "energy_scope": "sum over ranks' whole-GPU NVML counters (per-GPU at world=1); includes background draw \u2014 see power samples",
+  "reshard_certificate": {
+    "ok": true,
+    "max_abs_diff": 0.0,
+    "n_params": 34,
+    "from_world": 1,
+    "to_world": 1,
+    "note": ""
+  },
+  "reconfig_latency_s": 1.08773072110489,
+  "reconfig_energy_j": 121.44099999964237,
+  "loss_continuity": {
+    "max_abs_deviation_vs_control": 0.0,
+    "tol_ce": 0.3,
+    "ok": true
+  },
+  "loss_at_reshard_boundary": {
+    "last_phase1": 1.0492368936538696,
+    "first_phase2": 0.9028252363204956
+  },
+  "flips": [
+    {
+      "direction": "ddp->fsdp",
+      "latency_s": 1.08773072110489,
+      "energy_counter_j": 121.44099999964237,
+      "energy_counter_below_resolution": false,
+      "power_w_sample_before": 99.528,
+      "power_w_sample_after": 115.473,
+      "stage_timings_s": {
+        "snapshot_s": 0.26165694813244045,
+        "transport_verify_s": 0.17410522210411727,
+        "commit_wrap_s": 0.37966143689118326,
+        "post_verify_s": 0.24418073100969195,
+        "optim_rebuild_s": 0.0013092460576444864
+      },
+      "certificate": {
+        "ok": true,
+        "max_abs_diff": 0.0,
+        "n_params": 34,
+        "from_world": 1,
+        "to_world": 1,
+        "note": ""
+      }
+    },
+    {
+      "direction": "fsdp->ddp",
+      "latency_s": 1.0044296868145466,
+      "energy_counter_j": 116.4370000064373,
+      "energy_counter_below_resolution": false,
+      "power_w_sample_before": 110.596,
+      "power_w_sample_after": 133.209,
+      "stage_timings_s": {
+        "snapshot_s": 0.17300682910718024,
+        "transport_verify_s": 0.17414742312394083,
+        "commit_wrap_s": 0.37634797813370824,
+        "post_verify_s": 0.25271667283959687,
+        "optim_rebuild_s": 0.00033018412068486214
+      },
+      "certificate": {
+        "ok": true,
+        "max_abs_diff": 0.0,
+        "n_params": 34,
+        "from_world": 1,
+        "to_world": 1,
+        "note": ""
+      }
+    },
+    {
+      "direction": "ddp->fsdp",
+      "latency_s": 1.0195129860658199,
+      "energy_counter_j": 104.23600000143051,
+      "energy_counter_below_resolution": false,
+      "power_w_sample_before": 133.209,
+      "power_w_sample_after": 105.604,
+      "stage_timings_s": {
+        "snapshot_s": 0.1572987230028957,
+        "transport_verify_s": 0.17362806713208556,
+        "commit_wrap_s": 0.38778639398515224,
+        "post_verify_s": 0.26634276402182877,
+        "optim_rebuild_s": 0.0011595641262829304
+      },
+      "certificate": {
+        "ok": true,
+        "max_abs_diff": 0.0,
+        "n_params": 34,
+        "from_world": 1,
+        "to_world": 1,
+        "note": ""
+      }
+    },
+    {
+      "direction": "fsdp->ddp",
+      "latency_s": 0.7436895801220089,
+      "energy_counter_j": 83.06599999964237,
+      "energy_counter_below_resolution": false,
+      "power_w_sample_before": 105.604,
+      "power_w_sample_after": 105.927,
+      "stage_timings_s": {
+        "snapshot_s": 0.10305596119724214,
+        "transport_verify_s": 0.11665046191774309,
+        "commit_wrap_s": 0.31073949206620455,
+        "post_verify_s": 0.1775710228830576,
+        "optim_rebuild_s": 0.00030684401281178
+      },
+      "certificate": {
+        "ok": true,
+        "max_abs_diff": 0.0,
+        "n_params": 34,
+        "from_world": 1,
+        "to_world": 1,
+        "note": ""
+      }
+    },
+    {
+      "direction": "ddp->fsdp",
+      "latency_s": 0.950085086049512,
+      "energy_counter_j": 94.92399999499321,
+      "energy_counter_below_resolution": false,
+      "power_w_sample_before": 105.927,
+      "power_w_sample_after": 106.405,
+      "stage_timings_s": {
+        "snapshot_s": 0.10187318688258529,
+        "transport_verify_s": 0.17338740406557918,
+        "commit_wrap_s": 0.38334468100219965,
+        "post_verify_s": 0.25644327886402607,
+        "optim_rebuild_s": 0.0011574639938771725
+      },
+      "certificate": {
+        "ok": true,
+        "max_abs_diff": 0.0,
+        "n_params": 34,
+        "from_world": 1,
+        "to_world": 1,
+        "note": ""
+      }
+    }
+  ],
+  "flip_aggregate": {
+    "count": 5,
+    "all_certificates_ok": true,
+    "latency_s_mean": 0.9610896120313555,
+    "latency_s_min": 0.7436895801220089,
+    "latency_s_max": 1.08773072110489,
+    "energy_counter_j_total": 520.1040000021458,
+    "cycles_window": {
+      "window_s": 3.7339519208762795,
+      "flips_in_window": 4,
+      "energy_counter_j": 398.6630000025034,
+      "energy_j_per_flip": 99.66575000062585
+    }
+  },
+  "smoke": false
+}
