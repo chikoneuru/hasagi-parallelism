@@ -32,11 +32,12 @@ class GPTConfig:
 
 
 PRESETS = {
-    # fast unit-test scale (~0.8M params)
+    # fast unit-test scale (536,064 params)
     "tiny": GPTConfig(vocab_size=512, n_layer=2, n_head=2, d_model=128, max_seq=64),
-    # mid scale for the transition matrix (~19M params)
+    # mid scale for the transition matrix (13,439,232 params)
     "small": GPTConfig(vocab_size=8192, n_layer=4, n_head=4, d_model=384, max_seq=128),
-    # GPT-2-small shape (~124M params)
+    # GPT-2-small shape (162,447,360 params: GPT-2's 124M ties lm_head to wte;
+    # this model keeps them separate, so the 50257x768 block is counted twice)
     "gpt2_125m": GPTConfig(vocab_size=50257, n_layer=12, n_head=12, d_model=768, max_seq=256),
 }
 

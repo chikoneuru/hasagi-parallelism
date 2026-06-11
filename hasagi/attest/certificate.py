@@ -7,15 +7,18 @@ empty) list of violations:
   param_residency       every FQN present exactly once on each side; none
                         dropped, none invented
   content_equivalence   per-FQN content fingerprints identical, cross-checked
-                        by an independent checksum path (count + L2 norm) so a
-                        single serialization routine is not the sole witness
+                        by an independent checksum path (count + L2 norm + a
+                        fixed probe element) so a single serialization routine
+                        is not the sole witness
   optimizer_accounting  every optimizer slot present with identical content;
                         step counters preserved
   progress_invariant    training-progress counters (global step, samples seen,
                         microbatch count) unchanged by the transition
-  reduction_order_bound the declared gradient reduction order is a permutation
-                        of the pre-side order, and the declared numeric drift
-                        bound is carried unchanged
+  reduction_order_bound declaration consistency only: the declared gradient
+                        reduction order is a permutation of the pre-side order
+                        and the declared numeric drift bound is carried
+                        unchanged across the transition; the certificate does
+                        NOT measure realized drift against the bound
 
 The invariants themselves are standard; what the certificate adds is checking
 them independently of the reshard mechanism, before the new layout is allowed
@@ -85,7 +88,9 @@ class TransitionCertificate:
                         "content_equivalence",
                         fqn,
                         f"independent checksum diverged: numel {ca['numel']:.0f}->{cb['numel']:.0f}, "
-                        f"l2 {ca['l2']:.6e}->{cb['l2']:.6e}",
+                        f"l2 {ca['l2']:.6e}->{cb['l2']:.6e}, "
+                        f"probe {ca.get('probe_mid', float('nan')):.6e}->"
+                        f"{cb.get('probe_mid', float('nan')):.6e}",
                     )
                 )
         return out

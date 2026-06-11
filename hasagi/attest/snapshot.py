@@ -144,9 +144,20 @@ def snapshot_total_bytes(model_state: Mapping[str, Any]) -> int:
 
 
 def l2_close(a: Dict[str, float], b: Dict[str, float], rtol: float = 1e-7) -> bool:
-    """Compare two independent-checksum records with a relative tolerance on
-    the norm (exact on counts)."""
+    """Compare two independent-checksum records: exact on counts, relative
+    tolerance on the norm and on the fixed probe element. The probe gives the
+    independent path a position-sensitive witness — a value permutation
+    preserves numel and L2 exactly but moves the mid element with high
+    probability."""
     if a["numel"] != b["numel"]:
         return False
-    ref = max(abs(a["l2"]), abs(b["l2"]), 1e-30)
-    return math.isfinite(a["l2"]) and math.isfinite(b["l2"]) and abs(a["l2"] - b["l2"]) / ref <= rtol
+    for key in ("l2", "probe_mid"):
+        va, vb = a.get(key), b.get(key)
+        if va is None or vb is None:  # records from older snapshots lack the probe
+            continue
+        if not (math.isfinite(va) and math.isfinite(vb)):
+            return False
+        ref = max(abs(va), abs(vb), 1e-30)
+        if abs(va - vb) / ref > rtol:
+            return False
+    return True
