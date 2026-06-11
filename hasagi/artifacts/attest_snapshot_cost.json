@@ -1,0 +1,104 @@
+{
+  "exp": "attest-snapshot-cost",
+  "gpu": "NVIDIA GeForce RTX 3080 Ti",
+  "repeats": 3,
+  "note": "state_bytes covers parameters plus Adam moments; the 7B projection assumes fp32 params + two fp32 moments (12 bytes per parameter) and linear scaling in bytes",
+  "rows": [
+    {
+      "preset": "tiny",
+      "device": "cpu",
+      "n_params": 536064,
+      "state_bytes": 6432884,
+      "snapshot_seconds": 0.004797371104359627,
+      "snapshot_seconds_all": [
+        0.006565199000760913,
+        0.006445327075198293,
+        0.004797371104359627
+      ],
+      "snapshot_gb_per_s": 1.3409185697879604,
+      "check_seconds": 0.00010869116522371769
+    },
+    {
+      "preset": "small",
+      "device": "cpu",
+      "n_params": 13439232,
+      "state_bytes": 161270996,
+      "snapshot_seconds": 0.10051430715247989,
+      "snapshot_seconds_all": [
+        0.10658889985643327,
+        0.10051430715247989,
+        0.1063269970472902
+      ],
+      "snapshot_gb_per_s": 1.6044581171449792,
+      "check_seconds": 0.0001766919158399105
+    },
+    {
+      "preset": "gpt2_125m",
+      "device": "cpu",
+      "n_params": 162447360,
+      "state_bytes": 1949368916,
+      "snapshot_seconds": 1.7687600350473076,
+      "snapshot_seconds_all": [
+        1.7687600350473076,
+        2.414976525120437,
+        1.7981403609737754
+      ],
+      "snapshot_gb_per_s": 1.1021104487742803,
+      "check_seconds": 0.0003663739189505577
+    },
+    {
+      "preset": "tiny",
+      "device": "cuda",
+      "n_params": 536064,
+      "state_bytes": 6432884,
+      "snapshot_seconds": 0.007649390958249569,
+      "snapshot_seconds_all": [
+        0.00802084500901401,
+        0.007723700953647494,
+        0.007649390958249569
+      ],
+      "snapshot_gb_per_s": 0.8409668214254871,
+      "check_seconds": 7.74911604821682e-05
+    },
+    {
+      "preset": "small",
+      "device": "cuda",
+      "n_params": 13439232,
+      "state_bytes": 161270996,
+      "snapshot_seconds": 0.12376096216030419,
+      "snapshot_seconds_all": [
+        0.12376096216030419,
+        0.12982250517234206,
+        0.124109375057742
+      ],
+      "snapshot_gb_per_s": 1.3030845363912902,
+      "check_seconds": 0.000164401950314641
+    },
+    {
+      "preset": "gpt2_125m",
+      "device": "cuda",
+      "n_params": 162447360,
+      "state_bytes": 1949368916,
+      "snapshot_seconds": 2.4540235560853034,
+      "snapshot_seconds_all": [
+        2.4540235560853034,
+        4.039027047809213,
+        3.7329720710404217
+      ],
+      "snapshot_gb_per_s": 0.7943562363800873,
+      "check_seconds": 0.000485994853079319
+    }
+  ],
+  "projections": {
+    "cpu": {
+      "basis_preset": "gpt2_125m",
+      "gb_per_s": 1.1021104487742803,
+      "projected_seconds_7b_params_adamw_fp32": 76.21740642548228
+    },
+    "cuda": {
+      "basis_preset": "gpt2_125m",
+      "gb_per_s": 0.7943562363800873,
+      "projected_seconds_7b_params_adamw_fp32": 105.74600683289314
+    }
+  }
+}
