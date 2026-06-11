@@ -1,0 +1,974 @@
+{
+  "summary": {
+    "preset": "gpt2_125m",
+    "n_transitions": 5,
+    "n_clean_pass": 5,
+    "n_false_aborts": 0,
+    "n_faults_injected": 50,
+    "n_faults_caught": 50,
+    "detection_rate": 1.0,
+    "certificate_mean_s": 5.561509371125562,
+    "reshard_mean_s": 6.7824772609440105,
+    "certificate_over_reshard": 0.819982015000739,
+    "wall_s": 1601.6894166469574,
+    "gate": "PASS"
+  },
+  "results": [
+    {
+      "transition": "shard(2) -> full(1) [gpt2_125m]",
+      "fault": null,
+      "committed": true,
+      "violations": [],
+      "timings_s": {
+        "snapshot_pre_s": 1.9181651128455997,
+        "dcp_save_s": 1.9667107050772756,
+        "snapshot_post_s": 1.581117233959958,
+        "dcp_load_s": 2.700007356936112,
+        "certificate_check_s": 0.00030988315120339394,
+        "certificate_total_s": 3.499592229956761,
+        "reshard_total_s": 4.666718062013388
+      }
+    },
+    {
+      "transition": "shard(2) -> full(1) [gpt2_125m] fault=silent_unloaded_param",
+      "fault": "silent_unloaded_param",
+      "committed": false,
+      "violations": [
+        "[content_equivalence] blocks.0.attn.in_proj_weight: fingerprint changed b771b31264e6 -> bab16e1faa21",
+        "[content_equivalence] blocks.0.attn.in_proj_weight: independent checksum diverged: numel 1769472->1769472, l2 3.400282e+01->2.657857e+01, probe -4.359016e-02->5.681811e-03"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 1.865924407960847,
+        "dcp_save_s": 1.8445744160562754,
+        "snapshot_post_s": 1.603725777938962,
+        "dcp_load_s": 2.7234204278793186,
+        "certificate_check_s": 0.00032496312633156776,
+        "certificate_total_s": 3.4699751490261406,
+        "reshard_total_s": 4.567994843935594
+      }
+    },
+    {
+      "transition": "shard(2) -> full(1) [gpt2_125m] fault=value_corruption",
+      "fault": "value_corruption",
+      "committed": false,
+      "violations": [
+        "[content_equivalence] blocks.0.attn.out_proj.bias: fingerprint changed 79ac04b03b11 -> 0b752caa9fcc",
+        "[content_equivalence] blocks.0.attn.out_proj.bias: independent checksum diverged: numel 768->768, l2 4.411403e-02->5.257614e-02, probe 1.816247e-03->2.816247e-03"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 2.0321292439475656,
+        "dcp_save_s": 2.523215448949486,
+        "snapshot_post_s": 1.783652018988505,
+        "dcp_load_s": 3.0121097108349204,
+        "certificate_check_s": 0.00039553409442305565,
+        "certificate_total_s": 3.8161767970304936,
+        "reshard_total_s": 5.535325159784406
+      }
+    },
+    {
+      "transition": "shard(2) -> full(1) [gpt2_125m] fault=permuted_values",
+      "fault": "permuted_values",
+      "committed": false,
+      "violations": [
+        "[content_equivalence] blocks.0.attn.in_proj_weight: fingerprint changed b771b31264e6 -> f09be8e73b57",
+        "[content_equivalence] blocks.0.attn.in_proj_weight: independent checksum diverged: numel 1769472->1769472, l2 3.400282e+01->3.400282e+01, probe -4.359016e-02->3.760331e-02"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 2.0713024269789457,
+        "dcp_save_s": 1.9590487079694867,
+        "snapshot_post_s": 1.6270723999477923,
+        "dcp_load_s": 2.731952025089413,
+        "certificate_check_s": 0.00032863300293684006,
+        "certificate_total_s": 3.698703459929675,
+        "reshard_total_s": 4.6910007330589
+      }
+    },
+    {
+      "transition": "shard(2) -> full(1) [gpt2_125m] fault=cross_param_overwrite",
+      "fault": "cross_param_overwrite",
+      "committed": false,
+      "violations": [
+        "[content_equivalence] blocks.0.ln1.weight: fingerprint changed 9c3493442ceb -> a6fd417b4efc",
+        "[content_equivalence] blocks.0.ln1.weight: independent checksum diverged: numel 768->768, l2 2.771200e+01->4.438634e-02, probe 1.001781e+00->-1.190608e-03"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 1.8314393390901387,
+        "dcp_save_s": 1.822391247143969,
+        "snapshot_post_s": 1.61951738409698,
+        "dcp_load_s": 2.7340973280370235,
+        "certificate_check_s": 0.0003947641234844923,
+        "certificate_total_s": 3.4513514873106033,
+        "reshard_total_s": 4.5564885751809925
+      }
+    },
+    {
+      "transition": "shard(2) -> full(1) [gpt2_125m] fault=stale_optimizer_moment",
+      "fault": "stale_optimizer_moment",
+      "committed": false,
+      "violations": [
+        "[optimizer_accounting] blocks.0.attn.in_proj_bias: slot 'exp_avg' changed (e863547c7982e3e579 -> 0015483f2dad2c237a)",
+        "[optimizer_accounting] blocks.0.attn.in_proj_bias: slot 'exp_avg_sq' changed (d9786ddec55267c38b -> 0015483f2dad2c237a)"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 1.910593890817836,
+        "dcp_save_s": 1.80654509505257,
+        "snapshot_post_s": 1.6090408070012927,
+        "dcp_load_s": 2.7416323670186102,
+        "certificate_check_s": 0.0004005038645118475,
+        "certificate_total_s": 3.5200352016836405,
+        "reshard_total_s": 4.54817746207118
+      }
+    },
+    {
+      "transition": "shard(2) -> full(1) [gpt2_125m] fault=step_counter_reset",
+      "fault": "step_counter_reset",
+      "committed": false,
+      "violations": [
+        "[optimizer_accounting] blocks.0.attn.in_proj_bias: slot 'step' changed (scalar:2 -> scalar:0)"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 1.845709160901606,
+        "dcp_save_s": 1.7943864511325955,
+        "snapshot_post_s": 1.6111510109622031,
+        "dcp_load_s": 2.7241503389086574,
+        "certificate_check_s": 0.00030713388696312904,
+        "certificate_total_s": 3.4571673057507724,
+        "reshard_total_s": 4.518536790041253
+      }
+    },
+    {
+      "transition": "shard(2) -> full(1) [gpt2_125m] fault=precision_cast",
+      "fault": "precision_cast",
+      "committed": false,
+      "violations": [
+        "[content_equivalence] blocks.0.ln1.bias: fingerprint changed a6fd417b4efc -> 28c6fae14c67",
+        "[content_equivalence] blocks.0.ln1.bias: independent checksum diverged: numel 768->768, l2 4.438634e-02->4.438646e-02, probe -1.190608e-03->-1.190186e-03"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 1.853050054050982,
+        "dcp_save_s": 1.8032182878814638,
+        "snapshot_post_s": 1.6174994290340692,
+        "dcp_load_s": 2.7414915279950947,
+        "certificate_check_s": 0.000378873897716403,
+        "certificate_total_s": 3.4709283569827676,
+        "reshard_total_s": 4.544709815876558
+      }
+    },
+    {
+      "transition": "shard(2) -> full(1) [gpt2_125m] fault=progress_reset",
+      "fault": "progress_reset",
+      "committed": false,
+      "violations": [
+        "[progress_invariant] global_step: 2 -> 0"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 1.862856940831989,
+        "dcp_save_s": 1.8635468299034983,
+        "snapshot_post_s": 1.6009588930755854,
+        "dcp_load_s": 2.7231892980635166,
+        "certificate_check_s": 0.0003828939516097307,
+        "certificate_total_s": 3.464198727859184,
+        "reshard_total_s": 4.586736127967015
+      }
+    },
+    {
+      "transition": "shard(2) -> full(1) [gpt2_125m] fault=dropped_fqn",
+      "fault": "dropped_fqn",
+      "committed": false,
+      "violations": [
+        "[param_residency] blocks.0.attn.in_proj_bias: parameter lost in transition",
+        "[reduction_order_bound] <order>: post order is not a permutation of pre order"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 1.914501461898908,
+        "dcp_save_s": 1.8235407979227602,
+        "snapshot_post_s": 1.6020319240633398,
+        "dcp_load_s": 2.740310792112723,
+        "certificate_check_s": 0.0003036041744053364,
+        "certificate_total_s": 3.516836990136653,
+        "reshard_total_s": 4.563851590035483
+      }
+    },
+    {
+      "transition": "shard(2) -> full(1) [gpt2_125m] fault=reduction_order_swap",
+      "fault": "reduction_order_swap",
+      "committed": false,
+      "violations": [
+        "[reduction_order_bound] <order>: declared reduction order changed silently across the transition"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 1.8197926981374621,
+        "dcp_save_s": 1.8554438680876046,
+        "snapshot_post_s": 1.6014150260016322,
+        "dcp_load_s": 2.7387351479846984,
+        "certificate_check_s": 0.000308662885800004,
+        "certificate_total_s": 3.4215163870248944,
+        "reshard_total_s": 4.594179016072303
+      }
+    },
+    {
+      "transition": "full(1) -> shard(2) [gpt2_125m]",
+      "fault": null,
+      "committed": true,
+      "violations": [],
+      "timings_s": {
+        "snapshot_pre_s": 1.6511876529548317,
+        "dcp_save_s": 1.5213492740876973,
+        "snapshot_post_s": 3.624908123863861,
+        "dcp_load_s": 4.673523257020861,
+        "certificate_check_s": 0.00030565401539206505,
+        "certificate_total_s": 5.276401430834085,
+        "reshard_total_s": 6.194872531108558
+      }
+    },
+    {
+      "transition": "full(1) -> shard(2) [gpt2_125m] fault=silent_unloaded_param",
+      "fault": "silent_unloaded_param",
+      "committed": false,
+      "violations": [
+        "[content_equivalence] blocks.0.attn.in_proj_weight: fingerprint changed ffbec4f72d83 -> ceef46eb69d6",
+        "[content_equivalence] blocks.0.attn.in_proj_weight: independent checksum diverged: numel 1769472->1769472, l2 3.400282e+01->2.656939e+01, probe -4.359016e-02->5.618321e-03"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 1.7065521189942956,
+        "dcp_save_s": 1.5464279761072248,
+        "snapshot_post_s": 3.6129393849987537,
+        "dcp_load_s": 4.784286285983399,
+        "certificate_check_s": 0.0003562129568308592,
+        "certificate_total_s": 5.31984771694988,
+        "reshard_total_s": 6.330714262090623
+      }
+    },
+    {
+      "transition": "full(1) -> shard(2) [gpt2_125m] fault=value_corruption",
+      "fault": "value_corruption",
+      "committed": false,
+      "violations": [
+        "[content_equivalence] blocks.0.attn.out_proj.bias: fingerprint changed 2b71e9a4b26c -> dc35a549fd71",
+        "[content_equivalence] blocks.0.attn.out_proj.bias: independent checksum diverged: numel 768->768, l2 4.411403e-02->5.257614e-02, probe 1.816246e-03->2.816246e-03"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 1.7095496791880578,
+        "dcp_save_s": 1.5322487319353968,
+        "snapshot_post_s": 3.657285443972796,
+        "dcp_load_s": 4.4932896150276065,
+        "certificate_check_s": 0.0003143840003758669,
+        "certificate_total_s": 5.36714950716123,
+        "reshard_total_s": 6.025538346963003
+      }
+    },
+    {
+      "transition": "full(1) -> shard(2) [gpt2_125m] fault=permuted_values",
+      "fault": "permuted_values",
+      "committed": false,
+      "violations": [
+        "[content_equivalence] blocks.0.attn.in_proj_weight: fingerprint changed ffbec4f72d83 -> 4624d5e32729"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 1.6855385899543762,
+        "dcp_save_s": 1.5357124540023506,
+        "snapshot_post_s": 3.6474136949982494,
+        "dcp_load_s": 4.580508430022746,
+        "certificate_check_s": 0.000363724073395133,
+        "certificate_total_s": 5.333316009026021,
+        "reshard_total_s": 6.116220884025097
+      }
+    },
+    {
+      "transition": "full(1) -> shard(2) [gpt2_125m] fault=cross_param_overwrite",
+      "fault": "cross_param_overwrite",
+      "committed": false,
+      "violations": [
+        "[content_equivalence] blocks.0.ln1.weight: fingerprint changed 54e3715ea234 -> baba55d8c116",
+        "[content_equivalence] blocks.0.ln1.weight: independent checksum diverged: numel 768->768, l2 2.771200e+01->4.438634e-02, probe 1.001781e+00->-1.190607e-03"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 1.6748480219393969,
+        "dcp_save_s": 1.537839031079784,
+        "snapshot_post_s": 3.648516729939729,
+        "dcp_load_s": 4.463467533001676,
+        "certificate_check_s": 0.00034022401086986065,
+        "certificate_total_s": 5.323704975889996,
+        "reshard_total_s": 6.00130656408146
+      }
+    },
+    {
+      "transition": "full(1) -> shard(2) [gpt2_125m] fault=stale_optimizer_moment",
+      "fault": "stale_optimizer_moment",
+      "committed": false,
+      "violations": [
+        "[optimizer_accounting] blocks.0.attn.in_proj_bias: slot 'exp_avg' changed (dd392b9c14ca2c15d0 -> 0015483f2dad2c237a)",
+        "[optimizer_accounting] blocks.0.attn.in_proj_bias: slot 'exp_avg_sq' changed (75f62d2e7d5c61d18d -> 0015483f2dad2c237a)"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 1.653765382943675,
+        "dcp_save_s": 1.5354858899954706,
+        "snapshot_post_s": 3.66151106194593,
+        "dcp_load_s": 4.5846868481021374,
+        "certificate_check_s": 0.000362014165148139,
+        "certificate_total_s": 5.315638459054753,
+        "reshard_total_s": 6.120172738097608
+      }
+    },
+    {
+      "transition": "full(1) -> shard(2) [gpt2_125m] fault=step_counter_reset",
+      "fault": "step_counter_reset",
+      "committed": false,
+      "violations": [
+        "[optimizer_accounting] blocks.0.attn.in_proj_bias: slot 'step' changed (scalar:2 -> scalar:0)"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 1.68736879597418,
+        "dcp_save_s": 1.5267380001023412,
+        "snapshot_post_s": 3.604044368956238,
+        "dcp_load_s": 4.592273070011288,
+        "certificate_check_s": 0.00037414394319057465,
+        "certificate_total_s": 5.291787308873609,
+        "reshard_total_s": 6.119011070113629
+      }
+    },
+    {
+      "transition": "full(1) -> shard(2) [gpt2_125m] fault=precision_cast",
+      "fault": "precision_cast",
+      "committed": false,
+      "violations": [
+        "[content_equivalence] blocks.0.ln1.bias: fingerprint changed baba55d8c116 -> 28c6fae14c67",
+        "[content_equivalence] blocks.0.ln1.bias: independent checksum diverged: numel 768->768, l2 4.438634e-02->4.438646e-02, probe -1.190607e-03->-1.190186e-03"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 1.6775070549920201,
+        "dcp_save_s": 1.5391646060161293,
+        "snapshot_post_s": 3.607114741811529,
+        "dcp_load_s": 4.660640008980408,
+        "certificate_check_s": 0.00031992397271096706,
+        "certificate_total_s": 5.28494172077626,
+        "reshard_total_s": 6.199804614996538
+      }
+    },
+    {
+      "transition": "full(1) -> shard(2) [gpt2_125m] fault=progress_reset",
+      "fault": "progress_reset",
+      "committed": false,
+      "violations": [
+        "[progress_invariant] global_step: 2 -> 0"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 1.69598527578637,
+        "dcp_save_s": 1.5039971419610083,
+        "snapshot_post_s": 3.5832819039933383,
+        "dcp_load_s": 4.616850516060367,
+        "certificate_check_s": 0.0003092230763286352,
+        "certificate_total_s": 5.279576402856037,
+        "reshard_total_s": 6.1208476580213755
+      }
+    },
+    {
+      "transition": "full(1) -> shard(2) [gpt2_125m] fault=dropped_fqn",
+      "fault": "dropped_fqn",
+      "committed": false,
+      "violations": [
+        "[param_residency] blocks.0.attn.in_proj_bias: parameter lost in transition",
+        "[reduction_order_bound] <order>: post order is not a permutation of pre order"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 1.6442328139673918,
+        "dcp_save_s": 1.5063252078834921,
+        "snapshot_post_s": 3.600598626071587,
+        "dcp_load_s": 4.612578765954822,
+        "certificate_check_s": 0.0003163740038871765,
+        "certificate_total_s": 5.245147814042866,
+        "reshard_total_s": 6.118903973838314
+      }
+    },
+    {
+      "transition": "full(1) -> shard(2) [gpt2_125m] fault=reduction_order_swap",
+      "fault": "reduction_order_swap",
+      "committed": false,
+      "violations": [
+        "[reduction_order_bound] <order>: declared reduction order changed silently across the transition"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 1.673622002126649,
+        "dcp_save_s": 1.5137364380061626,
+        "snapshot_post_s": 3.6892801539506763,
+        "dcp_load_s": 4.593007660936564,
+        "certificate_check_s": 0.00032062316313385963,
+        "certificate_total_s": 5.363222779240459,
+        "reshard_total_s": 6.106744098942727
+      }
+    },
+    {
+      "transition": "shard(4) -> shard(2) [gpt2_125m]",
+      "fault": null,
+      "committed": true,
+      "violations": [],
+      "timings_s": {
+        "snapshot_pre_s": 2.878466200083494,
+        "dcp_save_s": 2.5023874561302364,
+        "snapshot_post_s": 3.68513370398432,
+        "dcp_load_s": 4.541504984954372,
+        "certificate_check_s": 0.00031591299921274185,
+        "certificate_total_s": 6.563915817067027,
+        "reshard_total_s": 7.043892441084608
+      }
+    },
+    {
+      "transition": "shard(4) -> shard(2) [gpt2_125m] fault=silent_unloaded_param",
+      "fault": "silent_unloaded_param",
+      "committed": false,
+      "violations": [
+        "[content_equivalence] blocks.0.attn.in_proj_weight: fingerprint changed 13efd9afe48b -> ceef46eb69d6",
+        "[content_equivalence] blocks.0.attn.in_proj_weight: independent checksum diverged: numel 1769472->1769472, l2 3.400282e+01->2.656939e+01, probe -4.359016e-02->5.618321e-03"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 2.675759179983288,
+        "dcp_save_s": 1.5659056620206684,
+        "snapshot_post_s": 3.7820160728879273,
+        "dcp_load_s": 4.49954700213857,
+        "certificate_check_s": 0.00039649498648941517,
+        "certificate_total_s": 6.458171747857705,
+        "reshard_total_s": 6.065452664159238
+      }
+    },
+    {
+      "transition": "shard(4) -> shard(2) [gpt2_125m] fault=value_corruption",
+      "fault": "value_corruption",
+      "committed": false,
+      "violations": [
+        "[content_equivalence] blocks.0.attn.out_proj.bias: fingerprint changed 38dcc48bce46 -> 288cc3551744",
+        "[content_equivalence] blocks.0.attn.out_proj.bias: independent checksum diverged: numel 768->768, l2 4.411403e-02->5.257614e-02, probe 1.816246e-03->2.816246e-03"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 2.654344141948968,
+        "dcp_save_s": 1.7310472978278995,
+        "snapshot_post_s": 3.8182157480623573,
+        "dcp_load_s": 4.697043881984428,
+        "certificate_check_s": 0.0003135940060019493,
+        "certificate_total_s": 6.472873484017327,
+        "reshard_total_s": 6.428091179812327
+      }
+    },
+    {
+      "transition": "shard(4) -> shard(2) [gpt2_125m] fault=permuted_values",
+      "fault": "permuted_values",
+      "committed": false,
+      "violations": [
+        "[content_equivalence] blocks.0.attn.in_proj_weight: fingerprint changed 13efd9afe48b -> 7e9d7cd9ca65"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 2.872358259977773,
+        "dcp_save_s": 2.132548261899501,
+        "snapshot_post_s": 3.7467366200871766,
+        "dcp_load_s": 4.534597305115312,
+        "certificate_check_s": 0.0003077141009271145,
+        "certificate_total_s": 6.6194025941658765,
+        "reshard_total_s": 6.667145567014813
+      }
+    },
+    {
+      "transition": "shard(4) -> shard(2) [gpt2_125m] fault=cross_param_overwrite",
+      "fault": "cross_param_overwrite",
+      "committed": false,
+      "violations": [
+        "[content_equivalence] blocks.0.ln1.weight: fingerprint changed b25ab39647f4 -> 2c44079af04b",
+        "[content_equivalence] blocks.0.ln1.weight: independent checksum diverged: numel 768->768, l2 2.771200e+01->4.438634e-02, probe 1.001781e+00->-1.190608e-03"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 2.4181481928098947,
+        "dcp_save_s": 1.5566766650881618,
+        "snapshot_post_s": 3.7464130739681423,
+        "dcp_load_s": 4.368721794104204,
+        "certificate_check_s": 0.000389354070648551,
+        "certificate_total_s": 6.1649506208486855,
+        "reshard_total_s": 5.925398459192365
+      }
+    },
+    {
+      "transition": "shard(4) -> shard(2) [gpt2_125m] fault=stale_optimizer_moment",
+      "fault": "stale_optimizer_moment",
+      "committed": false,
+      "violations": [
+        "[optimizer_accounting] blocks.0.attn.in_proj_bias: slot 'exp_avg' changed (071b18518df8684a99 -> 0015483f2dad2c237a)",
+        "[optimizer_accounting] blocks.0.attn.in_proj_bias: slot 'exp_avg_sq' changed (a4c9c600c12e0ee750 -> 0015483f2dad2c237a)"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 2.7636315738782287,
+        "dcp_save_s": 1.5534778048750013,
+        "snapshot_post_s": 3.719334135996178,
+        "dcp_load_s": 4.42126004002057,
+        "certificate_check_s": 0.00036901398561894894,
+        "certificate_total_s": 6.483334723860025,
+        "reshard_total_s": 5.9747378448955715
+      }
+    },
+    {
+      "transition": "shard(4) -> shard(2) [gpt2_125m] fault=step_counter_reset",
+      "fault": "step_counter_reset",
+      "committed": false,
+      "violations": [
+        "[optimizer_accounting] blocks.0.attn.in_proj_bias: slot 'step' changed (scalar:2 -> scalar:0)"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 2.492613264126703,
+        "dcp_save_s": 1.5594870129134506,
+        "snapshot_post_s": 3.6976453349925578,
+        "dcp_load_s": 4.457932648947462,
+        "certificate_check_s": 0.0003104440402239561,
+        "certificate_total_s": 6.190569043159485,
+        "reshard_total_s": 6.017419661860913
+      }
+    },
+    {
+      "transition": "shard(4) -> shard(2) [gpt2_125m] fault=precision_cast",
+      "fault": "precision_cast",
+      "committed": false,
+      "violations": [
+        "[content_equivalence] blocks.0.ln1.bias: fingerprint changed 2c44079af04b -> 28c6fae14c67",
+        "[content_equivalence] blocks.0.ln1.bias: independent checksum diverged: numel 768->768, l2 4.438634e-02->4.438646e-02, probe -1.190608e-03->-1.190186e-03"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 2.521746875019744,
+        "dcp_save_s": 1.5366107558365911,
+        "snapshot_post_s": 3.649236016906798,
+        "dcp_load_s": 4.307460956973955,
+        "certificate_check_s": 0.00034686410799622536,
+        "certificate_total_s": 6.171329756034538,
+        "reshard_total_s": 5.844071712810546
+      }
+    },
+    {
+      "transition": "shard(4) -> shard(2) [gpt2_125m] fault=progress_reset",
+      "fault": "progress_reset",
+      "committed": false,
+      "violations": [
+        "[progress_invariant] global_step: 2 -> 0"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 2.572215022984892,
+        "dcp_save_s": 1.5461139159742743,
+        "snapshot_post_s": 3.65295352996327,
+        "dcp_load_s": 4.400444998871535,
+        "certificate_check_s": 0.00032115401700139046,
+        "certificate_total_s": 6.225489706965163,
+        "reshard_total_s": 5.946558914845809
+      }
+    },
+    {
+      "transition": "shard(4) -> shard(2) [gpt2_125m] fault=dropped_fqn",
+      "fault": "dropped_fqn",
+      "committed": false,
+      "violations": [
+        "[param_residency] blocks.0.attn.in_proj_bias: parameter lost in transition",
+        "[reduction_order_bound] <order>: post order is not a permutation of pre order"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 2.532265093177557,
+        "dcp_save_s": 1.634220076026395,
+        "snapshot_post_s": 3.644957344047725,
+        "dcp_load_s": 4.344259351957589,
+        "certificate_check_s": 0.00033068377524614334,
+        "certificate_total_s": 6.177553121000528,
+        "reshard_total_s": 5.978479427983984
+      }
+    },
+    {
+      "transition": "shard(4) -> shard(2) [gpt2_125m] fault=reduction_order_swap",
+      "fault": "reduction_order_swap",
+      "committed": false,
+      "violations": [
+        "[reduction_order_bound] <order>: declared reduction order changed silently across the transition"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 2.6170199329499155,
+        "dcp_save_s": 1.6114432900212705,
+        "snapshot_post_s": 3.619984417920932,
+        "dcp_load_s": 4.3827200520318,
+        "certificate_check_s": 0.0003519440069794655,
+        "certificate_total_s": 6.237356294877827,
+        "reshard_total_s": 5.994163342053071
+      }
+    },
+    {
+      "transition": "shard(2) -> shard(4) [gpt2_125m]",
+      "fault": null,
+      "committed": true,
+      "violations": [],
+      "timings_s": {
+        "snapshot_pre_s": 1.8882389289792627,
+        "dcp_save_s": 1.7951636940706521,
+        "snapshot_post_s": 5.00455957907252,
+        "dcp_load_s": 9.515792281832546,
+        "certificate_check_s": 0.0003116629086434841,
+        "certificate_total_s": 6.893110170960426,
+        "reshard_total_s": 11.310955975903198
+      }
+    },
+    {
+      "transition": "shard(2) -> shard(4) [gpt2_125m] fault=silent_unloaded_param",
+      "fault": "silent_unloaded_param",
+      "committed": false,
+      "violations": [
+        "[content_equivalence] blocks.0.attn.in_proj_weight: fingerprint changed b771b31264e6 -> 5294c5f994f4",
+        "[content_equivalence] blocks.0.attn.in_proj_weight: independent checksum diverged: numel 1769472->1769472, l2 3.400282e+01->2.657274e+01, probe -4.359016e-02->5.618321e-03"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 1.89517527888529,
+        "dcp_save_s": 1.769650574075058,
+        "snapshot_post_s": 5.037042514886707,
+        "dcp_load_s": 9.502351387171075,
+        "certificate_check_s": 0.00035950401797890663,
+        "certificate_total_s": 6.932577297789976,
+        "reshard_total_s": 11.272001961246133
+      }
+    },
+    {
+      "transition": "shard(2) -> shard(4) [gpt2_125m] fault=value_corruption",
+      "fault": "value_corruption",
+      "committed": false,
+      "violations": [
+        "[content_equivalence] blocks.0.attn.out_proj.bias: fingerprint changed 79ac04b03b11 -> 0b752caa9fcc",
+        "[content_equivalence] blocks.0.attn.out_proj.bias: independent checksum diverged: numel 768->768, l2 4.411403e-02->5.257614e-02, probe 1.816247e-03->2.816247e-03"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 1.855541529133916,
+        "dcp_save_s": 1.8069952079094946,
+        "snapshot_post_s": 5.077579081989825,
+        "dcp_load_s": 9.316420418210328,
+        "certificate_check_s": 0.00043256510980427265,
+        "certificate_total_s": 6.933553176233545,
+        "reshard_total_s": 11.123415626119822
+      }
+    },
+    {
+      "transition": "shard(2) -> shard(4) [gpt2_125m] fault=permuted_values",
+      "fault": "permuted_values",
+      "committed": false,
+      "violations": [
+        "[content_equivalence] blocks.0.attn.in_proj_weight: fingerprint changed b771b31264e6 -> 0e73ea481692"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 1.956273996969685,
+        "dcp_save_s": 1.7912996001541615,
+        "snapshot_post_s": 5.044328834861517,
+        "dcp_load_s": 9.84045433695428,
+        "certificate_check_s": 0.0003311438485980034,
+        "certificate_total_s": 7.0009339756798,
+        "reshard_total_s": 11.631753937108442
+      }
+    },
+    {
+      "transition": "shard(2) -> shard(4) [gpt2_125m] fault=cross_param_overwrite",
+      "fault": "cross_param_overwrite",
+      "committed": false,
+      "violations": [
+        "[content_equivalence] blocks.0.ln1.weight: fingerprint changed 9c3493442ceb -> a6fd417b4efc",
+        "[content_equivalence] blocks.0.ln1.weight: independent checksum diverged: numel 768->768, l2 2.771200e+01->4.438634e-02, probe 1.001781e+00->-1.190608e-03"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 1.9338634288869798,
+        "dcp_save_s": 1.7904605120420456,
+        "snapshot_post_s": 5.047067587962374,
+        "dcp_load_s": 9.57862339890562,
+        "certificate_check_s": 0.00036592409014701843,
+        "certificate_total_s": 6.981296940939501,
+        "reshard_total_s": 11.369083910947666
+      }
+    },
+    {
+      "transition": "shard(2) -> shard(4) [gpt2_125m] fault=stale_optimizer_moment",
+      "fault": "stale_optimizer_moment",
+      "committed": false,
+      "violations": [
+        "[optimizer_accounting] blocks.0.attn.in_proj_bias: slot 'exp_avg' changed (e863547c7982e3e579 -> 0015483f2dad2c237a)",
+        "[optimizer_accounting] blocks.0.attn.in_proj_bias: slot 'exp_avg_sq' changed (d9786ddec55267c38b -> 0015483f2dad2c237a)"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 1.9103995061013848,
+        "dcp_save_s": 1.7980214941781014,
+        "snapshot_post_s": 5.057758047012612,
+        "dcp_load_s": 9.70972252287902,
+        "certificate_check_s": 0.0003521840553730726,
+        "certificate_total_s": 6.96850973716937,
+        "reshard_total_s": 11.50774401705712
+      }
+    },
+    {
+      "transition": "shard(2) -> shard(4) [gpt2_125m] fault=step_counter_reset",
+      "fault": "step_counter_reset",
+      "committed": false,
+      "violations": [
+        "[optimizer_accounting] blocks.0.attn.in_proj_bias: slot 'step' changed (scalar:2 -> scalar:0)"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 1.9153885960113257,
+        "dcp_save_s": 1.767811390105635,
+        "snapshot_post_s": 5.0314015441108495,
+        "dcp_load_s": 9.564173460006714,
+        "certificate_check_s": 0.00034514395520091057,
+        "certificate_total_s": 6.947135284077376,
+        "reshard_total_s": 11.331984850112349
+      }
+    },
+    {
+      "transition": "shard(2) -> shard(4) [gpt2_125m] fault=precision_cast",
+      "fault": "precision_cast",
+      "committed": false,
+      "violations": [
+        "[content_equivalence] blocks.0.ln1.bias: fingerprint changed a6fd417b4efc -> 28c6fae14c67",
+        "[content_equivalence] blocks.0.ln1.bias: independent checksum diverged: numel 768->768, l2 4.438634e-02->4.438646e-02, probe -1.190608e-03->-1.190186e-03"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 1.928357922937721,
+        "dcp_save_s": 1.7660706611350179,
+        "snapshot_post_s": 5.0007570220623165,
+        "dcp_load_s": 9.642334182979539,
+        "certificate_check_s": 0.00034221401438117027,
+        "certificate_total_s": 6.929457159014419,
+        "reshard_total_s": 11.408404844114557
+      }
+    },
+    {
+      "transition": "shard(2) -> shard(4) [gpt2_125m] fault=progress_reset",
+      "fault": "progress_reset",
+      "committed": false,
+      "violations": [
+        "[progress_invariant] global_step: 2 -> 0"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 1.8123303800821304,
+        "dcp_save_s": 1.750705401180312,
+        "snapshot_post_s": 5.080396143021062,
+        "dcp_load_s": 9.82435463508591,
+        "certificate_check_s": 0.00031702290289103985,
+        "certificate_total_s": 6.8930435460060835,
+        "reshard_total_s": 11.575060036266223
+      }
+    },
+    {
+      "transition": "shard(2) -> shard(4) [gpt2_125m] fault=dropped_fqn",
+      "fault": "dropped_fqn",
+      "committed": false,
+      "violations": [
+        "[param_residency] blocks.0.attn.in_proj_bias: parameter lost in transition",
+        "[reduction_order_bound] <order>: post order is not a permutation of pre order"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 1.8914380089845508,
+        "dcp_save_s": 1.7554111508652568,
+        "snapshot_post_s": 5.127000954002142,
+        "dcp_load_s": 9.46586115588434,
+        "certificate_check_s": 0.0003549440298229456,
+        "certificate_total_s": 7.018793907016516,
+        "reshard_total_s": 11.221272306749597
+      }
+    },
+    {
+      "transition": "shard(2) -> shard(4) [gpt2_125m] fault=reduction_order_swap",
+      "fault": "reduction_order_swap",
+      "committed": false,
+      "violations": [
+        "[reduction_order_bound] <order>: declared reduction order changed silently across the transition"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 1.9207965058740228,
+        "dcp_save_s": 1.761288075009361,
+        "snapshot_post_s": 5.029114782111719,
+        "dcp_load_s": 9.20796950883232,
+        "certificate_check_s": 0.00034336396493017673,
+        "certificate_total_s": 6.950254651950672,
+        "reshard_total_s": 10.969257583841681
+      }
+    },
+    {
+      "transition": "full(2) -> shard(2) [gpt2_125m]",
+      "fault": null,
+      "committed": true,
+      "violations": [],
+      "timings_s": {
+        "snapshot_pre_s": 1.906496822135523,
+        "dcp_save_s": 0.8667927668429911,
+        "snapshot_post_s": 3.747307071927935,
+        "dcp_load_s": 4.852704162942246,
+        "certificate_check_s": 0.0004050538409501314,
+        "certificate_total_s": 5.654208947904408,
+        "reshard_total_s": 5.719496929785237
+      }
+    },
+    {
+      "transition": "full(2) -> shard(2) [gpt2_125m] fault=silent_unloaded_param",
+      "fault": "silent_unloaded_param",
+      "committed": false,
+      "violations": [
+        "[content_equivalence] blocks.0.attn.in_proj_weight: fingerprint changed b771b31264e6 -> ceef46eb69d6",
+        "[content_equivalence] blocks.0.attn.in_proj_weight: independent checksum diverged: numel 1769472->1769472, l2 3.400282e+01->2.656939e+01, probe -4.359016e-02->5.618321e-03"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 1.8450988770928234,
+        "dcp_save_s": 0.8533506549429148,
+        "snapshot_post_s": 3.697628687834367,
+        "dcp_load_s": 4.6265492278616875,
+        "certificate_check_s": 0.00034716399386525154,
+        "certificate_total_s": 5.543074728921056,
+        "reshard_total_s": 5.479899882804602
+      }
+    },
+    {
+      "transition": "full(2) -> shard(2) [gpt2_125m] fault=value_corruption",
+      "fault": "value_corruption",
+      "committed": false,
+      "violations": [
+        "[content_equivalence] blocks.0.attn.out_proj.bias: fingerprint changed 79ac04b03b11 -> 0b752caa9fcc",
+        "[content_equivalence] blocks.0.attn.out_proj.bias: independent checksum diverged: numel 768->768, l2 4.411403e-02->5.257614e-02, probe 1.816247e-03->2.816247e-03"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 1.9585095590446144,
+        "dcp_save_s": 0.9066267828457057,
+        "snapshot_post_s": 4.139768467983231,
+        "dcp_load_s": 5.122915776912123,
+        "certificate_check_s": 0.00034696399234235287,
+        "certificate_total_s": 6.098624991020188,
+        "reshard_total_s": 6.029542559757829
+      }
+    },
+    {
+      "transition": "full(2) -> shard(2) [gpt2_125m] fault=permuted_values",
+      "fault": "permuted_values",
+      "committed": false,
+      "violations": [
+        "[content_equivalence] blocks.0.attn.in_proj_weight: fingerprint changed b771b31264e6 -> 48fecfe53d44"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 1.9390858069527894,
+        "dcp_save_s": 0.8735054708085954,
+        "snapshot_post_s": 3.8290451769717038,
+        "dcp_load_s": 4.857818081974983,
+        "certificate_check_s": 0.0003116629086434841,
+        "certificate_total_s": 5.768442646833137,
+        "reshard_total_s": 5.731323552783579
+      }
+    },
+    {
+      "transition": "full(2) -> shard(2) [gpt2_125m] fault=cross_param_overwrite",
+      "fault": "cross_param_overwrite",
+      "committed": false,
+      "violations": [
+        "[content_equivalence] blocks.0.ln1.weight: fingerprint changed 9c3493442ceb -> a6fd417b4efc",
+        "[content_equivalence] blocks.0.ln1.weight: independent checksum diverged: numel 768->768, l2 2.771200e+01->4.438634e-02, probe 1.001781e+00->-1.190608e-03"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 1.9147469731979072,
+        "dcp_save_s": 0.8793009158689529,
+        "snapshot_post_s": 3.7452804350759834,
+        "dcp_load_s": 4.7530552360694855,
+        "certificate_check_s": 0.00036495504900813103,
+        "certificate_total_s": 5.660392363322899,
+        "reshard_total_s": 5.632356151938438
+      }
+    },
+    {
+      "transition": "full(2) -> shard(2) [gpt2_125m] fault=stale_optimizer_moment",
+      "fault": "stale_optimizer_moment",
+      "committed": false,
+      "violations": [
+        "[optimizer_accounting] blocks.0.attn.in_proj_bias: slot 'exp_avg' changed (e863547c7982e3e579 -> 0015483f2dad2c237a)",
+        "[optimizer_accounting] blocks.0.attn.in_proj_bias: slot 'exp_avg_sq' changed (d9786ddec55267c38b -> 0015483f2dad2c237a)"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 1.9099167899694294,
+        "dcp_save_s": 0.8887100929860026,
+        "snapshot_post_s": 3.6878019750583917,
+        "dcp_load_s": 4.631533426931128,
+        "certificate_check_s": 0.00033167400397360325,
+        "certificate_total_s": 5.598050439031795,
+        "reshard_total_s": 5.5202435199171305
+      }
+    },
+    {
+      "transition": "full(2) -> shard(2) [gpt2_125m] fault=step_counter_reset",
+      "fault": "step_counter_reset",
+      "committed": false,
+      "violations": [
+        "[optimizer_accounting] blocks.0.attn.in_proj_bias: slot 'step' changed (scalar:2 -> scalar:0)"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 2.0420402390882373,
+        "dcp_save_s": 0.9326238541398197,
+        "snapshot_post_s": 3.6373094639275223,
+        "dcp_load_s": 4.519570919917896,
+        "certificate_check_s": 0.0005362159572541714,
+        "certificate_total_s": 5.679885918973014,
+        "reshard_total_s": 5.452194774057716
+      }
+    },
+    {
+      "transition": "full(2) -> shard(2) [gpt2_125m] fault=precision_cast",
+      "fault": "precision_cast",
+      "committed": false,
+      "violations": [
+        "[content_equivalence] blocks.0.ln1.bias: fingerprint changed a6fd417b4efc -> 28c6fae14c67",
+        "[content_equivalence] blocks.0.ln1.bias: independent checksum diverged: numel 768->768, l2 4.438634e-02->4.438646e-02, probe -1.190608e-03->-1.190186e-03"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 1.9865778998937458,
+        "dcp_save_s": 0.8977198270149529,
+        "snapshot_post_s": 3.6699021470267326,
+        "dcp_load_s": 4.631991486996412,
+        "certificate_check_s": 0.00033367401920259,
+        "certificate_total_s": 5.656813720939681,
+        "reshard_total_s": 5.529711314011365
+      }
+    },
+    {
+      "transition": "full(2) -> shard(2) [gpt2_125m] fault=progress_reset",
+      "fault": "progress_reset",
+      "committed": false,
+      "violations": [
+        "[progress_invariant] global_step: 2 -> 0"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 1.8874003649689257,
+        "dcp_save_s": 0.8644347270019352,
+        "snapshot_post_s": 3.6544540629256517,
+        "dcp_load_s": 4.560088712023571,
+        "certificate_check_s": 0.0003173230215907097,
+        "certificate_total_s": 5.542171750916168,
+        "reshard_total_s": 5.424523439025506
+      }
+    },
+    {
+      "transition": "full(2) -> shard(2) [gpt2_125m] fault=dropped_fqn",
+      "fault": "dropped_fqn",
+      "committed": false,
+      "violations": [
+        "[param_residency] blocks.0.attn.in_proj_bias: parameter lost in transition",
+        "[reduction_order_bound] <order>: post order is not a permutation of pre order"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 1.9297027420252562,
+        "dcp_save_s": 0.8549903840757906,
+        "snapshot_post_s": 3.6830418929457664,
+        "dcp_load_s": 4.508499100105837,
+        "certificate_check_s": 0.00042698485776782036,
+        "certificate_total_s": 5.61317161982879,
+        "reshard_total_s": 5.363489484181628
+      }
+    },
+    {
+      "transition": "full(2) -> shard(2) [gpt2_125m] fault=reduction_order_swap",
+      "fault": "reduction_order_swap",
+      "committed": false,
+      "violations": [
+        "[reduction_order_bound] <order>: declared reduction order changed silently across the transition"
+      ],
+      "timings_s": {
+        "snapshot_pre_s": 2.0204301890917122,
+        "dcp_save_s": 0.9475085390731692,
+        "snapshot_post_s": 3.646568847121671,
+        "dcp_load_s": 4.771758021088317,
+        "certificate_check_s": 0.0003502739127725363,
+        "certificate_total_s": 5.667349310126156,
+        "reshard_total_s": 5.719266560161486
+      }
+    }
+  ]
+}
