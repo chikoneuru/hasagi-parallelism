@@ -1,0 +1,57 @@
+{
+  "exp": "attest-zero-to-fp32-repro",
+  "bug": {
+    "issue": "deepspeedai/DeepSpeed#6791",
+    "fix_pr": "#6792",
+    "mechanism": "to_torch_tensor(return_empty_tensor=True) mutates the consolidated state dict; shards are written from the emptied tensors (uninitialized memory)",
+    "injected_faults": 0
+  },
+  "deepspeed_versions": {
+    "buggy": "0.16.0",
+    "fixed": "0.16.1"
+  },
+  "n_params": 6,
+  "arms": {
+    "buggy_sharded": {
+      "committed": false,
+      "expected_committed": false,
+      "as_expected": true,
+      "n_violations": 12,
+      "violations_by_invariant": [
+        "content_equivalence"
+      ],
+      "sample_violation": "[content_equivalence] 0.bias: fingerprint changed f2fbc12009bd -> 409e7f5f1723",
+      "check_seconds": 4.5971013605594635e-05,
+      "missing_keys": [],
+      "max_abs_dev": 5.468351545183279e+34,
+      "mean_zero_frac": 0.8095601399739584
+    },
+    "buggy_default": {
+      "committed": false,
+      "expected_committed": false,
+      "as_expected": true,
+      "n_violations": 12,
+      "violations_by_invariant": [
+        "content_equivalence"
+      ],
+      "sample_violation": "[content_equivalence] 0.bias: fingerprint changed f2fbc12009bd -> 9ea3a5fee68d",
+      "check_seconds": 2.7209986001253128e-05,
+      "missing_keys": [],
+      "max_abs_dev": 2.0739764677330634e+28,
+      "mean_zero_frac": 0.787750244140625
+    },
+    "fixed": {
+      "committed": true,
+      "expected_committed": true,
+      "as_expected": true,
+      "n_violations": 0,
+      "violations_by_invariant": [],
+      "sample_violation": null,
+      "check_seconds": 1.1049909517168999e-05,
+      "missing_keys": [],
+      "max_abs_dev": 0.0,
+      "mean_zero_frac": 0.0
+    }
+  },
+  "natural_bug_caught_blind": true
+}
