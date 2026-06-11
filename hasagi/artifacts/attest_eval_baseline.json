@@ -1,0 +1,164 @@
+{
+  "exp": "attest-eval-baseline",
+  "eval_oracle": {
+    "definition": "same fixed batch, bit-exact reference output captured at save time, deterministic forward; catches iff max relative output deviation exceeds the threshold",
+    "strict_rtol": 0.001,
+    "realistic_rtol": 0.01
+  },
+  "cases": [
+    {
+      "name": "zero_to_fp32_buggy_sharded",
+      "kind": "natural",
+      "corpus_class": "DeepSpeed#6791 conversion corruption",
+      "output_max_rel_dev": Infinity,
+      "eval_catches_strict": true,
+      "eval_catches_realistic": true,
+      "certificate_committed": false,
+      "violations_by_invariant": [
+        "content_equivalence"
+      ],
+      "expected_committed": false,
+      "as_expected": true
+    },
+    {
+      "name": "zero_to_fp32_buggy_default",
+      "kind": "natural",
+      "corpus_class": "DeepSpeed#6791 conversion corruption",
+      "output_max_rel_dev": 5.775282653829691e+25,
+      "eval_catches_strict": true,
+      "eval_catches_realistic": true,
+      "certificate_committed": false,
+      "violations_by_invariant": [
+        "content_equivalence"
+      ],
+      "expected_committed": false,
+      "as_expected": true
+    },
+    {
+      "name": "zero_to_fp32_fixed",
+      "kind": "natural",
+      "corpus_class": "DeepSpeed#6791 conversion corruption",
+      "output_max_rel_dev": 0.0,
+      "eval_catches_strict": false,
+      "eval_catches_realistic": false,
+      "certificate_committed": true,
+      "violations_by_invariant": [],
+      "expected_committed": true,
+      "as_expected": true
+    },
+    {
+      "name": "swiglu_reshard_buggy",
+      "kind": "natural",
+      "corpus_class": "Megatron-LM PR#520 SwiGLU mis-split",
+      "output_max_rel_dev": 0.24918216466903687,
+      "eval_catches_strict": true,
+      "eval_catches_realistic": true,
+      "certificate_committed": false,
+      "violations_by_invariant": [
+        "content_equivalence"
+      ],
+      "expected_committed": false,
+      "as_expected": true
+    },
+    {
+      "name": "swiglu_reshard_fixed",
+      "kind": "natural",
+      "corpus_class": "Megatron-LM PR#520 SwiGLU mis-split",
+      "output_max_rel_dev": 0.0,
+      "eval_catches_strict": false,
+      "eval_catches_realistic": false,
+      "certificate_committed": true,
+      "violations_by_invariant": [],
+      "expected_committed": true,
+      "as_expected": true
+    },
+    {
+      "name": "stale_optimizer_moment",
+      "kind": "designed",
+      "corpus_class": "Megatron-LM#761 optimizer merge/reshard class",
+      "output_max_rel_dev": 0.0,
+      "eval_catches_strict": false,
+      "eval_catches_realistic": false,
+      "certificate_committed": false,
+      "violations_by_invariant": [
+        "optimizer_accounting"
+      ],
+      "expected_committed": false,
+      "as_expected": true,
+      "expected_forward_blind": true,
+      "fault_note": "zeroed exp_avg/exp_avg_sq of 0.bias"
+    },
+    {
+      "name": "step_counter_reset",
+      "kind": "designed",
+      "corpus_class": "bias-correction restart class",
+      "output_max_rel_dev": 0.0,
+      "eval_catches_strict": false,
+      "eval_catches_realistic": false,
+      "certificate_committed": false,
+      "violations_by_invariant": [
+        "optimizer_accounting"
+      ],
+      "expected_committed": false,
+      "as_expected": true,
+      "expected_forward_blind": true,
+      "fault_note": "reset step counter of 0.bias"
+    },
+    {
+      "name": "progress_reset",
+      "kind": "designed",
+      "corpus_class": "trainer-progress metadata loss",
+      "output_max_rel_dev": 0.0,
+      "eval_catches_strict": false,
+      "eval_catches_realistic": false,
+      "certificate_committed": false,
+      "violations_by_invariant": [
+        "progress_invariant"
+      ],
+      "expected_committed": false,
+      "as_expected": true,
+      "expected_forward_blind": true,
+      "fault_note": "reset progress counter 'global_step'"
+    },
+    {
+      "name": "precision_cast",
+      "kind": "designed",
+      "corpus_class": "narrow-dtype transport round-trip (PR#2789-adjacent)",
+      "output_max_rel_dev": 7.053082663333043e-05,
+      "eval_catches_strict": false,
+      "eval_catches_realistic": false,
+      "certificate_committed": false,
+      "violations_by_invariant": [
+        "content_equivalence"
+      ],
+      "expected_committed": false,
+      "as_expected": true,
+      "fault_note": "fp16 round-trip on 3.bias"
+    },
+    {
+      "name": "value_corruption",
+      "kind": "designed",
+      "corpus_class": "mis-stitched shard boundary / partial write",
+      "output_max_rel_dev": 0.002586221555247903,
+      "eval_catches_strict": true,
+      "eval_catches_realistic": false,
+      "certificate_committed": false,
+      "violations_by_invariant": [
+        "content_equivalence"
+      ],
+      "expected_committed": false,
+      "as_expected": true,
+      "fault_note": "perturbed 2.bias by +1e-3"
+    }
+  ],
+  "headline": {
+    "natural_bugs_eval_also_catches_strict": true,
+    "forward_blind_corrupting_cases": [
+      "stale_optimizer_moment",
+      "step_counter_reset",
+      "progress_reset"
+    ],
+    "forward_blind_all_caught_by_certificate": true,
+    "all_as_expected": true
+  }
+}
