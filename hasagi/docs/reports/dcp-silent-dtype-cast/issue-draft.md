@@ -1,5 +1,7 @@
 # [DCP] load silently casts checkpoint tensors to the template dtype, truncating precision without any warning
 
+Filed as <https://github.com/pytorch/pytorch/issues/187138> (2026-06-12).
+
 ## 🐛 Describe the bug
 
 `torch.distributed.checkpoint.load` resolves what to read from the
