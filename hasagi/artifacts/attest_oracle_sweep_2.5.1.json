@@ -1,0 +1,233 @@
+{
+  "exp": "attest-oracle-sweep",
+  "torch": "2.5.1+cu121",
+  "oracle": "transition certificate over snapshot(truth at save call) vs snapshot(state after load); silent_divergence = certificate aborts on a path that raised nothing",
+  "cells": [
+    {
+      "cell": "roundtrip_plain",
+      "note": "plain save/load round-trip",
+      "max_value_dev_dtype_blind": 0.0,
+      "raised": null,
+      "committed": true,
+      "n_violations": 0,
+      "violations_by_invariant": [],
+      "violating_fqns": [],
+      "sample_violation": null,
+      "silent_divergence": false
+    },
+    {
+      "cell": "roundtrip_aliased",
+      "note": "plain save/load round-trip",
+      "max_value_dev_dtype_blind": 0.0,
+      "raised": null,
+      "committed": true,
+      "n_violations": 0,
+      "violations_by_invariant": [],
+      "violating_fqns": [],
+      "sample_violation": null,
+      "silent_divergence": false
+    },
+    {
+      "cell": "roundtrip_strided",
+      "note": "plain save/load round-trip",
+      "max_value_dev_dtype_blind": 0.0,
+      "raised": null,
+      "committed": true,
+      "n_violations": 0,
+      "violations_by_invariant": [],
+      "violating_fqns": [],
+      "sample_violation": null,
+      "silent_divergence": false
+    },
+    {
+      "cell": "roundtrip_dtypes",
+      "note": "plain save/load round-trip",
+      "max_value_dev_dtype_blind": 0.0,
+      "raised": null,
+      "committed": true,
+      "n_violations": 0,
+      "violations_by_invariant": [],
+      "violating_fqns": [],
+      "sample_violation": null,
+      "silent_divergence": false
+    },
+    {
+      "cell": "inplace_missing_subtree",
+      "note": "template missing a non-tensor subtree (#126881)",
+      "max_value_dev_dtype_blind": 0.0,
+      "raised": null,
+      "committed": false,
+      "n_violations": 2,
+      "violations_by_invariant": [
+        "aux_stream_residency"
+      ],
+      "violating_fqns": [
+        "meta.epoch",
+        "meta.samples"
+      ],
+      "sample_violation": "[aux_stream_residency] meta.epoch: stream lost in transition",
+      "silent_divergence": true
+    },
+    {
+      "cell": "inplace_missing_tensor",
+      "note": "template missing a tensor key",
+      "max_value_dev_dtype_blind": 0.0,
+      "raised": null,
+      "committed": false,
+      "n_violations": 1,
+      "violations_by_invariant": [
+        "param_residency"
+      ],
+      "violating_fqns": [
+        "model.bias"
+      ],
+      "sample_violation": "[param_residency] model.bias: parameter lost in transition",
+      "silent_divergence": true
+    },
+    {
+      "cell": "inplace_dtype_upcast_f64",
+      "note": "template tensor declared torch.float64 for a float32 ckpt",
+      "max_value_dev_dtype_blind": 0.0,
+      "raised": null,
+      "committed": false,
+      "n_violations": 1,
+      "violations_by_invariant": [
+        "content_equivalence"
+      ],
+      "violating_fqns": [
+        "model.weight"
+      ],
+      "sample_violation": "[content_equivalence] model.weight: fingerprint changed 16417dd784db -> 422813368360",
+      "silent_divergence": true
+    },
+    {
+      "cell": "inplace_dtype_downcast_bf16",
+      "note": "template tensor declared torch.bfloat16 for a float32 ckpt",
+      "max_value_dev_dtype_blind": 0.0110015869140625,
+      "raised": null,
+      "committed": false,
+      "n_violations": 2,
+      "violations_by_invariant": [
+        "content_equivalence"
+      ],
+      "violating_fqns": [
+        "model.weight"
+      ],
+      "sample_violation": "[content_equivalence] model.weight: fingerprint changed 16417dd784db -> 1d2202a6d856",
+      "silent_divergence": true
+    },
+    {
+      "cell": "inplace_dtype_downcast_f16",
+      "note": "template tensor declared torch.float16 for a float32 ckpt",
+      "max_value_dev_dtype_blind": 0.0110015869140625,
+      "raised": null,
+      "committed": false,
+      "n_violations": 2,
+      "violations_by_invariant": [
+        "content_equivalence"
+      ],
+      "violating_fqns": [
+        "model.weight"
+      ],
+      "sample_violation": "[content_equivalence] model.weight: fingerprint changed 16417dd784db -> 93d1abd0a593",
+      "silent_divergence": true
+    },
+    {
+      "cell": "inplace_wrong_shape",
+      "note": "template tensor has transposed shape",
+      "max_value_dev_dtype_blind": 0.0,
+      "raised": null,
+      "committed": false,
+      "n_violations": 2,
+      "violations_by_invariant": [
+        "content_equivalence"
+      ],
+      "violating_fqns": [
+        "model.weight"
+      ],
+      "sample_violation": "[content_equivalence] model.weight: fingerprint changed 16417dd784db -> e853c834af67",
+      "silent_divergence": true
+    },
+    {
+      "cell": "inplace_stale_extra_key",
+      "raised": "CheckpointException: CheckpointException ranks:dict_keys([0])\nTraceback (most recent call last): (RANK 0)\n  File \"/home/hieu.npt/hieunpt/hieunpt-env/lib/python3.12/site-packages/torch/distributed/checkpoint/utils.py\", line 164, in reduce_scatter\n    local_data = map_fun()\n                 ^^^^^^^^^\n  File \"/home/hieu.npt/hieunpt/hieunpt-env/lib/python3.12/site-packages/torch/distributed/checkpoint/logger.py\", line 83, in wrapper\n    result = func(*args, **kwargs)\n             ^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/hieu.npt/hieunpt/hieunpt-env/lib/python3.12/site-packages/torch/distributed/checkpoint/state_dict_loader.py\", line 211, in local_step\n    local_plan = planner.create_local_plan()\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/hieu.npt/hieunpt/hieunpt-env/lib/python3.12/site-packages/torch/distributed/checkpoint/default_planner.py\", line 233, in create_local_plan\n    return create_default_local_load_plan(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/hieu.npt/hieunpt/hieunpt-env/lib/python3.12/site-packages/torch/distributed/checkpoint/default_planner.py\", line 354, in create_default_local_load_plan\n    raise RuntimeError(f\"Missing key in checkpoint state_dict: {fqn}.\")\nRuntimeError: Missing key in checkpoint state_dict: model.stale.\n",
+      "traceback_tail": "ocal_plan()\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/hieu.npt/hieunpt/hieunpt-env/lib/python3.12/site-packages/torch/distributed/checkpoint/default_planner.py\", line 233, in create_local_plan\n    return create_default_local_load_plan(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/hieu.npt/hieunpt/hieunpt-env/lib/python3.12/site-packages/torch/distributed/checkpoint/default_planner.py\", line 354, in create_default_local_load_plan\n    raise RuntimeError(f\"Missing key in checkpoint state_dict: {fqn}.\")\nRuntimeError: Missing key in checkpoint state_dict: model.stale.\n\n",
+      "silent_divergence": false
+    },
+    {
+      "cell": "async_mutate_tensor",
+      "note": "async_save with tensor mutation in the window (#144657)",
+      "max_value_dev_dtype_blind": 1000.0000534057617,
+      "raised": null,
+      "committed": false,
+      "n_violations": 2,
+      "violations_by_invariant": [
+        "content_equivalence"
+      ],
+      "violating_fqns": [
+        "model.weight"
+      ],
+      "sample_violation": "[content_equivalence] model.weight: fingerprint changed 16417dd784db -> d0f1b8a9f43f",
+      "silent_divergence": true
+    },
+    {
+      "cell": "async_mutate_optim",
+      "note": "async_save with optim mutation in the window (#144657)",
+      "max_value_dev_dtype_blind": 1000.0000610351562,
+      "raised": null,
+      "committed": false,
+      "n_violations": 4,
+      "violations_by_invariant": [
+        "content_equivalence"
+      ],
+      "violating_fqns": [
+        "optim.state.0.exp_avg",
+        "optim.state.0.step"
+      ],
+      "sample_violation": "[content_equivalence] optim.state.0.exp_avg: fingerprint changed a555b7a2266d -> 9c1369a89c79",
+      "silent_divergence": true
+    },
+    {
+      "cell": "async_mutate_nontensor",
+      "note": "async_save with nontensor mutation in the window (#144657)",
+      "max_value_dev_dtype_blind": 0.0,
+      "raised": null,
+      "committed": true,
+      "n_violations": 0,
+      "violations_by_invariant": [],
+      "violating_fqns": [],
+      "sample_violation": null,
+      "silent_divergence": false
+    },
+    {
+      "cell": "async_mutate_alias",
+      "note": "async_save with alias mutation in the window (#144657)",
+      "max_value_dev_dtype_blind": 1000.0000610351562,
+      "raised": null,
+      "committed": false,
+      "n_violations": 4,
+      "violations_by_invariant": [
+        "content_equivalence"
+      ],
+      "violating_fqns": [
+        "alias.full",
+        "alias.view"
+      ],
+      "sample_violation": "[content_equivalence] alias.full: fingerprint changed 9e1ec4c21ff9 -> 078af5bd60d5",
+      "silent_divergence": true
+    }
+  ],
+  "n_cells": 15,
+  "n_silent_divergence": 9,
+  "silent_cells": [
+    "inplace_missing_subtree",
+    "inplace_missing_tensor",
+    "inplace_dtype_upcast_f64",
+    "inplace_dtype_downcast_bf16",
+    "inplace_dtype_downcast_f16",
+    "inplace_wrong_shape",
+    "async_mutate_tensor",
+    "async_mutate_optim",
+    "async_mutate_alias"
+  ]
+}

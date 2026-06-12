@@ -1,0 +1,205 @@
+{
+  "exp": "attest-oracle-sweep",
+  "torch": "2.12.0+cpu",
+  "oracle": "transition certificate over snapshot(truth at save call) vs snapshot(state after load); silent_divergence = certificate aborts on a path that raised nothing",
+  "cells": [
+    {
+      "cell": "roundtrip_plain",
+      "note": "plain save/load round-trip",
+      "max_value_dev_dtype_blind": 0.0,
+      "raised": null,
+      "committed": true,
+      "n_violations": 0,
+      "violations_by_invariant": [],
+      "violating_fqns": [],
+      "sample_violation": null,
+      "silent_divergence": false
+    },
+    {
+      "cell": "roundtrip_aliased",
+      "note": "plain save/load round-trip",
+      "max_value_dev_dtype_blind": 0.0,
+      "raised": null,
+      "committed": true,
+      "n_violations": 0,
+      "violations_by_invariant": [],
+      "violating_fqns": [],
+      "sample_violation": null,
+      "silent_divergence": false
+    },
+    {
+      "cell": "roundtrip_strided",
+      "note": "plain save/load round-trip",
+      "max_value_dev_dtype_blind": 0.0,
+      "raised": null,
+      "committed": true,
+      "n_violations": 0,
+      "violations_by_invariant": [],
+      "violating_fqns": [],
+      "sample_violation": null,
+      "silent_divergence": false
+    },
+    {
+      "cell": "roundtrip_dtypes",
+      "note": "plain save/load round-trip",
+      "max_value_dev_dtype_blind": 0.0,
+      "raised": null,
+      "committed": true,
+      "n_violations": 0,
+      "violations_by_invariant": [],
+      "violating_fqns": [],
+      "sample_violation": null,
+      "silent_divergence": false
+    },
+    {
+      "cell": "inplace_missing_subtree",
+      "note": "template missing a non-tensor subtree (#126881)",
+      "max_value_dev_dtype_blind": 0.0,
+      "raised": null,
+      "committed": false,
+      "n_violations": 2,
+      "violations_by_invariant": [
+        "aux_stream_residency"
+      ],
+      "violating_fqns": [
+        "meta.epoch",
+        "meta.samples"
+      ],
+      "sample_violation": "[aux_stream_residency] meta.epoch: stream lost in transition",
+      "silent_divergence": true
+    },
+    {
+      "cell": "inplace_missing_tensor",
+      "note": "template missing a tensor key",
+      "max_value_dev_dtype_blind": 0.0,
+      "raised": null,
+      "committed": false,
+      "n_violations": 1,
+      "violations_by_invariant": [
+        "param_residency"
+      ],
+      "violating_fqns": [
+        "model.bias"
+      ],
+      "sample_violation": "[param_residency] model.bias: parameter lost in transition",
+      "silent_divergence": true
+    },
+    {
+      "cell": "inplace_dtype_upcast_f64",
+      "note": "template tensor declared torch.float64 for a float32 ckpt",
+      "max_value_dev_dtype_blind": 0.0,
+      "raised": null,
+      "committed": false,
+      "n_violations": 1,
+      "violations_by_invariant": [
+        "content_equivalence"
+      ],
+      "violating_fqns": [
+        "model.weight"
+      ],
+      "sample_violation": "[content_equivalence] model.weight: fingerprint changed 16417dd784db -> 422813368360",
+      "silent_divergence": true
+    },
+    {
+      "cell": "inplace_dtype_downcast_bf16",
+      "note": "template tensor declared torch.bfloat16 for a float32 ckpt",
+      "max_value_dev_dtype_blind": 0.0110015869140625,
+      "raised": null,
+      "committed": false,
+      "n_violations": 2,
+      "violations_by_invariant": [
+        "content_equivalence"
+      ],
+      "violating_fqns": [
+        "model.weight"
+      ],
+      "sample_violation": "[content_equivalence] model.weight: fingerprint changed 16417dd784db -> 1d2202a6d856",
+      "silent_divergence": true
+    },
+    {
+      "cell": "inplace_dtype_downcast_f16",
+      "note": "template tensor declared torch.float16 for a float32 ckpt",
+      "max_value_dev_dtype_blind": 0.0110015869140625,
+      "raised": null,
+      "committed": false,
+      "n_violations": 2,
+      "violations_by_invariant": [
+        "content_equivalence"
+      ],
+      "violating_fqns": [
+        "model.weight"
+      ],
+      "sample_violation": "[content_equivalence] model.weight: fingerprint changed 16417dd784db -> 93d1abd0a593",
+      "silent_divergence": true
+    },
+    {
+      "cell": "inplace_wrong_shape",
+      "raised": "CheckpointException: CheckpointException ranks:dict_keys([0])\nTraceback (most recent call last): (RANK 0)\n  File \"/home/hieu.npt/hieunpt/hasagi-parallelism/src/hasagi/.venv/sweep/lib/python3.12/site-packages/torch/distributed/checkpoint/utils.py\", line 193, in reduce_scatter\n    local_data = map_fun()\n                 ^^^^^^^^^\n  File \"/home/hieu.npt/hieunpt/hasagi-parallelism/src/hasagi/.venv/sweep/lib/python3.12/site-packages/torch/distributed/checkpoint/logger.py\", line 90, in wrapper\n    result = func(*args, **kwargs)\n             ^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/hieu.npt/hieunpt/hasagi-parallelism/src/hasagi/.venv/sweep/lib/python3.12/site-packages/torch/distributed/checkpoint/state_dict_loader.py\", line 281, in local_step\n    local_plan = planner.create_local_plan()\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/hieu.npt/hieunpt/hasagi-parallelism/src/hasagi/.venv/sweep/lib/python3.12/site-packages/torch/distributed/checkpoint/default_planner.py\", line 372, in create_local_plan\n    return create_default_local_load_plan(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/hieu.npt/hieunpt/hasagi-parallelism/src/hasagi/.venv/sweep/lib/python3.12/site-packages/torch/distributed/checkpoint/default_planner.py\", line 505, in create_default_local_load_plan\n    raise ValueError(\nValueError: Size mismatch between saved torch.Size([4, 3]) and current: torch.Size([3, 4]) for model.weight\n",
+      "traceback_tail": "^^^\n  File \"/home/hieu.npt/hieunpt/hasagi-parallelism/src/hasagi/.venv/sweep/lib/python3.12/site-packages/torch/distributed/checkpoint/default_planner.py\", line 372, in create_local_plan\n    return create_default_local_load_plan(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/hieu.npt/hieunpt/hasagi-parallelism/src/hasagi/.venv/sweep/lib/python3.12/site-packages/torch/distributed/checkpoint/default_planner.py\", line 505, in create_default_local_load_plan\n    raise ValueError(\nValueError: Size mismatch between saved torch.Size([4, 3]) and current: torch.Size([3, 4]) for model.weight\n\n",
+      "silent_divergence": false
+    },
+    {
+      "cell": "inplace_stale_extra_key",
+      "raised": "CheckpointException: CheckpointException ranks:dict_keys([0])\nTraceback (most recent call last): (RANK 0)\n  File \"/home/hieu.npt/hieunpt/hasagi-parallelism/src/hasagi/.venv/sweep/lib/python3.12/site-packages/torch/distributed/checkpoint/utils.py\", line 193, in reduce_scatter\n    local_data = map_fun()\n                 ^^^^^^^^^\n  File \"/home/hieu.npt/hieunpt/hasagi-parallelism/src/hasagi/.venv/sweep/lib/python3.12/site-packages/torch/distributed/checkpoint/logger.py\", line 90, in wrapper\n    result = func(*args, **kwargs)\n             ^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/hieu.npt/hieunpt/hasagi-parallelism/src/hasagi/.venv/sweep/lib/python3.12/site-packages/torch/distributed/checkpoint/state_dict_loader.py\", line 281, in local_step\n    local_plan = planner.create_local_plan()\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/hieu.npt/hieunpt/hasagi-parallelism/src/hasagi/.venv/sweep/lib/python3.12/site-packages/torch/distributed/checkpoint/default_planner.py\", line 372, in create_local_plan\n    return create_default_local_load_plan(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/hieu.npt/hieunpt/hasagi-parallelism/src/hasagi/.venv/sweep/lib/python3.12/site-packages/torch/distributed/checkpoint/default_planner.py\", line 495, in create_default_local_load_plan\n    raise RuntimeError(f\"Missing key in checkpoint state_dict: {fqn}.\")\nRuntimeError: Missing key in checkpoint state_dict: model.stale.\n",
+      "traceback_tail": "ile \"/home/hieu.npt/hieunpt/hasagi-parallelism/src/hasagi/.venv/sweep/lib/python3.12/site-packages/torch/distributed/checkpoint/default_planner.py\", line 372, in create_local_plan\n    return create_default_local_load_plan(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/hieu.npt/hieunpt/hasagi-parallelism/src/hasagi/.venv/sweep/lib/python3.12/site-packages/torch/distributed/checkpoint/default_planner.py\", line 495, in create_default_local_load_plan\n    raise RuntimeError(f\"Missing key in checkpoint state_dict: {fqn}.\")\nRuntimeError: Missing key in checkpoint state_dict: model.stale.\n\n",
+      "silent_divergence": false
+    },
+    {
+      "cell": "async_mutate_tensor",
+      "note": "async_save with tensor mutation in the window (#144657)",
+      "max_value_dev_dtype_blind": 0.0,
+      "raised": null,
+      "committed": true,
+      "n_violations": 0,
+      "violations_by_invariant": [],
+      "violating_fqns": [],
+      "sample_violation": null,
+      "silent_divergence": false
+    },
+    {
+      "cell": "async_mutate_optim",
+      "note": "async_save with optim mutation in the window (#144657)",
+      "max_value_dev_dtype_blind": 0.0,
+      "raised": null,
+      "committed": true,
+      "n_violations": 0,
+      "violations_by_invariant": [],
+      "violating_fqns": [],
+      "sample_violation": null,
+      "silent_divergence": false
+    },
+    {
+      "cell": "async_mutate_nontensor",
+      "note": "async_save with nontensor mutation in the window (#144657)",
+      "max_value_dev_dtype_blind": 0.0,
+      "raised": null,
+      "committed": true,
+      "n_violations": 0,
+      "violations_by_invariant": [],
+      "violating_fqns": [],
+      "sample_violation": null,
+      "silent_divergence": false
+    },
+    {
+      "cell": "async_mutate_alias",
+      "note": "async_save with alias mutation in the window (#144657)",
+      "max_value_dev_dtype_blind": 0.0,
+      "raised": null,
+      "committed": true,
+      "n_violations": 0,
+      "violations_by_invariant": [],
+      "violating_fqns": [],
+      "sample_violation": null,
+      "silent_divergence": false
+    }
+  ],
+  "n_cells": 15,
+  "n_silent_divergence": 5,
+  "silent_cells": [
+    "inplace_missing_subtree",
+    "inplace_missing_tensor",
+    "inplace_dtype_upcast_f64",
+    "inplace_dtype_downcast_bf16",
+    "inplace_dtype_downcast_f16"
+  ]
+}
