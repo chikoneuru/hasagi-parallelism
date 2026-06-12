@@ -215,9 +215,57 @@
       ],
       "sample_violation": "[content_equivalence] alias.full: fingerprint changed 9e1ec4c21ff9 -> 078af5bd60d5",
       "silent_divergence": true
+    },
+    {
+      "cell": "reshard_dt_to_full",
+      "note": "DTensor Shard(0) world=2 -> plain full load (rows=4)",
+      "max_value_dev_dtype_blind": 0.0,
+      "raised": null,
+      "committed": true,
+      "n_violations": 0,
+      "violations_by_invariant": [],
+      "violating_fqns": [],
+      "sample_violation": null,
+      "silent_divergence": false
+    },
+    {
+      "cell": "reshard_dt_uneven_to_full",
+      "note": "DTensor Shard(0) world=2 -> plain full load (rows=5)",
+      "max_value_dev_dtype_blind": 0.0,
+      "raised": null,
+      "committed": true,
+      "n_violations": 0,
+      "violations_by_invariant": [],
+      "violating_fqns": [],
+      "sample_violation": null,
+      "silent_divergence": false
+    },
+    {
+      "cell": "reshard_dt_shard0_to_shard1",
+      "note": "DTensor Shard(0) world=2 -> Shard(1) world=2 reload",
+      "max_value_dev_dtype_blind": 0.0,
+      "raised": null,
+      "committed": true,
+      "n_violations": 0,
+      "violations_by_invariant": [],
+      "violating_fqns": [],
+      "sample_violation": null,
+      "silent_divergence": false
+    },
+    {
+      "cell": "async_process_checkpointer",
+      "raised": "ImportError: cannot import name 'AsyncCheckpointerType' from 'torch.distributed.checkpoint.state_dict_saver' (/home/hieu.npt/hieunpt/hieunpt-env/lib/python3.12/site-packages/torch/distributed/checkpoint/state_dict_saver.py)",
+      "traceback_tail": "pt/hieunpt/hasagi-parallelism/src/hasagi/exp_attest_oracle_sweep.py\", line 364, in run\n    truth, loaded, note = fn(work)\n                          ^^^^^^^^\n  File \"/home/hieu.npt/hieunpt/hasagi-parallelism/src/hasagi/exp_attest_oracle_sweep.py\", line 288, in cell_async_process_checkpointer\n    from torch.distributed.checkpoint.state_dict_saver import AsyncCheckpointerType\nImportError: cannot import name 'AsyncCheckpointerType' from 'torch.distributed.checkpoint.state_dict_saver' (/home/hieu.npt/hieunpt/hieunpt-env/lib/python3.12/site-packages/torch/distributed/checkpoint/state_dict_saver.py)\n",
+      "silent_divergence": false
+    },
+    {
+      "cell": "async_explicit_stager",
+      "raised": "ImportError: cannot import name 'DefaultStager' from 'torch.distributed.checkpoint.staging' (/home/hieu.npt/hieunpt/hieunpt-env/lib/python3.12/site-packages/torch/distributed/checkpoint/staging.py)",
+      "traceback_tail": "call last):\n  File \"/home/hieu.npt/hieunpt/hasagi-parallelism/src/hasagi/exp_attest_oracle_sweep.py\", line 364, in run\n    truth, loaded, note = fn(work)\n                          ^^^^^^^^\n  File \"/home/hieu.npt/hieunpt/hasagi-parallelism/src/hasagi/exp_attest_oracle_sweep.py\", line 309, in cell_async_explicit_stager\n    from torch.distributed.checkpoint.staging import DefaultStager, StagingOptions\nImportError: cannot import name 'DefaultStager' from 'torch.distributed.checkpoint.staging' (/home/hieu.npt/hieunpt/hieunpt-env/lib/python3.12/site-packages/torch/distributed/checkpoint/staging.py)\n",
+      "silent_divergence": false
     }
   ],
-  "n_cells": 15,
+  "n_cells": 20,
   "n_silent_divergence": 9,
   "silent_cells": [
     "inplace_missing_subtree",

@@ -211,6 +211,124 @@ def cell_async_mutation_window(work, kind="plain", mutate="tensor"):
     return truth, template, f"async_save with {mutate} mutation in the window (#144657)"
 
 
+
+# --------------------------------------------------------------------------- #
+# Multi-process resharding cells: save DTensor state at world=2, load it back
+# under a different layout. Workers are top-level for mp.spawn.
+# --------------------------------------------------------------------------- #
+def _painted_global(rows: int = 4):
+    return {
+        "model.weight": _painted((rows, 3), 100),
+        "optim.exp_avg": _painted((rows, 3), 300),
+    }
+
+
+def _dt_save_worker(rank, world, work, port, rows):
+    os.environ.update({"RANK": str(rank), "WORLD_SIZE": str(world),
+                       "MASTER_ADDR": "127.0.0.1", "MASTER_PORT": str(port)})
+    import torch.distributed as dist
+    from torch.distributed.device_mesh import init_device_mesh
+    from torch.distributed.tensor import Shard, distribute_tensor
+
+    dist.init_process_group("gloo", rank=rank, world_size=world)
+    mesh = init_device_mesh("cpu", (world,))
+    state = {k: distribute_tensor(v, mesh, [Shard(0)])
+             for k, v in _painted_global(rows).items()}
+    dcp.save(state_dict=state, checkpoint_id=os.path.join(work, "ckpt"))
+    dist.destroy_process_group()
+
+
+def _dt_load_shard1_worker(rank, world, work, port, rows):
+    os.environ.update({"RANK": str(rank), "WORLD_SIZE": str(world),
+                       "MASTER_ADDR": "127.0.0.1", "MASTER_PORT": str(port)})
+    import torch.distributed as dist
+    from torch.distributed.device_mesh import init_device_mesh
+    from torch.distributed.tensor import Shard, distribute_tensor
+
+    dist.init_process_group("gloo", rank=rank, world_size=world)
+    mesh = init_device_mesh("cpu", (world,))
+    template = {k: distribute_tensor(torch.zeros_like(v), mesh, [Shard(1)])
+                for k, v in _painted_global(rows).items()}
+    dcp.load(state_dict=template, checkpoint_id=os.path.join(work, "ckpt"))
+    if rank == 0:
+        full = {k: v.full_tensor() for k, v in template.items()}
+    else:
+        full = {k: v.full_tensor() for k, v in template.items()}  # collective
+    if rank == 0:
+        torch.save(full, os.path.join(work, "loaded_full.pt"))
+    dist.destroy_process_group()
+
+
+def _spawn(fn, work, port, rows, world=2):
+    import torch.multiprocessing as mp
+
+    mp.spawn(fn, args=(world, work, port, rows), nprocs=world, join=True)
+
+
+def cell_dtensor_reshard_to_full(work, rows=4, port=29590):
+    truth = _painted_global(rows)
+    _spawn(_dt_save_worker, work, port, rows)
+    template = {k: torch.zeros_like(v) for k, v in truth.items()}
+    dcp.load(state_dict=template, checkpoint_id=os.path.join(work, "ckpt"))
+    return truth, template, f"DTensor Shard(0) world=2 -> plain full load (rows={rows})"
+
+
+def cell_dtensor_reshard_to_shard1(work, port=29592):
+    truth = _painted_global(4)
+    _spawn(_dt_save_worker, work, port, 4)
+    _spawn(_dt_load_shard1_worker, work, port + 1, 4)
+    loaded = torch.load(os.path.join(work, "loaded_full.pt"), weights_only=True)
+    return truth, loaded, "DTensor Shard(0) world=2 -> Shard(1) world=2 reload"
+
+
+def cell_async_process_checkpointer(work):
+    # the process-based checkpointer requires an initialized process group
+    # even single-rank, unlike every other path in this sweep
+    import torch.distributed as dist
+    from torch.distributed.checkpoint.state_dict_saver import AsyncCheckpointerType
+
+    os.environ.update({"RANK": "0", "WORLD_SIZE": "1",
+                       "MASTER_ADDR": "127.0.0.1", "MASTER_PORT": "29594"})
+    dist.init_process_group("gloo", rank=0, world_size=1)
+    try:
+        state = build_state()
+        truth = deep_clone(state)
+        fut = dcp.async_save(state_dict=state, checkpoint_id=os.path.join(work, "ckpt"),
+                             async_checkpointer_type=AsyncCheckpointerType.PROCESS)
+        with torch.no_grad():
+            state["model.weight"].add_(1000.0)
+        fut.result()
+        template = deep_clone(truth)
+        dcp.load(state_dict=template, checkpoint_id=os.path.join(work, "ckpt"))
+    finally:
+        dist.destroy_process_group()
+    return truth, template, "process-based async_save with mutation in the window"
+
+
+def cell_async_explicit_stager(work):
+    from torch.distributed.checkpoint.staging import DefaultStager, StagingOptions
+
+    state = build_state()
+    truth = deep_clone(state)
+    stager = DefaultStager(StagingOptions(use_pinned_memory=False,
+                                          use_shared_memory=True,
+                                          use_async_staging=False,
+                                          use_non_blocking_copy=False))
+    fut = dcp.async_save(state_dict=state, checkpoint_id=os.path.join(work, "ckpt"),
+                         async_stager=stager)
+    with torch.no_grad():
+        state["model.weight"].add_(1000.0)
+        state["optim"]["state"]["0"]["exp_avg"].add_(1000.0)
+    fut.result()
+    try:
+        stager.close()
+    except Exception:
+        pass
+    template = deep_clone(truth)
+    dcp.load(state_dict=template, checkpoint_id=os.path.join(work, "ckpt"))
+    return truth, template, "async_save via explicit shared-memory stager, mutation in window"
+
+
 CELLS = [
     ("roundtrip_plain", lambda w: cell_roundtrip(w, "plain")),
     ("roundtrip_aliased", lambda w: cell_roundtrip(w, "aliased")),
@@ -229,6 +347,11 @@ CELLS = [
     ("async_mutate_optim", lambda w: cell_async_mutation_window(w, mutate="optim")),
     ("async_mutate_nontensor", lambda w: cell_async_mutation_window(w, mutate="nontensor")),
     ("async_mutate_alias", lambda w: cell_async_mutation_window(w, "aliased", "alias")),
+    ("reshard_dt_to_full", lambda w: cell_dtensor_reshard_to_full(w, 4, 29590)),
+    ("reshard_dt_uneven_to_full", lambda w: cell_dtensor_reshard_to_full(w, 5, 29591)),
+    ("reshard_dt_shard0_to_shard1", cell_dtensor_reshard_to_shard1),
+    ("async_process_checkpointer", cell_async_process_checkpointer),
+    ("async_explicit_stager", cell_async_explicit_stager),
 ]
 
 

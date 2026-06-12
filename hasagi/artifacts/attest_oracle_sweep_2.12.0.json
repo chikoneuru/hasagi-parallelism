@@ -191,9 +191,69 @@
       "violating_fqns": [],
       "sample_violation": null,
       "silent_divergence": false
+    },
+    {
+      "cell": "reshard_dt_to_full",
+      "note": "DTensor Shard(0) world=2 -> plain full load (rows=4)",
+      "max_value_dev_dtype_blind": 0.0,
+      "raised": null,
+      "committed": true,
+      "n_violations": 0,
+      "violations_by_invariant": [],
+      "violating_fqns": [],
+      "sample_violation": null,
+      "silent_divergence": false
+    },
+    {
+      "cell": "reshard_dt_uneven_to_full",
+      "note": "DTensor Shard(0) world=2 -> plain full load (rows=5)",
+      "max_value_dev_dtype_blind": 0.0,
+      "raised": null,
+      "committed": true,
+      "n_violations": 0,
+      "violations_by_invariant": [],
+      "violating_fqns": [],
+      "sample_violation": null,
+      "silent_divergence": false
+    },
+    {
+      "cell": "reshard_dt_shard0_to_shard1",
+      "note": "DTensor Shard(0) world=2 -> Shard(1) world=2 reload",
+      "max_value_dev_dtype_blind": 0.0,
+      "raised": null,
+      "committed": true,
+      "n_violations": 0,
+      "violations_by_invariant": [],
+      "violating_fqns": [],
+      "sample_violation": null,
+      "silent_divergence": false
+    },
+    {
+      "cell": "async_process_checkpointer",
+      "note": "process-based async_save with mutation in the window",
+      "max_value_dev_dtype_blind": 0.0,
+      "raised": null,
+      "committed": true,
+      "n_violations": 0,
+      "violations_by_invariant": [],
+      "violating_fqns": [],
+      "sample_violation": null,
+      "silent_divergence": false
+    },
+    {
+      "cell": "async_explicit_stager",
+      "note": "async_save via explicit shared-memory stager, mutation in window",
+      "max_value_dev_dtype_blind": 0.0,
+      "raised": null,
+      "committed": true,
+      "n_violations": 0,
+      "violations_by_invariant": [],
+      "violating_fqns": [],
+      "sample_violation": null,
+      "silent_divergence": false
     }
   ],
-  "n_cells": 15,
+  "n_cells": 20,
   "n_silent_divergence": 5,
   "silent_cells": [
     "inplace_missing_subtree",
