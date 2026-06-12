@@ -1,0 +1,370 @@
+{
+  "_method": "Sensitivity of the real-trace carbon-signal inference to cross-zone dependence. Per-zone paired deltas (oracle = throttle - throttle_blind_same_budget; deployable = throttle_online - throttle_blind_same_budget) are read from realtrace_pareto.json. Baseline treats each of the 16 zones as an independent cluster (percentile cluster bootstrap, 20k draws, seed 0; exact sign-flip permutation over 2^16 assignments). The sensitivity reassigns zones to 6 synchronous-grid/continent blocks, collapses each block to the mean of its per-zone deltas, and redoes both tests at the block level (exact sign-flip over 2^6 = 64 assignments; combinatorial p floor 2/64 = 0.03125, so p = 0.03125 is the smallest attainable value and equality with the floor must not be read as 'p << 0.05'). Dependence is quantified as pairwise Pearson r of the zones' aligned hourly carbon-intensity series over the shared summer fortnight (data_cache/real_traces, UTC timestamps). Reproduce: python -m experiments.crosszone_dependence_sensitivity",
+  "source_artifact": "artifacts/realtrace_pareto.json",
+  "trace_dir": "data_cache/real_traces",
+  "n_zones": 16,
+  "zones": [
+    "AE",
+    "AU",
+    "BR",
+    "CN",
+    "DE",
+    "FR",
+    "GB",
+    "IN",
+    "JP",
+    "KR",
+    "NO",
+    "PL",
+    "SG",
+    "US-CA",
+    "VN",
+    "ZA"
+  ],
+  "block_assignment": {
+    "europe": [
+      "DE",
+      "FR",
+      "GB",
+      "NO",
+      "PL"
+    ],
+    "north_america": [
+      "US-CA"
+    ],
+    "asia": [
+      "AE",
+      "CN",
+      "IN",
+      "JP",
+      "KR",
+      "SG",
+      "VN"
+    ],
+    "oceania": [
+      "AU"
+    ],
+    "south_america": [
+      "BR"
+    ],
+    "africa": [
+      "ZA"
+    ]
+  },
+  "per_zone_signal_pp": {
+    "DE": {
+      "oracle": 3.6169123863447474,
+      "deployable": 1.506015512333967
+    },
+    "US-CA": {
+      "oracle": 4.133075398656756,
+      "deployable": 3.7771696624519766
+    },
+    "FR": {
+      "oracle": 2.4584777484524567,
+      "deployable": 0.4216340953324096
+    },
+    "PL": {
+      "oracle": 2.21162022481739,
+      "deployable": 0.85761824725666
+    },
+    "VN": {
+      "oracle": 1.0046198144459226,
+      "deployable": 1.9283541833971007
+    },
+    "JP": {
+      "oracle": 1.3297629665394495,
+      "deployable": -0.4286862807636025
+    },
+    "GB": {
+      "oracle": 3.0800643755193726,
+      "deployable": 3.707788019626726
+    },
+    "SG": {
+      "oracle": -0.7617955384940903,
+      "deployable": 0.6514953268327828
+    },
+    "KR": {
+      "oracle": 1.5035854005510427,
+      "deployable": -0.8840024108743432
+    },
+    "BR": {
+      "oracle": 0.8518982166850039,
+      "deployable": -0.3821089646472977
+    },
+    "NO": {
+      "oracle": 0.9869835191937549,
+      "deployable": -1.4235333025923307
+    },
+    "ZA": {
+      "oracle": 0.6469529362993682,
+      "deployable": 0.2744616920686678
+    },
+    "AU": {
+      "oracle": 1.332204898731083,
+      "deployable": 2.7053014070353516
+    },
+    "IN": {
+      "oracle": 1.111538126996623,
+      "deployable": -1.9835025085390274
+    },
+    "CN": {
+      "oracle": 0.600879296456677,
+      "deployable": 1.3317724162031057
+    },
+    "AE": {
+      "oracle": 0.7758587213036305,
+      "deployable": -0.011268076842421593
+    }
+  },
+  "per_block_mean_pp": {
+    "europe": {
+      "n_zones": 5,
+      "oracle": 2.4708116508655444,
+      "deployable": 1.0139045143914864
+    },
+    "north_america": {
+      "n_zones": 1,
+      "oracle": 4.133075398656756,
+      "deployable": 3.7771696624519766
+    },
+    "asia": {
+      "n_zones": 7,
+      "oracle": 0.7949212553998936,
+      "deployable": 0.0863089499162278
+    },
+    "oceania": {
+      "n_zones": 1,
+      "oracle": 1.332204898731083,
+      "deployable": 2.7053014070353516
+    },
+    "south_america": {
+      "n_zones": 1,
+      "oracle": 0.8518982166850039,
+      "deployable": -0.3821089646472977
+    },
+    "africa": {
+      "n_zones": 1,
+      "oracle": 0.6469529362993682,
+      "deployable": 0.2744616920686678
+    }
+  },
+  "zone_level_baseline_16": {
+    "oracle": {
+      "point": 1.5551649057811994,
+      "ci_lo": 0.9823237624292501,
+      "ci_hi": 2.1762475383719053,
+      "excludes_zero": true,
+      "p_exact_signflip": 0.0001220703125,
+      "standardized_effect": 1.23983383907915,
+      "n_clusters": 16,
+      "permutation_floor": 3.0517578125e-05
+    },
+    "deployable": {
+      "point": 0.7530318136424827,
+      "ci_lo": -0.02628551000555318,
+      "ci_hi": 1.5805093888967006,
+      "excludes_zero": false,
+      "p_exact_signflip": 0.09521484375,
+      "standardized_effect": 0.447336755141302,
+      "n_clusters": 16,
+      "permutation_floor": 3.0517578125e-05
+    },
+    "published_reference": {
+      "oracle_ci_mean_lo_hi": [
+        1.5551649057811991,
+        0.9863831131466685,
+        2.154760067942131
+      ],
+      "oracle_pvalue": 0.0001220703125,
+      "deployable_source": "artifacts/energy_ratio_propagation_ci.json:deployable_signal_pp"
+    }
+  },
+  "block_level_6": {
+    "oracle": {
+      "point": 1.7049773927729417,
+      "ci_lo": 0.8446419164691017,
+      "ci_hi": 2.762305713367637,
+      "excludes_zero": true,
+      "p_exact_signflip": 0.03125,
+      "standardized_effect": 1.250386506974121,
+      "n_clusters": 6,
+      "permutation_floor": 0.03125
+    },
+    "deployable": {
+      "point": 1.2458395435360687,
+      "ci_lo": 0.13367445892393354,
+      "ci_hi": 2.522837309783166,
+      "excludes_zero": true,
+      "p_exact_signflip": 0.15625,
+      "standardized_effect": 0.7573595540897725,
+      "n_clusters": 6,
+      "permutation_floor": 0.03125
+    },
+    "_note_weighting": "The block-level grand mean weights every block equally, so the point estimate shifts relative to the 16-zone mean (deployable 0.75 -> 1.25 pp) by upweighting the singleton blocks (US-CA, AU) and downweighting the 7-zone Asia block. The block analysis is a robustness check on the SIGN and significance under coarser clustering, not a replacement point estimate; the headline point estimate remains the zone-level mean."
+  },
+  "hourly_intensity_correlation": {
+    "window_utc": "2024-07-01 00:00:00 .. 2024-07-14 23:00:00",
+    "n_hours_aligned": 336,
+    "within_europe": {
+      "mean": 0.0480908636172667,
+      "min": -0.4196149145292745,
+      "max": 0.7328639614446815,
+      "n_pairs": 10
+    },
+    "within_block_by_block": {
+      "asia": {
+        "mean": 0.41861565130672557,
+        "min": -0.08308046098270072,
+        "max": 0.8039189026998168,
+        "n_pairs": 21
+      },
+      "europe": {
+        "mean": 0.0480908636172667,
+        "min": -0.4196149145292745,
+        "max": 0.7328639614446815,
+        "n_pairs": 10
+      }
+    },
+    "within_block_all": {
+      "mean": 0.2990915262456098,
+      "min": -0.4196149145292745,
+      "max": 0.8039189026998168,
+      "n_pairs": 31
+    },
+    "cross_block": {
+      "mean": 0.04166293039492017,
+      "min": -0.7893063645571271,
+      "max": 0.8503585709412258,
+      "n_pairs": 89
+    },
+    "all_pairs": {
+      "mean": 0.10816531765634832,
+      "min": -0.7893063645571271,
+      "max": 0.8503585709412258,
+      "n_pairs": 120
+    },
+    "pairwise_r": {
+      "AE|AU": 0.1366,
+      "AE|BR": -0.3204,
+      "AE|CN": 0.3685,
+      "AE|DE": 0.4071,
+      "AE|FR": -0.1747,
+      "AE|GB": 0.2873,
+      "AE|IN": 0.6938,
+      "AE|JP": 0.0365,
+      "AE|KR": -0.0831,
+      "AE|NO": -0.2482,
+      "AE|PL": 0.6376,
+      "AE|SG": 0.6215,
+      "AE|US-CA": -0.7871,
+      "AE|VN": 0.7225,
+      "AE|ZA": 0.4773,
+      "AU|BR": -0.1394,
+      "AU|CN": 0.5563,
+      "AU|DE": 0.0356,
+      "AU|FR": 0.3809,
+      "AU|GB": 0.4807,
+      "AU|IN": 0.3694,
+      "AU|JP": 0.8504,
+      "AU|KR": 0.3783,
+      "AU|NO": 0.0761,
+      "AU|PL": -0.2143,
+      "AU|SG": 0.6257,
+      "AU|US-CA": -0.2174,
+      "AU|VN": 0.1795,
+      "AU|ZA": -0.0349,
+      "BR|CN": -0.1661,
+      "BR|DE": 0.0983,
+      "BR|FR": 0.2348,
+      "BR|GB": -0.0054,
+      "BR|IN": -0.1489,
+      "BR|JP": -0.183,
+      "BR|KR": -0.0241,
+      "BR|NO": -0.0529,
+      "BR|PL": -0.0387,
+      "BR|SG": -0.3973,
+      "BR|US-CA": 0.3851,
+      "BR|VN": -0.3126,
+      "BR|ZA": 0.0071,
+      "CN|DE": -0.0266,
+      "CN|FR": 0.171,
+      "CN|GB": 0.1668,
+      "CN|IN": 0.353,
+      "CN|JP": 0.667,
+      "CN|KR": 0.2766,
+      "CN|NO": 0.0418,
+      "CN|PL": -0.0664,
+      "CN|SG": 0.8039,
+      "CN|US-CA": -0.4677,
+      "CN|VN": 0.6205,
+      "CN|ZA": -0.0392,
+      "DE|FR": -0.0056,
+      "DE|GB": 0.5325,
+      "DE|IN": 0.2231,
+      "DE|JP": -0.2316,
+      "DE|KR": 0.2472,
+      "DE|NO": -0.3732,
+      "DE|PL": 0.7329,
+      "DE|SG": -0.0312,
+      "DE|US-CA": -0.2061,
+      "DE|VN": 0.2716,
+      "DE|ZA": 0.6414,
+      "FR|GB": 0.1762,
+      "FR|IN": 0.07,
+      "FR|JP": 0.3103,
+      "FR|KR": 0.1569,
+      "FR|NO": 0.123,
+      "FR|PL": -0.313,
+      "FR|SG": 0.0904,
+      "FR|US-CA": 0.2478,
+      "FR|VN": -0.2304,
+      "FR|ZA": -0.1078,
+      "GB|IN": 0.2701,
+      "GB|JP": 0.2743,
+      "GB|KR": 0.1852,
+      "GB|NO": -0.319,
+      "GB|PL": 0.3468,
+      "GB|SG": 0.2454,
+      "GB|US-CA": -0.1848,
+      "GB|VN": 0.1731,
+      "GB|ZA": 0.3904,
+      "IN|JP": 0.2266,
+      "IN|KR": 0.1467,
+      "IN|NO": -0.0955,
+      "IN|PL": 0.2855,
+      "IN|SG": 0.5825,
+      "IN|US-CA": -0.5409,
+      "IN|VN": 0.4181,
+      "IN|ZA": 0.1525,
+      "JP|KR": 0.3268,
+      "JP|NO": 0.2304,
+      "JP|PL": -0.4086,
+      "JP|SG": 0.7271,
+      "JP|US-CA": -0.2547,
+      "JP|VN": 0.2676,
+      "JP|ZA": -0.3122,
+      "KR|NO": 0.0567,
+      "KR|PL": -0.0563,
+      "KR|SG": 0.1949,
+      "KR|US-CA": 0.1592,
+      "KR|VN": 0.0869,
+      "KR|ZA": -0.0385,
+      "NO|PL": -0.4196,
+      "NO|SG": 0.1009,
+      "NO|US-CA": 0.1196,
+      "NO|VN": -0.0887,
+      "NO|ZA": -0.441,
+      "PL|SG": 0.0243,
+      "PL|US-CA": -0.4585,
+      "PL|VN": 0.4381,
+      "PL|ZA": 0.6599,
+      "SG|US-CA": -0.6585,
+      "SG|VN": 0.7331,
+      "SG|ZA": -0.0451,
+      "US-CA|VN": -0.7893,
+      "US-CA|ZA": -0.2463,
+      "VN|ZA": 0.1913
+    }
+  }
+}
