@@ -329,6 +329,69 @@ def cell_async_explicit_stager(work):
     return truth, template, "async_save via explicit shared-memory stager, mutation in window"
 
 
+
+# --------------------------------------------------------------------------- #
+# Per-rank auxiliary-state cells: the pattern elastic trainers use for
+# dataloader cursors (one key per data-parallel rank, e.g. torchtitan's
+# ``dataloader.dp_rank_N``), saved at one world size and reloaded at another.
+# --------------------------------------------------------------------------- #
+def _cursor(rank: int) -> dict:
+    return {"sample_idx": 1000 + 17 * rank, "epoch": 3,
+            "shuffle_state": [rank, rank + 1, rank + 2]}
+
+
+def _rank_state_save_worker(rank, world, work, port):
+    os.environ.update({"RANK": str(rank), "WORLD_SIZE": str(world),
+                       "MASTER_ADDR": "127.0.0.1", "MASTER_PORT": str(port)})
+    import torch.distributed as dist
+    from torch.distributed.device_mesh import init_device_mesh
+    from torch.distributed.tensor import Shard, distribute_tensor
+
+    dist.init_process_group("gloo", rank=rank, world_size=world)
+    mesh = init_device_mesh("cpu", (world,))
+    state = {
+        "model.weight": distribute_tensor(_painted((4, 3), 100), mesh, [Shard(0)]),
+        f"dataloader.dp_rank_{rank}": _cursor(rank),
+    }
+    dcp.save(state_dict=state, checkpoint_id=os.path.join(work, "ckpt"))
+    dist.destroy_process_group()
+
+
+def cell_rank_state_shrink(work, port=29595):
+    # torchtitan#409's class: world shrinks, the surviving rank requests only
+    # its own cursor and the departed rank's stream state silently vanishes
+    import torch.multiprocessing as mp
+
+    mp.spawn(_rank_state_save_worker, args=(2, work, port), nprocs=2, join=True)
+    truth_aux = {"dataloader.dp_rank_0": _cursor(0), "dataloader.dp_rank_1": _cursor(1)}
+    template = {
+        "model.weight": torch.zeros(4, 3),
+        "dataloader.dp_rank_0": _cursor(0),  # placeholder, will be overwritten
+    }
+    dcp.load(state_dict=template, checkpoint_id=os.path.join(work, "ckpt"))
+    truth = {"model.weight": _painted((4, 3), 100), **truth_aux}
+    return truth, template, "world 2->1: departed rank's dataloader cursor (#409 class)"
+
+
+def cell_rank_state_grow(work, port=29597):
+    # torchtitan#811's class: world grows, the new rank requests a cursor the
+    # checkpoint never had
+    import torch.multiprocessing as mp
+
+    mp.spawn(_rank_state_save_worker, args=(2, work, port), nprocs=2, join=True)
+    truth = {"model.weight": _painted((4, 3), 100),
+             "dataloader.dp_rank_0": _cursor(0), "dataloader.dp_rank_1": _cursor(1),
+             "dataloader.dp_rank_2": None}
+    template = {
+        "model.weight": torch.zeros(4, 3),
+        "dataloader.dp_rank_0": _cursor(0),
+        "dataloader.dp_rank_1": _cursor(1),
+        "dataloader.dp_rank_2": _cursor(0),  # the new rank's template cursor
+    }
+    dcp.load(state_dict=template, checkpoint_id=os.path.join(work, "ckpt"))
+    return truth, template, "world 2->3: new rank requests a cursor the ckpt lacks (#811 class)"
+
+
 CELLS = [
     ("roundtrip_plain", lambda w: cell_roundtrip(w, "plain")),
     ("roundtrip_aliased", lambda w: cell_roundtrip(w, "aliased")),
@@ -352,6 +415,8 @@ CELLS = [
     ("reshard_dt_shard0_to_shard1", cell_dtensor_reshard_to_shard1),
     ("async_process_checkpointer", cell_async_process_checkpointer),
     ("async_explicit_stager", cell_async_explicit_stager),
+    ("rank_state_shrink", cell_rank_state_shrink),
+    ("rank_state_grow", cell_rank_state_grow),
 ]
 
 

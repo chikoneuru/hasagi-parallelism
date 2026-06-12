@@ -251,15 +251,42 @@
       "violating_fqns": [],
       "sample_violation": null,
       "silent_divergence": false
+    },
+    {
+      "cell": "rank_state_shrink",
+      "note": "world 2->1: departed rank's dataloader cursor (#409 class)",
+      "max_value_dev_dtype_blind": 0.0,
+      "raised": null,
+      "committed": false,
+      "n_violations": 5,
+      "violations_by_invariant": [
+        "aux_stream_residency"
+      ],
+      "violating_fqns": [
+        "dataloader.dp_rank_1.epoch",
+        "dataloader.dp_rank_1.sample_idx",
+        "dataloader.dp_rank_1.shuffle_state.0",
+        "dataloader.dp_rank_1.shuffle_state.1",
+        "dataloader.dp_rank_1.shuffle_state.2"
+      ],
+      "sample_violation": "[aux_stream_residency] dataloader.dp_rank_1.epoch: stream lost in transition",
+      "silent_divergence": true
+    },
+    {
+      "cell": "rank_state_grow",
+      "raised": "CheckpointException: CheckpointException ranks:dict_keys([0])\nTraceback (most recent call last): (RANK 0)\n  File \"/home/hieu.npt/hieunpt/hasagi-parallelism/src/hasagi/.venv/sweep/lib/python3.12/site-packages/torch/distributed/checkpoint/utils.py\", line 193, in reduce_scatter\n    local_data = map_fun()\n                 ^^^^^^^^^\n  File \"/home/hieu.npt/hieunpt/hasagi-parallelism/src/hasagi/.venv/sweep/lib/python3.12/site-packages/torch/distributed/checkpoint/logger.py\", line 90, in wrapper\n    result = func(*args, **kwargs)\n             ^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/hieu.npt/hieunpt/hasagi-parallelism/src/hasagi/.venv/sweep/lib/python3.12/site-packages/torch/distributed/checkpoint/state_dict_loader.py\", line 281, in local_step\n    local_plan = planner.create_local_plan()\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/hieu.npt/hieunpt/hasagi-parallelism/src/hasagi/.venv/sweep/lib/python3.12/site-packages/torch/distributed/checkpoint/default_planner.py\", line 372, in create_local_plan\n    return create_default_local_load_plan(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/hieu.npt/hieunpt/hasagi-parallelism/src/hasagi/.venv/sweep/lib/python3.12/site-packages/torch/distributed/checkpoint/default_planner.py\", line 495, in create_default_local_load_plan\n    raise RuntimeError(f\"Missing key in checkpoint state_dict: {fqn}.\")\nRuntimeError: Missing key in checkpoint state_dict: dataloader.dp_rank_2.sample_idx.\n",
+      "traceback_tail": "hieunpt/hasagi-parallelism/src/hasagi/.venv/sweep/lib/python3.12/site-packages/torch/distributed/checkpoint/default_planner.py\", line 372, in create_local_plan\n    return create_default_local_load_plan(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/hieu.npt/hieunpt/hasagi-parallelism/src/hasagi/.venv/sweep/lib/python3.12/site-packages/torch/distributed/checkpoint/default_planner.py\", line 495, in create_default_local_load_plan\n    raise RuntimeError(f\"Missing key in checkpoint state_dict: {fqn}.\")\nRuntimeError: Missing key in checkpoint state_dict: dataloader.dp_rank_2.sample_idx.\n\n",
+      "silent_divergence": false
     }
   ],
-  "n_cells": 20,
-  "n_silent_divergence": 5,
+  "n_cells": 22,
+  "n_silent_divergence": 6,
   "silent_cells": [
     "inplace_missing_subtree",
     "inplace_missing_tensor",
     "inplace_dtype_upcast_f64",
     "inplace_dtype_downcast_bf16",
-    "inplace_dtype_downcast_f16"
+    "inplace_dtype_downcast_f16",
+    "rank_state_shrink"
   ]
 }
