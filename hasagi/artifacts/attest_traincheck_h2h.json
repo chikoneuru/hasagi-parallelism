@@ -1,0 +1,289 @@
+{
+  "exp": "attest-traincheck-h2h",
+  "tool": {
+    "name": "traincheck",
+    "version": "0.1.2",
+    "torch": "2.12.0+cu130, CPU execution (outside the tool's tested 1.7-2.5 envelope: megatron-core 0.17.1 forces the torch upgrade; the published tutorial positive control was re-run on this exact stack and detects its documented bug, 123/989 violations incl. the optimizer step/zero_grad root-cause relations)"
+  },
+  "scoring": "catch = violation unique to the corrupted arm vs matched controls, within the first corrupted-state-consuming iteration, surviving triage; reference traces never double as check arms",
+  "scenario_a": {
+    "bug": "DeepSpeed#6791 (offline zero_to_fp32 conversion)",
+    "arms": {
+      "A1_converter": {
+        "failed": [
+          "FunctionCoverRelation between torch.compiler.is_exporting and torch.serialization.get_crc32_options",
+          "FunctionCoverRelation between torch.compiler.is_exporting and torch.serialization.save",
+          "FunctionCoverRelation between torch.distributed.distributed_c10d.barrier and torch.serialization.get_crc32_options",
+          "FunctionCoverRelation between torch.distributed.distributed_c10d.barrier and torch.serialization.save",
+          "FunctionCoverRelation between torch.distributed.distributed_c10d.get_group_rank and torch.serialization.get_crc32_options",
+          "FunctionCoverRelation between torch.distributed.distributed_c10d.get_group_rank and torch.serialization.save",
+          "FunctionCoverRelation between torch.distributed.distributed_c10d.get_rank and torch.serialization.get_crc32_options",
+          "FunctionCoverRelation between torch.distributed.distributed_c10d.get_rank and torch.serialization.save",
+          "FunctionCoverRelation between torch.distributed.distributed_c10d.get_world_size and torch.serialization.get_crc32_options",
+          "FunctionCoverRelation between torch.distributed.distributed_c10d.get_world_size and torch.serialization.save",
+          "torch.serialization.load contains torch._utils._rebuild_tensor_v2 with exception: NOT SET",
+          "torch.serialization.load contains torch.storage._get_always_warn_typed_storage_removal with exception: NOT SET",
+          "torch.serialization.load contains torch.storage._warn_typed_storage_removal with exception: NOT SET",
+          "torch.serialization.load contains torch.utils._config_module.SubConfigProxy.__init__ with exception: NOT SET",
+          "torch.serialization.load contains torch.utils._config_module._Config.__init__ with exception: NOT SET",
+          "torch.serialization.load contains torch.utils._config_module._ConfigEntry.__init__ with exception: NOT SET",
+          "torch.utils.hooks.warn_if_has_hooks has distinct input arguments on difference PT for each step"
+        ],
+        "failed_count": "17/932",
+        "not_triggered_count": "895/932"
+      },
+      "A1b": {
+        "failed": [
+          "FunctionCoverRelation between torch.compiler.is_exporting and torch.serialization.get_crc32_options",
+          "FunctionCoverRelation between torch.compiler.is_exporting and torch.serialization.save",
+          "FunctionCoverRelation between torch.distributed.distributed_c10d.barrier and torch.serialization.get_crc32_options",
+          "FunctionCoverRelation between torch.distributed.distributed_c10d.barrier and torch.serialization.save",
+          "FunctionCoverRelation between torch.distributed.distributed_c10d.get_group_rank and torch.serialization.get_crc32_options",
+          "FunctionCoverRelation between torch.distributed.distributed_c10d.get_group_rank and torch.serialization.save",
+          "FunctionCoverRelation between torch.distributed.distributed_c10d.get_rank and torch.serialization.get_crc32_options",
+          "FunctionCoverRelation between torch.distributed.distributed_c10d.get_rank and torch.serialization.save",
+          "FunctionCoverRelation between torch.distributed.distributed_c10d.get_world_size and torch.serialization.get_crc32_options",
+          "FunctionCoverRelation between torch.distributed.distributed_c10d.get_world_size and torch.serialization.save",
+          "torch.serialization.load contains torch._utils._rebuild_tensor_v2 with exception: NOT SET",
+          "torch.serialization.load contains torch.storage._get_always_warn_typed_storage_removal with exception: NOT SET",
+          "torch.serialization.load contains torch.storage._warn_typed_storage_removal with exception: NOT SET",
+          "torch.serialization.load contains torch.utils._config_module.SubConfigProxy.__init__ with exception: NOT SET",
+          "torch.serialization.load contains torch.utils._config_module._Config.__init__ with exception: NOT SET",
+          "torch.serialization.load contains torch.utils._config_module._ConfigEntry.__init__ with exception: NOT SET",
+          "torch.utils.hooks.warn_if_has_hooks has distinct input arguments on difference PT for each step"
+        ],
+        "failed_count": "17/932",
+        "not_triggered_count": "895/932"
+      },
+      "A2_corrupted": {
+        "failed": [
+          "Consistency Relation between torch.nn.Parameter.ndim and torch.nn.Parameter.ndim",
+          "torch.serialization.load contains torch._utils._rebuild_tensor_v2 with exception: NOT SET"
+        ],
+        "failed_count": "2/932",
+        "not_triggered_count": "340/932"
+      },
+      "A3_control": {
+        "failed": [
+          "Consistency Relation between torch.nn.Parameter.ndim and torch.nn.Parameter.ndim"
+        ],
+        "failed_count": "1/932",
+        "not_triggered_count": "340/932"
+      },
+      "A4_control2": {
+        "failed": [
+          "Consistency Relation between torch.nn.Parameter.ndim and torch.nn.Parameter.ndim"
+        ],
+        "failed_count": "1/932",
+        "not_triggered_count": "340/932"
+      },
+      "A5_healthy_diff": {
+        "failed": [
+          "Consistency Relation between torch.nn.Parameter.ndim and torch.nn.Parameter.ndim"
+        ],
+        "failed_count": "1/932",
+        "not_triggered_count": "340/932"
+      }
+    },
+    "converter_arm": {
+      "unique_violations_vs_controls": [],
+      "raw_verdict": "miss"
+    },
+    "consumer_arm": {
+      "unique_violations_vs_controls": [
+        "torch.serialization.load contains torch._utils._rebuild_tensor_v2 with exception: NOT SET"
+      ],
+      "raw_verdict": "flagged"
+    },
+    "triage": {
+      "converter": "buggy and fixed converter runs produce identical failed sets (environment-mismatch noise only); the corrupting conversion is indistinguishable",
+      "consumer": "the unique load-time violation tracks a metadata side-channel: the buggy converter emits tensors with requires_grad=False (0/6) where healthy outputs have 6/6; robust across same-file, second-seed, and different-healthy-values controls"
+    }
+  },
+  "scenario_b": {
+    "bug": "Megatron-LM PR#520 (TP=2 save -> TP=1 load SwiGLU mis-split)",
+    "arms": {
+      "B1_buggy_save": {
+        "failed": [
+          "FunctionCoverRelation between torch.compiler.is_exporting and torch.distributed.is_available",
+          "FunctionCoverRelation between torch.library.Library.define and torch.distributed.is_available",
+          "FunctionCoverRelation between torch.library.custom_op and torch.distributed.is_available",
+          "FunctionCoverRelation between torch.pybind11_detail_function_record_v1_system_libstdcpp_gxx_abi_1xxx_use_cxx11_abi_1.parse_schema and torch.distributed.is_available",
+          "FunctionLeadRelation between torch.distributed.distributed_c10d.gather_object and torch.distributed.distributed_c10d.get_world_size",
+          "FunctionLeadRelation between torch.distributed.is_available and torch.compile",
+          "FunctionLeadRelation between torch.distributed.is_available and torch.compiler.disable",
+          "FunctionLeadRelation between torch.distributed.is_available and torch.compiler.is_exporting",
+          "FunctionLeadRelation between torch.distributed.is_available and torch.library.Library.define",
+          "FunctionLeadRelation between torch.distributed.is_available and torch.library.custom_op",
+          "FunctionLeadRelation between torch.distributed.is_available and torch.library.impl",
+          "FunctionLeadRelation between torch.distributed.is_available and torch.pybind11_detail_function_record_v1_system_libstdcpp_gxx_abi_1xxx_use_cxx11_abi_1.parse_schema",
+          "torch.distributed.distributed_c10d.gather contains torch.distributed.distributed_c10d._check_tensor_list with exception: NOT SET",
+          "torch.distributed.distributed_c10d.gather_object contains torch._VariableFunctionsClass.empty with exception: NOT SET",
+          "torch.nn.modules.module.Module.state_dict has distinct input arguments on difference PT for each step"
+        ],
+        "failed_count": "15/1198",
+        "not_triggered_count": "490/1198"
+      },
+      "B1ref_save_control": {
+        "failed": [
+          "FunctionLeadRelation between torch.distributed.distributed_c10d.gather_object and torch.distributed.distributed_c10d.get_world_size",
+          "torch.distributed.distributed_c10d.gather contains torch.distributed.distributed_c10d._check_tensor_list with exception: NOT SET",
+          "torch.distributed.distributed_c10d.gather_object contains torch._VariableFunctionsClass.empty with exception: NOT SET"
+        ],
+        "failed_count": "3/1198",
+        "not_triggered_count": "494/1198"
+      },
+      "B2_buggy": {
+        "failed": [
+          "FunctionCoverRelation between torch.compiler.is_exporting and torch.distributed.is_available",
+          "FunctionCoverRelation between torch.library.Library.define and torch.distributed.is_available",
+          "FunctionCoverRelation between torch.library.custom_op and torch.distributed.is_available",
+          "FunctionCoverRelation between torch.pybind11_detail_function_record_v1_system_libstdcpp_gxx_abi_1xxx_use_cxx11_abi_1.parse_schema and torch.distributed.is_available",
+          "FunctionLeadRelation between torch.distributed.is_available and torch.compile",
+          "FunctionLeadRelation between torch.distributed.is_available and torch.compiler.disable",
+          "FunctionLeadRelation between torch.distributed.is_available and torch.compiler.is_exporting",
+          "FunctionLeadRelation between torch.distributed.is_available and torch.library.Library.define",
+          "FunctionLeadRelation between torch.distributed.is_available and torch.library.custom_op",
+          "FunctionLeadRelation between torch.distributed.is_available and torch.library.impl",
+          "FunctionLeadRelation between torch.distributed.is_available and torch.pybind11_detail_function_record_v1_system_libstdcpp_gxx_abi_1xxx_use_cxx11_abi_1.parse_schema"
+        ],
+        "failed_count": "11/1198",
+        "not_triggered_count": "371/1198"
+      },
+      "B3_charity": {
+        "failed": [
+          "FunctionCoverRelation between torch.compiler.is_exporting and torch.distributed.is_available",
+          "FunctionCoverRelation between torch.compiler.is_exporting and torch.distributed.is_available",
+          "FunctionCoverRelation between torch.library.Library.define and torch.distributed.is_available",
+          "FunctionCoverRelation between torch.library.Library.define and torch.distributed.is_available",
+          "FunctionCoverRelation between torch.library.custom_op and torch.distributed.is_available",
+          "FunctionCoverRelation between torch.library.custom_op and torch.distributed.is_available",
+          "FunctionCoverRelation between torch.pybind11_detail_function_record_v1_system_libstdcpp_gxx_abi_1xxx_use_cxx11_abi_1.parse_schema and torch.distributed.is_available",
+          "FunctionCoverRelation between torch.pybind11_detail_function_record_v1_system_libstdcpp_gxx_abi_1xxx_use_cxx11_abi_1.parse_schema and torch.distributed.is_available",
+          "FunctionLeadRelation between torch.distributed.distributed_c10d.gather_object and torch.distributed.distributed_c10d.get_world_size",
+          "FunctionLeadRelation between torch.distributed.is_available and torch.compile",
+          "FunctionLeadRelation between torch.distributed.is_available and torch.compile",
+          "FunctionLeadRelation between torch.distributed.is_available and torch.compiler.disable",
+          "FunctionLeadRelation between torch.distributed.is_available and torch.compiler.disable",
+          "FunctionLeadRelation between torch.distributed.is_available and torch.compiler.is_exporting",
+          "FunctionLeadRelation between torch.distributed.is_available and torch.compiler.is_exporting",
+          "FunctionLeadRelation between torch.distributed.is_available and torch.library.Library.define",
+          "FunctionLeadRelation between torch.distributed.is_available and torch.library.Library.define",
+          "FunctionLeadRelation between torch.distributed.is_available and torch.library.custom_op",
+          "FunctionLeadRelation between torch.distributed.is_available and torch.library.custom_op",
+          "FunctionLeadRelation between torch.distributed.is_available and torch.library.impl",
+          "FunctionLeadRelation between torch.distributed.is_available and torch.library.impl",
+          "FunctionLeadRelation between torch.distributed.is_available and torch.pybind11_detail_function_record_v1_system_libstdcpp_gxx_abi_1xxx_use_cxx11_abi_1.parse_schema",
+          "FunctionLeadRelation between torch.distributed.is_available and torch.pybind11_detail_function_record_v1_system_libstdcpp_gxx_abi_1xxx_use_cxx11_abi_1.parse_schema",
+          "torch.distributed.distributed_c10d.gather contains torch.distributed.distributed_c10d._check_tensor_list with exception: NOT SET",
+          "torch.distributed.distributed_c10d.gather_object contains torch._VariableFunctionsClass.empty with exception: NOT SET",
+          "torch.nn.modules.module.Module.state_dict has distinct input arguments on difference PT for each step"
+        ],
+        "failed_count": "11/1198",
+        "not_triggered_count": "371/1198"
+      },
+      "B4_control": {
+        "failed": [],
+        "failed_count": "0/1198",
+        "not_triggered_count": "375/1198"
+      },
+      "B5_healthy_alt": {
+        "failed": [],
+        "failed_count": "0/1198",
+        "not_triggered_count": "375/1198"
+      },
+      "B6_buggy_sametp": {
+        "failed": [
+          "FunctionCoverRelation between torch.compiler.is_exporting and torch.distributed.is_available",
+          "FunctionCoverRelation between torch.distributed.distributed_c10d.get_rank and torch.distributed.distributed_c10d.get_group_rank",
+          "FunctionCoverRelation between torch.library.Library.define and torch.distributed.is_available",
+          "FunctionCoverRelation between torch.library.custom_op and torch.distributed.is_available",
+          "FunctionCoverRelation between torch.pybind11_detail_function_record_v1_system_libstdcpp_gxx_abi_1xxx_use_cxx11_abi_1.parse_schema and torch.distributed.is_available",
+          "FunctionLeadRelation between torch.distributed.distributed_c10d.get_group_rank and torch.distributed.distributed_c10d.get_rank",
+          "FunctionLeadRelation between torch.distributed.is_available and torch.compile",
+          "FunctionLeadRelation between torch.distributed.is_available and torch.compiler.disable",
+          "FunctionLeadRelation between torch.distributed.is_available and torch.compiler.is_exporting",
+          "FunctionLeadRelation between torch.distributed.is_available and torch.library.Library.define",
+          "FunctionLeadRelation between torch.distributed.is_available and torch.library.custom_op",
+          "FunctionLeadRelation between torch.distributed.is_available and torch.library.impl",
+          "FunctionLeadRelation between torch.distributed.is_available and torch.pybind11_detail_function_record_v1_system_libstdcpp_gxx_abi_1xxx_use_cxx11_abi_1.parse_schema",
+          "nbytes of the tensors returned by the function torch.nn.functional.silu is consistently 128.",
+          "shape of the tensors returned by the function torch.nn.functional.silu is consistently (4, 1, 8).",
+          "torch.distributed.distributed_c10d.gather_object contains torch.distributed.distributed_c10d._validate_output_list_for_rank with exception: NOT SET",
+          "torch.distributed.distributed_c10d.scatter contains torch.distributed.distributed_c10d._check_tensor_list with exception: NOT SET",
+          "torch.distributed.distributed_c10d.scatter_object_list contains torch.distributed.distributed_c10d._check_tensor_list with exception: NOT SET",
+          "torch.distributed.distributed_c10d.scatter_object_list contains torch.distributed.distributed_c10d.scatter with exception: NOT SET",
+          "torch.nn.modules.module.Module.state_dict has distinct input arguments on difference PT for each step"
+        ],
+        "failed_count": "20/1198",
+        "not_triggered_count": "336/1198"
+      }
+    },
+    "save_arm": {
+      "unique_violations_vs_controls": [
+        "FunctionCoverRelation between torch.compiler.is_exporting and torch.distributed.is_available",
+        "FunctionCoverRelation between torch.library.Library.define and torch.distributed.is_available",
+        "FunctionCoverRelation between torch.library.custom_op and torch.distributed.is_available",
+        "FunctionCoverRelation between torch.pybind11_detail_function_record_v1_system_libstdcpp_gxx_abi_1xxx_use_cxx11_abi_1.parse_schema and torch.distributed.is_available",
+        "FunctionLeadRelation between torch.distributed.is_available and torch.compile",
+        "FunctionLeadRelation between torch.distributed.is_available and torch.compiler.disable",
+        "FunctionLeadRelation between torch.distributed.is_available and torch.compiler.is_exporting",
+        "FunctionLeadRelation between torch.distributed.is_available and torch.library.Library.define",
+        "FunctionLeadRelation between torch.distributed.is_available and torch.library.custom_op",
+        "FunctionLeadRelation between torch.distributed.is_available and torch.library.impl",
+        "FunctionLeadRelation between torch.distributed.is_available and torch.pybind11_detail_function_record_v1_system_libstdcpp_gxx_abi_1xxx_use_cxx11_abi_1.parse_schema",
+        "torch.nn.modules.module.Module.state_dict has distinct input arguments on difference PT for each step"
+      ],
+      "raw_verdict": "flagged"
+    },
+    "consumer_arm": {
+      "unique_violations_vs_controls": [
+        "FunctionCoverRelation between torch.compiler.is_exporting and torch.distributed.is_available",
+        "FunctionCoverRelation between torch.library.Library.define and torch.distributed.is_available",
+        "FunctionCoverRelation between torch.library.custom_op and torch.distributed.is_available",
+        "FunctionCoverRelation between torch.pybind11_detail_function_record_v1_system_libstdcpp_gxx_abi_1xxx_use_cxx11_abi_1.parse_schema and torch.distributed.is_available",
+        "FunctionLeadRelation between torch.distributed.is_available and torch.compile",
+        "FunctionLeadRelation between torch.distributed.is_available and torch.compiler.disable",
+        "FunctionLeadRelation between torch.distributed.is_available and torch.compiler.is_exporting",
+        "FunctionLeadRelation between torch.distributed.is_available and torch.library.Library.define",
+        "FunctionLeadRelation between torch.distributed.is_available and torch.library.custom_op",
+        "FunctionLeadRelation between torch.distributed.is_available and torch.library.impl",
+        "FunctionLeadRelation between torch.distributed.is_available and torch.pybind11_detail_function_record_v1_system_libstdcpp_gxx_abi_1xxx_use_cxx11_abi_1.parse_schema"
+      ],
+      "raw_verdict": "flagged"
+    },
+    "charity_arm": {
+      "unique_violations_vs_controls": [
+        "FunctionCoverRelation between torch.compiler.is_exporting and torch.distributed.is_available",
+        "FunctionCoverRelation between torch.library.Library.define and torch.distributed.is_available",
+        "FunctionCoverRelation between torch.library.custom_op and torch.distributed.is_available",
+        "FunctionCoverRelation between torch.pybind11_detail_function_record_v1_system_libstdcpp_gxx_abi_1xxx_use_cxx11_abi_1.parse_schema and torch.distributed.is_available",
+        "FunctionLeadRelation between torch.distributed.is_available and torch.compile",
+        "FunctionLeadRelation between torch.distributed.is_available and torch.compiler.disable",
+        "FunctionLeadRelation between torch.distributed.is_available and torch.compiler.is_exporting",
+        "FunctionLeadRelation between torch.distributed.is_available and torch.library.Library.define",
+        "FunctionLeadRelation between torch.distributed.is_available and torch.library.custom_op",
+        "FunctionLeadRelation between torch.distributed.is_available and torch.library.impl",
+        "FunctionLeadRelation between torch.distributed.is_available and torch.pybind11_detail_function_record_v1_system_libstdcpp_gxx_abi_1xxx_use_cxx11_abi_1.parse_schema",
+        "torch.nn.modules.module.Module.state_dict has distinct input arguments on difference PT for each step"
+      ],
+      "raw_verdict": "flagged"
+    },
+    "consumer_arm_after_b6_triage": {
+      "unique_violations_vs_controls": [],
+      "raw_verdict": "miss"
+    },
+    "triage": "every violation on the corrupted TP-change arm also fires on the same-TP control whose values reconstruct bit-exactly (B2's full set is contained in B6's): the signal tracks the pre-fix declaration's code path (import/registration order relations), not the value corruption, and would flag correct loads identically"
+  },
+  "positive_control": {
+    "what": "published 5-minute tutorial: invariants from mnist.py, detection on the 84911 buggy pipeline, on this exact stack",
+    "result": "123/989 invariants violated, including the Adadelta.step / Optimizer.zero_grad relations the tutorial documents as the root-cause signal"
+  },
+  "collector_adaptations": [
+    "lazy CUDA attribute probes shielded (host driver/torch-2.5 stub)",
+    "torch.distributed.checkpoint/_shard wrapped without argument dumps (dumper cannot serialize sharded-tensor objects)",
+    "typename() made exception-safe for __torch_function__ guards",
+    "megatron consumer arms use the sampler model tracker (the proxy tracker fails megatron-core's strict module type checks)",
+    "save jobs traced API-only (the sampler tracker requires an optimizer, which a pure checkpoint job does not have)"
+  ]
+}

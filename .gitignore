@@ -15,3 +15,5 @@ tare/research-note.md
 # internal working notes / research plans (keep local, never publish)
 research-note.md
 *-research-plan.md
+_traincheck/
+_traincheck_*.py
