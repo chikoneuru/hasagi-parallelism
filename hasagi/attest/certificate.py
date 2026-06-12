@@ -1,7 +1,7 @@
 """The transition equivalence certificate.
 
 Given snapshots of the logical training state before and after a layout
-transition, the certificate checks five invariants and returns the (possibly
+transition, the certificate checks six invariants and returns the (possibly
 empty) list of violations:
 
   param_residency       every FQN present exactly once on each side; none
@@ -18,7 +18,11 @@ empty) list of violations:
                         reduction order is a permutation of the pre-side order
                         and the declared numeric drift bound is carried
                         unchanged across the transition; the certificate does
-                        NOT measure realized drift against the bound
+                        NOT measure realized drift
+  aux_stream_residency  every named auxiliary stream (RNG generator state,
+                        dataloader cursor) keeps its logical owner and exact
+                        content across the transition, unless a re-seeding is
+                        declared against the bound
 
 The invariants themselves are standard; what the certificate adds is checking
 them independently of the reshard mechanism, before the new layout is allowed
@@ -55,6 +59,7 @@ class TransitionCertificate:
         v += self._optimizer_accounting(pre, post)
         v += self._progress_invariant(pre, post)
         v += self._reduction_order_bound(pre, post)
+        v += self._aux_stream_residency(pre, post)
         return v
 
     # ---- invariant 1: the FQN universe is preserved -------------------------
@@ -159,4 +164,32 @@ class TransitionCertificate:
                     f"drift bound changed {pre.reduction_drift_bound:.1e} -> {post.reduction_drift_bound:.1e}",
                 )
             )
+        return out
+
+    # ---- invariant 6: auxiliary streams keep their owner and content --------
+    def _aux_stream_residency(self, pre: StateSnapshot, post: StateSnapshot) -> List[Violation]:
+        """Every named auxiliary stream (RNG generator state, dataloader
+        cursor) present before the transition is present after it, under the
+        same logical name, with identical content, unless its re-seeding is
+        declared on the post side. A wrong-but-internally-valid stream is not
+        a parameter, an optimizer slot, a progress counter, or a reduction
+        order, which is exactly why it needs its own invariant."""
+        out: List[Violation] = []
+        reseeds = set(pre.declared_reseeds) | set(post.declared_reseeds)
+        for name in sorted(set(pre.aux_streams) - set(post.aux_streams)):
+            out.append(Violation("aux_stream_residency", name, "stream lost in transition"))
+        for name in sorted(set(post.aux_streams) - set(pre.aux_streams)):
+            out.append(Violation("aux_stream_residency", name, "stream appeared from nowhere"))
+        for name in sorted(set(pre.aux_streams) & set(post.aux_streams)):
+            if name in reseeds:
+                continue
+            if pre.aux_streams[name] != post.aux_streams[name]:
+                out.append(
+                    Violation(
+                        "aux_stream_residency",
+                        name,
+                        f"stream content changed {pre.aux_streams[name][:12]} -> "
+                        f"{post.aux_streams[name][:12]} without a declared reseed",
+                    )
+                )
         return out

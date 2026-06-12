@@ -33,8 +33,8 @@ checkpoint-path entries below come from direct issue-tracker mining.
 | [PR#520](https://github.com/NVIDIA/Megatron-LM/pull/520) | SwiGLU fused gate/up weight declared as one contiguous TP-sharded tensor; loading at a different TP degree re-splits at wrong boundaries, interleaving gate/up rows. Residency and shapes PASS; only content comparison catches it. **REPRODUCED + CAUGHT BLIND through the real pipeline (2026-06-11)**: pre-fix declaration vendored verbatim from the PR's base commit (`ab0336a`), saved at TP=2 and reloaded at TP=1 via real megatron-core 0.17.1 `dist_checkpointing` (CPU/gloo); loaded fc1 is bit-exactly the predicted `[gate0;up0;gate1;up1]` mis-split, every value preserved as a multiset (L2/numel checksums blind — norm is permutation-invariant), certificate aborts on the single fingerprint violation, zero injected faults; same-TP roundtrip and the shipped `apply_swiglu_sharded_factory` both commit bit-exact (max dev 0.0) — the bug fires exclusively on the reshard transition. See `exp_attest_swiglu_reshard_repro.py`, `tests/test_swiglu_reshard_repro.py`, `artifacts/attest_swiglu_reshard_repro.json` | yes | content_equivalence |
 | [PR#1770](https://github.com/NVIDIA/Megatron-LM/pull/1770) | Wrong `replica_id` ownership declaration for ShardedTensors under expert-tensor-parallelism: redundant replicas treated as distinct owners | yes | param_residency (ownership census from metadata) |
 | [PR#2789](https://github.com/NVIDIA/Megatron-LM/pull/2789) | BF16 + precision-aware optimizer + CPU offload: load restores subtly wrong model params (bf16 working copies desync from fp32 masters) | yes | content_equivalence (+ master/working consistency) |
-| [PR#2658](https://github.com/NVIDIA/Megatron-LM/pull/2658) | Dist-ckpt RNG sharding keyed only on TP+PP; EP ranks restore wrong generator streams | yes | **NONE — gap** (see below) |
-| [PR#4828](https://github.com/NVIDIA/Megatron-LM/pull/4828) | Context-parallel RNG tracker restores wrong dropout RNG state across save/load | yes | **NONE — gap** (see below) |
+| [PR#2658](https://github.com/NVIDIA/Megatron-LM/pull/2658) | Dist-ckpt RNG sharding keyed only on TP+PP; EP ranks restore wrong generator streams. **REPRODUCED + CAUGHT BLIND through the real pipeline (2026-06-12)**: pre-fix `get_rng_state` declaration vendored verbatim from the PR's base commit (`4bdd7b10e`), real expert-parallel rank streams saved and reloaded via megatron-core 0.17.1 `dist_checkpointing` (CPU/gloo, EP=2); the secondary expert rank restores the primary's streams, every other invariant correctly silent (params/optimizer/progress intact), and the two expert ranks then draw bit-identical randomness; fixed declaration round-trips bit-exact. Zero injected faults. See `exp_attest_rng_restore_repro.py`, `tests/test_rng_restore_repro.py`, `artifacts/attest_rng_restore_repro.json` | yes | aux_stream_residency (gap CLOSED 2026-06-12) |
+| [PR#4828](https://github.com/NVIDIA/Megatron-LM/pull/4828) | Context-parallel RNG tracker restores wrong dropout RNG state across save/load (PR still unmerged upstream as of 2026-06-12) | yes | aux_stream_residency (same class as PR#2658; not separately reproduced) |
 | [#599](https://github.com/NVIDIA/Megatron-LM/issues/599) | SwitchMLP router weights never synchronized within the TP group; nominally-replicated copies diverge from step 0 (fixed by PR#619) | yes | content_equivalence (replica consistency at the transition) |
 | [#1446](https://github.com/NVIDIA/Megatron-LM/issues/1446) | TP+SP final_layernorm gradients not reduced across the TP group; replicated layernorm replicas diverge (fixed by PR#1528) | yes | content_equivalence (replica consistency) |
 | [#656](https://github.com/NVIDIA/Megatron-LM/issues/656) | Embedding/LM-head tied weights silently untie under the distributed optimizer with overlapped param gather; the two views of one logical block receive different updates (fixed in db2040f) | yes | content_equivalence over declared aliases |
@@ -83,7 +83,7 @@ a certificate detection here is an end-to-end story with no GPU.
 | [torchtitan#409](https://github.com/pytorch/torchtitan/issues/409) | Resume after a dp/tp-degree change: dataloader state for new ranks is absent; training continues on a fresh data stream (warning only), replaying/skipping data | yes | microbatch_invariant |
 | [transformers#43708](https://github.com/huggingface/transformers/issues/43708) | Resume with a changed per-device batch size silently restores the stale `train_batch_size`, corrupting max_steps and the LR schedule | yes | microbatch_invariant; optimizer_accounting |
 | [transformers#38939](https://github.com/huggingface/transformers/issues/38939) | Resume re-initializes the within-epoch step counter to -1: the final gradient-accumulation window is consumed but never applied | yes | microbatch_invariant |
-| [transformers#39215](https://github.com/huggingface/transformers/issues/39215) | Resume loads RNG state AFTER fetching the first batch: bit-reproducible resume breaks whenever data loading is stochastic | yes | NONE unless RNG/stream state is in scope — third instance of the auxiliary-state gap |
+| [transformers#39215](https://github.com/huggingface/transformers/issues/39215) | Resume loads RNG state AFTER fetching the first batch: bit-reproducible resume breaks whenever data loading is stochastic | yes | aux_stream_residency (streams keyed by logical owner with declared-reseed exemption; not separately reproduced) |
 
 ## The auxiliary-state invariant gap (research finding)
 
@@ -94,10 +94,18 @@ transformers#39215 (RNG restored after the first batch fetch on resume). A
 wrong-but-internally-valid stream passes all four state invariants: it is not
 a parameter, not an optimizer slot, not a progress counter, and not a
 reduction order. The torchtitan entries (#811, #409) show the same class at
-the dataloader-cursor level. This motivates a fifth invariant,
+the dataloader-cursor level. This motivated an additional invariant,
 *auxiliary-state residency*: every named auxiliary stream (RNG generator
 state, dataloader cursor) has exactly one owner across the transition and
 survives bit-exact, unless its re-seeding is declared.
+
+**Status 2026-06-12: implemented** as `aux_stream_residency`
+(`attest/certificate.py`, streams fingerprinted by
+`attest/snapshot.py::fingerprint_stream`, keyed by logical coordinate, with
+a declared-reseed exemption that does not waive residency) and naturally
+validated against PR#2658 above: the pre-fix declaration's wrong-stream
+restore is caught with all other invariants silent, the second invariant
+class with a blind natural-bug catch after `content_equivalence`.
 
 ## Validation-practice evidence (why a transition gate is needed; all verified)
 

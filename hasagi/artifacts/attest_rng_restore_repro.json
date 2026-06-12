@@ -1,0 +1,46 @@
+{
+  "exp": "attest-rng-restore-repro",
+  "bug": {
+    "fix_pr": "NVIDIA/Megatron-LM#2658",
+    "base_commit": "4bdd7b10e",
+    "mechanism": "RNG state declared as one (pp, tp) object with the data-parallel rank as replica id; expert ranks' distinct streams collide, the save keeps the primary replica, every rank restores it",
+    "injected_faults": 0
+  },
+  "topology": {
+    "world": 2,
+    "tp": 1,
+    "pp": 1,
+    "ep": 2
+  },
+  "arms": {
+    "buggy": {
+      "committed": false,
+      "expected_committed": false,
+      "as_expected": true,
+      "n_violations": 3,
+      "violations_by_invariant": [
+        "aux_stream_residency"
+      ],
+      "violating_streams": [
+        "ep1.np_rng_state",
+        "ep1.random_rng_state",
+        "ep1.torch_rng_state"
+      ],
+      "sample_violation": "[aux_stream_residency] ep1.np_rng_state: stream content changed 8f02aa419157 -> 010a0289c892 without a declared reseed",
+      "other_invariants_silent": true,
+      "expert_ranks_draw_identical_randomness": true
+    },
+    "fixed": {
+      "committed": true,
+      "expected_committed": true,
+      "as_expected": true,
+      "n_violations": 0,
+      "violations_by_invariant": [],
+      "violating_streams": [],
+      "sample_violation": null,
+      "other_invariants_silent": true,
+      "expert_ranks_draw_identical_randomness": false
+    }
+  },
+  "natural_bug_caught_blind": true
+}

@@ -71,12 +71,43 @@ class StateSnapshot:
     # declared gradient reduction order (bucket order) and its drift bound
     reduction_order: Optional[list] = None
     reduction_drift_bound: float = 1e-6
+    # named auxiliary streams (RNG generator states, dataloader cursors),
+    # keyed by their LOGICAL coordinate so a re-mapping is visible:
+    # name -> content fingerprint
+    aux_streams: Dict[str, str] = field(default_factory=dict)
+    # stream names whose re-seeding across this transition is declared and
+    # therefore exempt from content comparison (residency still applies)
+    declared_reseeds: list = field(default_factory=list)
     # free-form provenance (world size, wrapper, step) for diagnostics only
     meta: Dict[str, Any] = field(default_factory=dict)
 
 
 def _is_tensor(v: Any) -> bool:
     return isinstance(v, torch.Tensor)
+
+
+def fingerprint_stream(obj: Any) -> str:
+    """A deterministic content fingerprint for an auxiliary stream object.
+
+    Streams arrive in whatever form the framework keeps them: ByteTensor RNG
+    states, raw bytes, or structured objects such as ``random.getstate()``
+    tuples and numpy state tuples. Tensors and bytes hash directly; anything
+    else goes through a pickle of the object, which is stable for the
+    round-trip comparison the certificate makes (both sides are fingerprinted
+    by this same routine).
+    """
+    if _is_tensor(obj):
+        return fingerprint_tensor(obj)
+    h = hashlib.sha256()
+    if isinstance(obj, (bytes, bytearray)):
+        h.update(b"bytes")
+        h.update(bytes(obj))
+        return h.hexdigest()
+    import pickle
+
+    h.update(b"pickle")
+    h.update(pickle.dumps(obj, protocol=4))
+    return h.hexdigest()
 
 
 def snapshot_from_state_dicts(
@@ -86,6 +117,8 @@ def snapshot_from_state_dicts(
     progress: Optional[Dict[str, int]] = None,
     reduction_order: Optional[list] = None,
     reduction_drift_bound: float = 1e-6,
+    aux_streams: Optional[Mapping[str, Any]] = None,
+    declared_reseeds: Optional[list] = None,
     meta: Optional[Dict[str, Any]] = None,
 ) -> StateSnapshot:
     """Build a snapshot from (full, unsharded) model and optimizer state dicts.
@@ -96,6 +129,12 @@ def snapshot_from_state_dicts(
     classic index-keyed ``torch.optim.Optimizer.state_dict()`` form, in which
     case indices are kept as keys (callers should prefer the FQN form so the
     mapping is layout-independent).
+
+    ``aux_streams`` maps logical stream names (e.g. ``ep1.torch_rng_state``,
+    ``dataloader.cursor``) to their raw state objects; each is fingerprinted
+    by ``fingerprint_stream``. Key streams by logical coordinate, not by
+    physical rank index, so a transition that hands a rank the wrong stream
+    changes the mapping rather than silently re-labelling it.
     """
     params: Dict[str, str] = {}
     checks: Dict[str, Dict[str, float]] = {}
@@ -132,6 +171,9 @@ def snapshot_from_state_dicts(
         progress=dict(progress or {}),
         reduction_order=list(reduction_order) if reduction_order is not None else None,
         reduction_drift_bound=reduction_drift_bound,
+        aux_streams={name: fingerprint_stream(obj)
+                     for name, obj in (aux_streams or {}).items()},
+        declared_reseeds=list(declared_reseeds or []),
         meta=dict(meta or {}),
     )
 
