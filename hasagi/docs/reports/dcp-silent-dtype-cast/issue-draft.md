@@ -1,7 +1,5 @@
 # [DCP] load silently casts checkpoint tensors to the template dtype, truncating precision without any warning
 
-(Draft for pytorch/pytorch, ready to file.)
-
 ## 🐛 Describe the bug
 
 `torch.distributed.checkpoint.load` resolves what to read from the
@@ -22,6 +20,7 @@ import tempfile
 import torch
 import torch.distributed.checkpoint as dcp
 
+torch.manual_seed(0)
 ckpt = tempfile.mkdtemp()
 saved = {"w": torch.rand(4, 3, dtype=torch.float32) * 100}
 dcp.save(state_dict=saved, checkpoint_id=ckpt)
@@ -34,11 +33,11 @@ print(f"loaded dtype: {template['w'].dtype} (checkpoint stored float32)")
 print(f"max |saved - loaded|: {dev:.6f}")
 ```
 
-Output on torch 2.12.0:
+Output (identical on every version listed under Versions below):
 
 ```
 loaded dtype: torch.bfloat16 (checkpoint stored float32)
-max |saved - loaded|: 0.249504
+max |saved - loaded|: 0.177818
 ```
 
 ## Why this matters in practice
