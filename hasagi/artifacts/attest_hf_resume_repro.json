@@ -1,0 +1,35 @@
+{
+  "exp": "attest-hf-resume-repro",
+  "bug": {
+    "issue": "huggingface/transformers#39215",
+    "status": "closed by stale bot 2025-08-25, unfixed",
+    "mechanism": "mid-epoch resume calls get_batch_samples before _load_rng_state (the rng_to_sync block), so the first resumed batch draws data-pipeline randomness from the wrong stream",
+    "injected_faults": 0
+  },
+  "transformers": "5.11.0",
+  "scenarios": [
+    {
+      "scenario": "resume",
+      "first_divergent_item": 4,
+      "first_resumed_item_index": 8,
+      "items_compared": 5,
+      "reproducible": false,
+      "certificate_committed": false,
+      "violations_by_invariant": [
+        "aux_stream_residency"
+      ],
+      "python": "/home/hieu.npt/hieunpt/hasagi-parallelism/src/hasagi/.venv/sweep/bin/python"
+    },
+    {
+      "scenario": "resume_epoch_boundary_control",
+      "first_divergent_item": null,
+      "first_resumed_item_index": 64,
+      "items_compared": 10,
+      "reproducible": true,
+      "certificate_committed": true,
+      "violations_by_invariant": [],
+      "python": "/home/hieu.npt/hieunpt/hasagi-parallelism/src/hasagi/.venv/sweep/bin/python"
+    }
+  ],
+  "live_bug_demonstrated": true
+}
