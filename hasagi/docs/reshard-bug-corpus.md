@@ -83,7 +83,7 @@ a certificate detection here is an end-to-end story with no GPU.
 | [torchtitan#409](https://github.com/pytorch/torchtitan/issues/409) | Resume after a dp/tp-degree change: dataloader state for new ranks is absent; training continues on a fresh data stream (warning only), replaying/skipping data | yes | microbatch_invariant |
 | [transformers#43708](https://github.com/huggingface/transformers/issues/43708) | Resume with a changed per-device batch size silently restores the stale `train_batch_size`, corrupting max_steps and the LR schedule | yes | microbatch_invariant; optimizer_accounting |
 | [transformers#38939](https://github.com/huggingface/transformers/issues/38939) | Resume re-initializes the within-epoch step counter to -1: the final gradient-accumulation window is consumed but never applied | yes | microbatch_invariant |
-| [transformers#39215](https://github.com/huggingface/transformers/issues/39215) | Resume loads RNG state AFTER fetching the first batch: bit-reproducible resume breaks whenever data loading is stochastic | yes | aux_stream_residency (streams keyed by logical owner with declared-reseed exemption; not separately reproduced) |
+| [transformers#39215](https://github.com/huggingface/transformers/issues/39215) | Resume loads RNG state AFTER fetching the first batch: bit-reproducible resume breaks whenever data loading is stochastic | yes | aux_stream_residency — REPRODUCED LIVE on 5.11.0 + CAUGHT (`exp_attest_hf_resume_repro.py`, epoch-boundary control commits); re-confirmed publicly with a standalone repro and [reopening requested 2026-06-12](https://github.com/huggingface/transformers/issues/39215#issuecomment-4686915911) |
 
 ## The auxiliary-state invariant gap (research finding)
 

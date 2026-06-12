@@ -1,5 +1,7 @@
 # Comment draft for huggingface/transformers#39215
 
+Posted as <https://github.com/huggingface/transformers/issues/39215#issuecomment-4686915911> (2026-06-12).
+
 This is still present on transformers 5.11.0 (torch 2.12.0) and still breaks
 bit-reproducible mid-epoch resume. The issue was closed by the stale bot
 without a fix, and the original report didn't include a runnable
