@@ -1,0 +1,141 @@
+{
+  "contrast": "decision-rule margin (Tare rolling-median minus GREEN rolling-percentile), both applied as THROTTLE to the energy-optimal cap, on the MEASURED RTX 3080 Ti profile",
+  "energy_model": "measured power-cap profile (eco vs full cap), not flat per-tick",
+  "trace_source": "real ElectricityMaps (16 zones, summer fortnight)",
+  "full_cap_w": 350.0,
+  "eco_cap_w": 200.0,
+  "n_zones": 16,
+  "inference_unit": "zone (cross-zone clustered bootstrap)",
+  "cross_zone_decision_rule_gap_pp": {
+    "mean": 0.559812120003197,
+    "ci_lo": -0.12104755802820646,
+    "ci_hi": 1.2411249483085345,
+    "excludes_zero": false
+  },
+  "cluster_t_95ci_pp": [
+    -0.20347916270223576,
+    1.3231034027086297
+  ],
+  "jackknife_loo_range_pp": [
+    0.34021162422288725,
+    0.777697970844576
+  ],
+  "exact_sign_flip_pvalue": 0.141357421875,
+  "zones_positive": 10,
+  "zones_total": 16,
+  "flat_energy_reference_pp": 1.6779,
+  "per_zone": [
+    {
+      "decision_rule_gap_pp": -0.31266526630780117,
+      "tare_save_pct": 8.043740320256756,
+      "green_save_pct": 8.356405586564556,
+      "n_offsets": 25,
+      "zone": "DE"
+    },
+    {
+      "decision_rule_gap_pp": -2.708475642617488,
+      "tare_save_pct": 7.51752873569561,
+      "green_save_pct": 10.226004378313098,
+      "n_offsets": 25,
+      "zone": "US-CA"
+    },
+    {
+      "decision_rule_gap_pp": 1.2606558501780885,
+      "tare_save_pct": 7.227544204649189,
+      "green_save_pct": 5.9668883544711,
+      "n_offsets": 25,
+      "zone": "FR"
+    },
+    {
+      "decision_rule_gap_pp": 1.4002762637819408,
+      "tare_save_pct": 5.854498485248043,
+      "green_save_pct": 4.454222221466102,
+      "n_offsets": 25,
+      "zone": "PL"
+    },
+    {
+      "decision_rule_gap_pp": 0.6042884714374176,
+      "tare_save_pct": 1.0755445517369424,
+      "green_save_pct": 0.4712560802995248,
+      "n_offsets": 25,
+      "zone": "VN"
+    },
+    {
+      "decision_rule_gap_pp": 3.8538195567078444,
+      "tare_save_pct": 3.8538195567078444,
+      "green_save_pct": 0.0,
+      "n_offsets": 25,
+      "zone": "JP"
+    },
+    {
+      "decision_rule_gap_pp": -1.2632010717809354,
+      "tare_save_pct": 10.443456105005211,
+      "green_save_pct": 11.706657176786146,
+      "n_offsets": 25,
+      "zone": "GB"
+    },
+    {
+      "decision_rule_gap_pp": 0.0,
+      "tare_save_pct": 0.0,
+      "green_save_pct": 0.0,
+      "n_offsets": 25,
+      "zone": "SG"
+    },
+    {
+      "decision_rule_gap_pp": 0.03153414172958767,
+      "tare_save_pct": 0.03153414172958767,
+      "green_save_pct": 0.0,
+      "n_offsets": 25,
+      "zone": "KR"
+    },
+    {
+      "decision_rule_gap_pp": -0.062003864034806566,
+      "tare_save_pct": 3.9896233143104527,
+      "green_save_pct": 4.051627178345259,
+      "n_offsets": 25,
+      "zone": "BR"
+    },
+    {
+      "decision_rule_gap_pp": 1.1582403945944173,
+      "tare_save_pct": 2.4208614625348237,
+      "green_save_pct": 1.2626210679404064,
+      "n_offsets": 25,
+      "zone": "NO"
+    },
+    {
+      "decision_rule_gap_pp": 0.0,
+      "tare_save_pct": 0.0,
+      "green_save_pct": 0.0,
+      "n_offsets": 25,
+      "zone": "ZA"
+    },
+    {
+      "decision_rule_gap_pp": 1.4187040985913093,
+      "tare_save_pct": 4.763512143906413,
+      "green_save_pct": 3.3448080453151037,
+      "n_offsets": 25,
+      "zone": "AU"
+    },
+    {
+      "decision_rule_gap_pp": 0.7300905043836062,
+      "tare_save_pct": 0.7300905043836062,
+      "green_save_pct": 0.0,
+      "n_offsets": 25,
+      "zone": "IN"
+    },
+    {
+      "decision_rule_gap_pp": 1.606873456650257,
+      "tare_save_pct": 1.606873456650257,
+      "green_save_pct": 0.0,
+      "n_offsets": 25,
+      "zone": "CN"
+    },
+    {
+      "decision_rule_gap_pp": 1.2388570267377144,
+      "tare_save_pct": 1.2388570267377144,
+      "green_save_pct": 0.0,
+      "n_offsets": 25,
+      "zone": "AE"
+    }
+  ]
+}

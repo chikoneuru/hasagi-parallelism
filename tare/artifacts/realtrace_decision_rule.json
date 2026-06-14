@@ -1,0 +1,156 @@
+{
+  "contrast": "decision-rule margin (HASAGI rolling-median pause minus GREEN rolling-percentile pause), pp of carbon saved vs always-on",
+  "energy_model": "flat per-tick (decision-rule isolated; matches the synthetic +1.99 pp study's energy model)",
+  "trace_source": "real ElectricityMaps (16 zones, summer fortnight)",
+  "n_zones": 16,
+  "inference_unit": "zone (cross-zone clustered bootstrap; one gap per zone)",
+  "cross_zone_decision_rule_gap_pp": {
+    "mean": 1.6779489417062774,
+    "ci_lo": 0.2469253560402887,
+    "ci_hi": 2.99493561299094,
+    "excludes_zero": true
+  },
+  "exact_sign_flip_pvalue": 0.0364990234375,
+  "cluster_t_95ci_pp": [
+    0.13231943528849643,
+    3.2235784481240586
+  ],
+  "jackknife_loo_range_pp": [
+    1.3820067315085738,
+    2.1588827039156815
+  ],
+  "zones_positive": 12,
+  "zones_total": 16,
+  "per_zone_mean_gap_pp": 1.6779489417062774,
+  "synthetic_reference_pp": 1.99,
+  "per_zone": [
+    {
+      "zone": "DE",
+      "tare_online_save_pct": 38.314891202339645,
+      "green_online_save_pct": 36.04945546607304,
+      "decision_rule_gap_pp": 2.2654357362666033,
+      "tare_online_pause_frac": 0.30654761904761907,
+      "n_ticks": 336
+    },
+    {
+      "zone": "US-CA",
+      "tare_online_save_pct": 47.03538957864893,
+      "green_online_save_pct": 42.34162674748265,
+      "decision_rule_gap_pp": 4.693762831166282,
+      "tare_online_pause_frac": 0.37202380952380953,
+      "n_ticks": 336
+    },
+    {
+      "zone": "FR",
+      "tare_online_save_pct": 36.345852895148724,
+      "green_online_save_pct": 30.49034950443407,
+      "decision_rule_gap_pp": 5.855503390714652,
+      "tare_online_pause_frac": 0.29761904761904767,
+      "n_ticks": 336
+    },
+    {
+      "zone": "PL",
+      "tare_online_save_pct": 26.238521439862126,
+      "green_online_save_pct": 24.441072759665253,
+      "decision_rule_gap_pp": 1.7974486801968723,
+      "tare_online_pause_frac": 0.21726190476190477,
+      "n_ticks": 336
+    },
+    {
+      "zone": "VN",
+      "tare_online_save_pct": 3.8744586903070473,
+      "green_online_save_pct": 0.0,
+      "decision_rule_gap_pp": 3.8744586903070473,
+      "tare_online_pause_frac": 0.0357142857142857,
+      "n_ticks": 336
+    },
+    {
+      "zone": "JP",
+      "tare_online_save_pct": 2.5419440013201937,
+      "green_online_save_pct": 0.0,
+      "decision_rule_gap_pp": 2.5419440013201937,
+      "tare_online_pause_frac": 0.023809523809523836,
+      "n_ticks": 336
+    },
+    {
+      "zone": "GB",
+      "tare_online_save_pct": 48.19294727166375,
+      "green_online_save_pct": 53.72900476309853,
+      "decision_rule_gap_pp": -5.536057491434782,
+      "tare_online_pause_frac": 0.375,
+      "n_ticks": 336
+    },
+    {
+      "zone": "SG",
+      "tare_online_save_pct": 0.0,
+      "green_online_save_pct": 0.0,
+      "decision_rule_gap_pp": 0.0,
+      "tare_online_pause_frac": 0.0,
+      "n_ticks": 336
+    },
+    {
+      "zone": "KR",
+      "tare_online_save_pct": 0.31224438991430054,
+      "green_online_save_pct": 0.0,
+      "decision_rule_gap_pp": 0.31224438991430054,
+      "tare_online_pause_frac": 0.0029761904761904656,
+      "n_ticks": 336
+    },
+    {
+      "zone": "BR",
+      "tare_online_save_pct": 20.994680192997656,
+      "green_online_save_pct": 19.124087591240936,
+      "decision_rule_gap_pp": 1.8705926017567194,
+      "tare_online_pause_frac": 0.1875,
+      "n_ticks": 336
+    },
+    {
+      "zone": "NO",
+      "tare_online_save_pct": 15.081179967985378,
+      "green_online_save_pct": 8.964097873313545,
+      "decision_rule_gap_pp": 6.117082094671833,
+      "tare_online_pause_frac": 0.1160714285714286,
+      "n_ticks": 336
+    },
+    {
+      "zone": "ZA",
+      "tare_online_save_pct": 0.0,
+      "green_online_save_pct": 0.0,
+      "decision_rule_gap_pp": 0.0,
+      "tare_online_pause_frac": 0.0,
+      "n_ticks": 336
+    },
+    {
+      "zone": "AU",
+      "tare_online_save_pct": 11.362770579470398,
+      "green_online_save_pct": 13.343684751107837,
+      "decision_rule_gap_pp": -1.9809141716374388,
+      "tare_online_pause_frac": 0.09523809523809523,
+      "n_ticks": 336
+    },
+    {
+      "zone": "IN",
+      "tare_online_save_pct": 2.4645952648486946,
+      "green_online_save_pct": 0.0,
+      "decision_rule_gap_pp": 2.4645952648486946,
+      "tare_online_pause_frac": 0.023809523809523836,
+      "n_ticks": 336
+    },
+    {
+      "zone": "CN",
+      "tare_online_save_pct": 0.9821342810488841,
+      "green_online_save_pct": 0.0,
+      "decision_rule_gap_pp": 0.9821342810488841,
+      "tare_online_pause_frac": 0.008928571428571397,
+      "n_ticks": 336
+    },
+    {
+      "zone": "AE",
+      "tare_online_save_pct": 1.5889527681605784,
+      "green_online_save_pct": 0.0,
+      "decision_rule_gap_pp": 1.5889527681605784,
+      "tare_online_pause_frac": 0.014880952380952328,
+      "n_ticks": 336
+    }
+  ]
+}
