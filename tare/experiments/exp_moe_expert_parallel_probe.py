@@ -27,6 +27,14 @@ Stated hypothesis (so the result is falsifiable): ~0.95-1.05 -> DEAD, because
 all-to-all communication and capacity padding add overhead while fixed-work
 expert FLOPs are unchanged. The probe exists to be able to refute that.
 
+Like-for-like baseline: the dense (replicated) layout runs its experts as one
+grouped (batched) GEMM, the same large-GEMM kernel the expert-parallel arm uses,
+so the comparison is not contaminated by a many-small-GEMM penalty; and each
+arm pays the gradient all-reduce a real data-parallel step would (the dense
+layout syncs all replicated experts plus the router, expert parallelism syncs
+only its replicated router). Both are required for the EP/dense ratio to be a
+layout property rather than an execution-efficiency artifact.
+
 Reported alongside energy: expert load balance (fraction of experts active, the
 load coefficient of variation, and the capacity-overflow drop fraction). A seed
 whose router collapses (< ``--min-active-frac`` of experts active, default 0.70)
@@ -141,6 +149,26 @@ def moe_reference(x: torch.Tensor, router: nn.Linear, experts: nn.ModuleList) ->
     return out * gate_val.unsqueeze(-1)
 
 
+def apply_experts_batched(buf: torch.Tensor, experts) -> torch.Tensor:
+    """Apply a list of identically-shaped FFN experts as ONE grouped (batched)
+    GEMM rather than a per-expert Python loop.
+
+    ``buf`` is ``[n_exp, B, M]`` (expert ``i`` processes ``buf[i]``); returns
+    ``[n_exp, B, M]``. This is mathematically identical to
+    ``stack([experts[i](buf[i])])`` but runs as two ``baddbmm`` calls, so the
+    replicated/dense baseline gets the same large-GEMM efficiency as the
+    expert-parallel arm instead of paying a many-small-GEMM penalty (the
+    batching confound a like-for-like layout comparison must remove).
+    """
+    w1 = torch.stack([e.fc1.weight for e in experts])        # [n_exp, F, M]
+    b1 = torch.stack([e.fc1.bias for e in experts])          # [n_exp, F]
+    w2 = torch.stack([e.fc2.weight for e in experts])        # [n_exp, M, F]
+    b2 = torch.stack([e.fc2.bias for e in experts])          # [n_exp, M]
+    h = torch.baddbmm(b1.unsqueeze(1), buf, w1.transpose(1, 2))   # [n_exp, B, F]
+    h = F.gelu(h)
+    return torch.baddbmm(b2.unsqueeze(1), h, w2.transpose(1, 2))  # [n_exp, B, M]
+
+
 def moe_dispatch_combine(
     x: torch.Tensor, router: nn.Linear, experts: nn.ModuleList, capacity: int,
     *, expert_parallel: bool = False,
@@ -172,13 +200,15 @@ def moe_dispatch_combine(
         # expert must process the slices from ALL world source ranks (this is
         # what keeps per-rank expert FLOPs at E*C, matching dense at fixed work).
         recv_v = recv.view(world, local_e, capacity, -1)
-        processed_v = torch.empty_like(recv_v)
-        for j, expert in enumerate(my):
-            processed_v[:, j] = expert(recv_v[:, j])
+        # batch the local experts: [local_e, world*C, M] -> grouped GEMM -> back.
+        m_dim = recv_v.shape[-1]
+        grouped = recv_v.permute(1, 0, 2, 3).reshape(local_e, world * capacity, m_dim)
+        grouped = apply_experts_batched(grouped, list(my))
+        processed_v = grouped.reshape(local_e, world, capacity, m_dim).permute(1, 0, 2, 3).contiguous()
         out_disp = torch.empty_like(recv)
         dist.all_to_all_single(out_disp, processed_v.reshape_as(recv).contiguous())
     else:
-        out_disp = torch.stack([experts[e](dispatched[e]) for e in range(n_experts)], dim=0)
+        out_disp = apply_experts_batched(dispatched, list(experts))
 
     combined = torch.einsum("tec,ecm->tm", combine, out_disp)        # [T, M]
     return combined, stats
@@ -255,6 +285,20 @@ def _allreduce(value: float, device: torch.device, op) -> float:
     return value
 
 
+def _sync_grads(params) -> None:
+    """Average gradients across ranks (the all-reduce a real data-parallel step
+    pays). A replicated/dense MoE replicates every expert, so it must sync all
+    expert + router grads; expert parallelism owns distinct experts per rank, so
+    only its replicated router is synced. No-op outside a >1-rank world."""
+    if not (_is_distributed() and dist.get_world_size() > 1):
+        return
+    world = dist.get_world_size()
+    for p in params:
+        if p.grad is not None:
+            dist.all_reduce(p.grad, op=dist.ReduceOp.SUM)
+            p.grad /= world
+
+
 # --------------------------------------------------------------------------- #
 # Energy measurement.
 # --------------------------------------------------------------------------- #
@@ -274,6 +318,10 @@ def _measure_layout(
     capacity = math.ceil(args.capacity_factor * args.tokens / e)
     x = torch.randn(args.tokens, d, device=device)
     expert_parallel = layout == "expert_parallel"
+    # Gradient sync a real data-parallel step pays: the replicated/dense layout
+    # all-reduces every expert + router grad; expert parallelism syncs only its
+    # replicated router (its experts are owned per rank). No-op at world size 1.
+    sync_params = list(router.parameters()) if expert_parallel else params
 
     last_stats: dict = {}
     for _ in range(args.warmup):
@@ -281,6 +329,7 @@ def _measure_layout(
         out, last_stats = moe_dispatch_combine(x, router, experts, capacity,
                                                expert_parallel=expert_parallel)
         out.float().pow(2).mean().backward()
+        _sync_grads(sync_params)
         opt.step()
     active_frac = last_stats.get("active_experts", e) / e
     if active_frac < args.min_active_frac:
@@ -297,6 +346,7 @@ def _measure_layout(
         out, last_stats = moe_dispatch_combine(x, router, experts, capacity,
                                                expert_parallel=expert_parallel)
         out.float().pow(2).mean().backward()
+        _sync_grads(sync_params)
         opt.step()
         p_samples.append(_power_w(handle))
     if device.type == "cuda":
