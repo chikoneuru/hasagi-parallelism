@@ -1,0 +1,57 @@
+{
+  "probe": "moe-expert-parallel",
+  "world_size": 4,
+  "d_model": 4096,
+  "n_experts": 12,
+  "tokens": 4096,
+  "ffn_mult": 4,
+  "capacity_factor": 1.25,
+  "steps": 200,
+  "seeds": 5,
+  "min_active_frac": 0.7,
+  "break_even_estar": 0.75,
+  "hypothesis": "DEAD (~0.95-1.05)",
+  "layouts": {
+    "dense": {
+      "feasible": true,
+      "n_seeds": 5,
+      "excluded_degenerate": 0,
+      "cluster_energy_per_iter_j": 523.7174029999674,
+      "cluster_energy_ci_lo": 516.87526290707,
+      "cluster_energy_ci_hi": 530.5595430928647,
+      "mean_power_w": 1066.3952170000002,
+      "iters_per_s": 2.325759382759608,
+      "peak_mem_gb": 32.36941312,
+      "active_frac": 1.0,
+      "load_cv": 0.06061068922281265,
+      "drop_frac": 0.0,
+      "energy_source": "nvml-total-energy"
+    },
+    "expert_parallel": {
+      "feasible": true,
+      "n_seeds": 5,
+      "excluded_degenerate": 0,
+      "cluster_energy_per_iter_j": 150.39424799993634,
+      "cluster_energy_ci_lo": 148.50631194014412,
+      "cluster_energy_ci_hi": 152.28218405972856,
+      "mean_power_w": 1332.8778459999999,
+      "iters_per_s": 8.874017956376623,
+      "peak_mem_gb": 9.381775872,
+      "active_frac": 1.0,
+      "load_cv": 0.047803175449371335,
+      "drop_frac": 0.0,
+      "energy_source": "nvml-total-energy"
+    }
+  },
+  "E_eco": {
+    "expert_parallel": {
+      "ratio": 0.2871667947989609,
+      "ci_lo": 0.28356191925161855,
+      "ci_hi": 0.29077167034630325
+    }
+  },
+  "verdict": {
+    "expert_parallel": "ALIVE (<=0.75)"
+  },
+  "smoke": false
+}

@@ -1,0 +1,39 @@
+{
+  "probe": "moe-expert-parallel",
+  "world_size": 4,
+  "d_model": 4096,
+  "n_experts": 16,
+  "tokens": 4096,
+  "ffn_mult": 4,
+  "capacity_factor": 1.25,
+  "steps": 120,
+  "seeds": 3,
+  "min_active_frac": 0.7,
+  "break_even_estar": 0.75,
+  "hypothesis": "DEAD (~0.95-1.05)",
+  "layouts": {
+    "dense": {
+      "feasible": false,
+      "note": "CUDA OOM: CUDA out of memory. Tried to allocate 256.00 MiB. GPU 0 has a total capacity of 39.49 GiB of which 170.50 MiB is free. Process 3261640 has 39.32 GiB memory in use. Of the allocated memory 37.90 GiB is allocated by PyTorch, and 324.58 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)",
+      "excluded": 0
+    },
+    "expert_parallel": {
+      "feasible": true,
+      "n_seeds": 3,
+      "excluded_degenerate": 0,
+      "cluster_energy_per_iter_j": 142.32774166671766,
+      "cluster_energy_ci_lo": 140.21947274297665,
+      "cluster_energy_ci_hi": 144.43601059045866,
+      "mean_power_w": 1315.6323333333335,
+      "iters_per_s": 9.23136801944203,
+      "peak_mem_gb": 12.065884672,
+      "active_frac": 1.0,
+      "load_cv": 0.06416400397817294,
+      "drop_frac": 0.0,
+      "energy_source": "nvml-total-energy"
+    }
+  },
+  "E_eco": {},
+  "verdict": {},
+  "smoke": false
+}

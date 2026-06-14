@@ -1,0 +1,448 @@
+{
+  "demo": "closed-loop-controller",
+  "mode": "live",
+  "world_size": 1,
+  "trace": "de_2024-07-01_2024-07-15_hourly.csv",
+  "ticks": 48,
+  "threshold_quantile": 0.6,
+  "threshold_g_per_kwh": 301.0,
+  "iters_per_tick": 20,
+  "n_reshards_fired_by_policy": 5,
+  "all_reshards_verified": true,
+  "reshard_latency_s_mean": 1.7972566500306129,
+  "reshard_energy_j": [
+    103.27200001478195,
+    64.82100003957748,
+    95.82599997520447,
+    43.26399999856949,
+    87.20099997520447
+  ],
+  "reshards": [
+    {
+      "from": "ddp",
+      "to": "fsdp",
+      "latency_s": 2.435001968406141,
+      "energy_j": 103.27200001478195,
+      "verified": true,
+      "max_abs_diff": 0.0
+    },
+    {
+      "from": "fsdp",
+      "to": "ddp",
+      "latency_s": 1.488837723620236,
+      "energy_j": 64.82100003957748,
+      "verified": true,
+      "max_abs_diff": 0.0
+    },
+    {
+      "from": "ddp",
+      "to": "fsdp",
+      "latency_s": 2.087281784042716,
+      "energy_j": 95.82599997520447,
+      "verified": true,
+      "max_abs_diff": 0.0
+    },
+    {
+      "from": "fsdp",
+      "to": "ddp",
+      "latency_s": 0.9730261964723468,
+      "energy_j": 43.26399999856949,
+      "verified": true,
+      "max_abs_diff": 0.0
+    },
+    {
+      "from": "ddp",
+      "to": "fsdp",
+      "latency_s": 2.002135577611625,
+      "energy_j": 87.20099997520447,
+      "verified": true,
+      "max_abs_diff": 0.0
+    }
+  ],
+  "ticklog": [
+    {
+      "tick": 0,
+      "intensity": 401.0,
+      "dirty": true,
+      "layout": "fsdp",
+      "loss": 1.6270063497358933e-05,
+      "reshard": true
+    },
+    {
+      "tick": 1,
+      "intensity": 413.0,
+      "dirty": true,
+      "layout": "fsdp",
+      "loss": 2.287886309204623e-05,
+      "reshard": false
+    },
+    {
+      "tick": 2,
+      "intensity": 428.0,
+      "dirty": true,
+      "layout": "fsdp",
+      "loss": 4.532187449513003e-05,
+      "reshard": false
+    },
+    {
+      "tick": 3,
+      "intensity": 432.0,
+      "dirty": true,
+      "layout": "fsdp",
+      "loss": 6.837677210569382e-05,
+      "reshard": false
+    },
+    {
+      "tick": 4,
+      "intensity": 414.0,
+      "dirty": true,
+      "layout": "fsdp",
+      "loss": 4.507273479248397e-05,
+      "reshard": false
+    },
+    {
+      "tick": 5,
+      "intensity": 393.0,
+      "dirty": true,
+      "layout": "fsdp",
+      "loss": 2.93760203931015e-05,
+      "reshard": false
+    },
+    {
+      "tick": 6,
+      "intensity": 363.0,
+      "dirty": true,
+      "layout": "fsdp",
+      "loss": 5.7895238569471985e-05,
+      "reshard": false
+    },
+    {
+      "tick": 7,
+      "intensity": 344.0,
+      "dirty": true,
+      "layout": "fsdp",
+      "loss": 6.327289884211496e-05,
+      "reshard": false
+    },
+    {
+      "tick": 8,
+      "intensity": 306.0,
+      "dirty": true,
+      "layout": "fsdp",
+      "loss": 0.00013515265891328454,
+      "reshard": false
+    },
+    {
+      "tick": 9,
+      "intensity": 265.0,
+      "dirty": false,
+      "layout": "ddp",
+      "loss": 4.2343075620010495e-05,
+      "reshard": true
+    },
+    {
+      "tick": 10,
+      "intensity": 241.0,
+      "dirty": false,
+      "layout": "ddp",
+      "loss": 3.412252408452332e-05,
+      "reshard": false
+    },
+    {
+      "tick": 11,
+      "intensity": 209.0,
+      "dirty": false,
+      "layout": "ddp",
+      "loss": 0.00019211055769119412,
+      "reshard": false
+    },
+    {
+      "tick": 12,
+      "intensity": 190.0,
+      "dirty": false,
+      "layout": "ddp",
+      "loss": 9.477502317167819e-05,
+      "reshard": false
+    },
+    {
+      "tick": 13,
+      "intensity": 206.0,
+      "dirty": false,
+      "layout": "ddp",
+      "loss": 0.00010618509259074926,
+      "reshard": false
+    },
+    {
+      "tick": 14,
+      "intensity": 240.0,
+      "dirty": false,
+      "layout": "ddp",
+      "loss": 3.808032488450408e-05,
+      "reshard": false
+    },
+    {
+      "tick": 15,
+      "intensity": 273.0,
+      "dirty": false,
+      "layout": "ddp",
+      "loss": 8.540539420209825e-05,
+      "reshard": false
+    },
+    {
+      "tick": 16,
+      "intensity": 308.0,
+      "dirty": true,
+      "layout": "fsdp",
+      "loss": 3.2345302315661684e-05,
+      "reshard": true
+    },
+    {
+      "tick": 17,
+      "intensity": 349.0,
+      "dirty": true,
+      "layout": "fsdp",
+      "loss": 5.7528923207428306e-05,
+      "reshard": false
+    },
+    {
+      "tick": 18,
+      "intensity": 374.0,
+      "dirty": true,
+      "layout": "fsdp",
+      "loss": 5.1260321924928576e-05,
+      "reshard": false
+    },
+    {
+      "tick": 19,
+      "intensity": 392.0,
+      "dirty": true,
+      "layout": "fsdp",
+      "loss": 5.6532950111432e-05,
+      "reshard": false
+    },
+    {
+      "tick": 20,
+      "intensity": 405.0,
+      "dirty": true,
+      "layout": "fsdp",
+      "loss": 6.987049710005522e-05,
+      "reshard": false
+    },
+    {
+      "tick": 21,
+      "intensity": 393.0,
+      "dirty": true,
+      "layout": "fsdp",
+      "loss": 3.743476190720685e-05,
+      "reshard": false
+    },
+    {
+      "tick": 22,
+      "intensity": 382.0,
+      "dirty": true,
+      "layout": "fsdp",
+      "loss": 0.00013535641483031213,
+      "reshard": false
+    },
+    {
+      "tick": 23,
+      "intensity": 355.0,
+      "dirty": true,
+      "layout": "fsdp",
+      "loss": 0.00012226156832184643,
+      "reshard": false
+    },
+    {
+      "tick": 24,
+      "intensity": 349.0,
+      "dirty": true,
+      "layout": "fsdp",
+      "loss": 2.3597622202942148e-05,
+      "reshard": false
+    },
+    {
+      "tick": 25,
+      "intensity": 348.0,
+      "dirty": true,
+      "layout": "fsdp",
+      "loss": 4.308746429160237e-05,
+      "reshard": false
+    },
+    {
+      "tick": 26,
+      "intensity": 354.0,
+      "dirty": true,
+      "layout": "fsdp",
+      "loss": 4.623115819413215e-05,
+      "reshard": false
+    },
+    {
+      "tick": 27,
+      "intensity": 361.0,
+      "dirty": true,
+      "layout": "fsdp",
+      "loss": 6.218060298124328e-05,
+      "reshard": false
+    },
+    {
+      "tick": 28,
+      "intensity": 364.0,
+      "dirty": true,
+      "layout": "fsdp",
+      "loss": 6.49683061055839e-05,
+      "reshard": false
+    },
+    {
+      "tick": 29,
+      "intensity": 346.0,
+      "dirty": true,
+      "layout": "fsdp",
+      "loss": 0.00010210491745965555,
+      "reshard": false
+    },
+    {
+      "tick": 30,
+      "intensity": 333.0,
+      "dirty": true,
+      "layout": "fsdp",
+      "loss": 2.2592868845094927e-05,
+      "reshard": false
+    },
+    {
+      "tick": 31,
+      "intensity": 308.0,
+      "dirty": true,
+      "layout": "fsdp",
+      "loss": 7.966272096382454e-05,
+      "reshard": false
+    },
+    {
+      "tick": 32,
+      "intensity": 272.0,
+      "dirty": false,
+      "layout": "ddp",
+      "loss": 3.0366618375410326e-05,
+      "reshard": true
+    },
+    {
+      "tick": 33,
+      "intensity": 261.0,
+      "dirty": false,
+      "layout": "ddp",
+      "loss": 3.0485425668302923e-05,
+      "reshard": false
+    },
+    {
+      "tick": 34,
+      "intensity": 263.0,
+      "dirty": false,
+      "layout": "ddp",
+      "loss": 3.328872116981074e-05,
+      "reshard": false
+    },
+    {
+      "tick": 35,
+      "intensity": 247.0,
+      "dirty": false,
+      "layout": "ddp",
+      "loss": 0.00010691076749935746,
+      "reshard": false
+    },
+    {
+      "tick": 36,
+      "intensity": 234.0,
+      "dirty": false,
+      "layout": "ddp",
+      "loss": 2.1351992472773418e-05,
+      "reshard": false
+    },
+    {
+      "tick": 37,
+      "intensity": 238.0,
+      "dirty": false,
+      "layout": "ddp",
+      "loss": 0.00010956922778859735,
+      "reshard": false
+    },
+    {
+      "tick": 38,
+      "intensity": 248.0,
+      "dirty": false,
+      "layout": "ddp",
+      "loss": 1.9488128600642085e-05,
+      "reshard": false
+    },
+    {
+      "tick": 39,
+      "intensity": 271.0,
+      "dirty": false,
+      "layout": "ddp",
+      "loss": 8.750275446800515e-05,
+      "reshard": false
+    },
+    {
+      "tick": 40,
+      "intensity": 308.0,
+      "dirty": true,
+      "layout": "fsdp",
+      "loss": 5.606257400359027e-05,
+      "reshard": true
+    },
+    {
+      "tick": 41,
+      "intensity": 333.0,
+      "dirty": true,
+      "layout": "fsdp",
+      "loss": 9.163931827060878e-05,
+      "reshard": false
+    },
+    {
+      "tick": 42,
+      "intensity": 346.0,
+      "dirty": true,
+      "layout": "fsdp",
+      "loss": 3.0757531931158155e-05,
+      "reshard": false
+    },
+    {
+      "tick": 43,
+      "intensity": 359.0,
+      "dirty": true,
+      "layout": "fsdp",
+      "loss": 0.00013384396152105182,
+      "reshard": false
+    },
+    {
+      "tick": 44,
+      "intensity": 372.0,
+      "dirty": true,
+      "layout": "fsdp",
+      "loss": 4.2366653360659257e-05,
+      "reshard": false
+    },
+    {
+      "tick": 45,
+      "intensity": 378.0,
+      "dirty": true,
+      "layout": "fsdp",
+      "loss": 5.2884093747707084e-05,
+      "reshard": false
+    },
+    {
+      "tick": 46,
+      "intensity": 362.0,
+      "dirty": true,
+      "layout": "fsdp",
+      "loss": 3.701525565702468e-05,
+      "reshard": false
+    },
+    {
+      "tick": 47,
+      "intensity": 346.0,
+      "dirty": true,
+      "layout": "fsdp",
+      "loss": 6.470554217230529e-05,
+      "reshard": false
+    }
+  ]
+}
